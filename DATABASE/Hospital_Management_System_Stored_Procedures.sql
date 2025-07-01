@@ -3,11 +3,20 @@
 
 -- =============================================
 -- Procedure: PR_Users_SelectAll
+-- Returns all users with their details
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Users_SelectAll]
 AS
 BEGIN
-    SELECT Users.*
+    SELECT
+        UserID,
+        UserName,
+        Password,
+        Email,
+        MobileNo,
+        IsActive,
+        Created,
+        Modified 
     FROM Users
     ORDER BY UserID;
 END
@@ -20,9 +29,17 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Users_SelectByPK]
     @UserID INT
 AS
 BEGIN
-    SELECT * FROM Users
-    WHERE UserID = @UserID
-    ORDER BY UserID;
+    SELECT
+        UserID,
+        UserName,
+        Password,
+        Email,
+        MobileNo,
+        IsActive,
+        Created,
+        Modified
+    FROM Users
+    WHERE UserID = @UserID;
 END
 GO
 
@@ -84,10 +101,18 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Departments_SelectAll]
 AS
 BEGIN
-    SELECT Departments.*, Users.UserName
+    SELECT
+        Departments.DepartmentID,
+        Departments.DepartmentName,
+        Departments.Description,
+        Departments.IsActive,
+        Departments.Created,
+        Departments.Modified,
+        Departments.UserID,
+        Users.UserName 
     FROM Departments
-    INNER JOIN Users ON Departments.UserID = Users.UserID
-    ORDER BY DepartmentID;
+        INNER JOIN Users ON Departments.UserID = Users.UserID
+    ORDER BY Departments.DepartmentID;
 END
 GO
 
@@ -98,9 +123,18 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Departments_SelectByPK]
     @DepartmentID INT
 AS
 BEGIN
-    SELECT * FROM Departments
-    WHERE DepartmentID = @DepartmentID
-    ORDER BY DepartmentID;
+    SELECT
+        Departments.DepartmentID,
+        Departments.DepartmentName,
+        Departments.Description,
+        Departments.IsActive,
+        Departments.Created,
+        Departments.Modified,
+        Departments.UserID,
+        Users.UserName
+    FROM Departments
+        INNER JOIN Users ON Departments.UserID = Users.UserID
+    WHERE Departments.DepartmentID = @DepartmentID;
 END
 GO
 
@@ -159,10 +193,21 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Doctors_SelectAll]
 AS
 BEGIN
-    SELECT Doctors.*, Users.UserName
+    SELECT
+        Doctors.DoctorID,
+        Doctors.Name,
+        Doctors.Phone,
+        Doctors.Email,
+        Doctors.Qualification,
+        Doctors.Specialization,
+        Doctors.IsActive,
+        Doctors.Created,
+        Doctors.Modified,
+        Doctors.UserID,
+        Users.UserName 
     FROM Doctors
-    INNER JOIN Users ON Doctors.UserID = Users.UserID
-    ORDER BY DoctorID;
+        INNER JOIN Users ON Doctors.UserID = Users.UserID
+    ORDER BY Doctors.DoctorID;
 END
 GO
 
@@ -173,9 +218,21 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Doctors_SelectByPK]
     @DoctorID INT
 AS
 BEGIN
-    SELECT * FROM Doctors
-    WHERE DoctorID = @DoctorID
-    ORDER BY DoctorID;
+    SELECT
+        Doctors.DoctorID,
+        Doctors.Name,
+        Doctors.Phone,
+        Doctors.Email,
+        Doctors.Qualification,
+        Doctors.Specialization,
+        Doctors.IsActive,
+        Doctors.Created,
+        Doctors.Modified,
+        Doctors.UserID,
+        Users.UserName
+    FROM Doctors
+        INNER JOIN Users ON Doctors.UserID = Users.UserID
+    WHERE Doctors.DoctorID = @DoctorID;
 END
 GO
 
@@ -243,12 +300,21 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_DoctorDepartments_SelectAll]
 AS
 BEGIN
-    SELECT DoctorDepartments.*, Users.UserName
+    SELECT
+        DoctorDepartments.DoctorDepartmentID,
+        DoctorDepartments.DoctorID,
+        DoctorDepartments.DepartmentID,
+        DoctorDepartments.Created,
+        DoctorDepartments.Modified,
+        DoctorDepartments.UserID, 
+        Doctors.Name AS DoctorName,
+        Departments.DepartmentName,
+        Users.UserName 
     FROM DoctorDepartments
-    INNER JOIN Doctors ON DoctorDepartments.DoctorID = Doctors.DoctorID
-    INNER JOIN Departments ON DoctorDepartments.DepartmentID = Departments.DepartmentID
-    INNER JOIN Users ON DoctorDepartments.UserID = Users.UserID
-    ORDER BY DoctorDepartmentID;
+        INNER JOIN Doctors ON DoctorDepartments.DoctorID = Doctors.DoctorID
+        INNER JOIN Departments ON DoctorDepartments.DepartmentID = Departments.DepartmentID
+        INNER JOIN Users ON DoctorDepartments.UserID = Users.UserID
+    ORDER BY DoctorDepartments.DoctorDepartmentID;
 END
 GO
 
@@ -259,9 +325,21 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_DoctorDepartments_SelectByPK]
     @DoctorDepartmentID INT
 AS
 BEGIN
-    SELECT * FROM DoctorDepartments
-    WHERE DoctorDepartmentID = @DoctorDepartmentID
-    ORDER BY DoctorDepartmentID;
+    SELECT
+        DoctorDepartments.DoctorDepartmentID,
+        DoctorDepartments.DoctorID,
+        DoctorDepartments.DepartmentID,
+        DoctorDepartments.Created,
+        DoctorDepartments.Modified,
+        DoctorDepartments.UserID,
+        Doctors.Name AS DoctorName,
+        Departments.DepartmentName,
+        Users.UserName
+    FROM DoctorDepartments
+        INNER JOIN Doctors ON DoctorDepartments.DoctorID = Doctors.DoctorID
+        INNER JOIN Departments ON DoctorDepartments.DepartmentID = Departments.DepartmentID
+        INNER JOIN Users ON DoctorDepartments.UserID = Users.UserID
+    WHERE DoctorDepartments.DoctorDepartmentID = @DoctorDepartmentID;
 END
 GO
 
@@ -317,10 +395,24 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Patients_SelectAll]
 AS
 BEGIN
-    SELECT Patients.*, Users.UserName
+    SELECT
+        Patients.PatientID,
+        Patients.Name,
+        Patients.DateOfBirth,
+        Patients.Gender,
+        Patients.Email,
+        Patients.Phone,
+        Patients.Address,
+        Patients.City,
+        Patients.State,
+        Patients.IsActive,
+        Patients.Created,
+        Patients.Modified,
+        Patients.UserID,
+        Users.UserName
     FROM Patients
-    INNER JOIN Users ON Patients.UserID = Users.UserID
-    ORDER BY PatientID;
+        INNER JOIN Users ON Patients.UserID = Users.UserID
+    ORDER BY Patients.PatientID;
 END
 GO
 
@@ -331,9 +423,24 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Patients_SelectByPK]
     @PatientID INT
 AS
 BEGIN
-    SELECT * FROM Patients
-    WHERE PatientID = @PatientID
-    ORDER BY PatientID;
+    SELECT
+        Patients.PatientID,
+        Patients.Name,
+        Patients.DateOfBirth,
+        Patients.Gender,
+        Patients.Email,
+        Patients.Phone,
+        Patients.Address,
+        Patients.City,
+        Patients.State,
+        Patients.IsActive,
+        Patients.Created,
+        Patients.Modified,
+        Patients.UserID,
+        Users.UserName
+    FROM Patients
+        INNER JOIN Users ON Patients.UserID = Users.UserID
+    WHERE Patients.PatientID = @PatientID;
 END
 GO
 
@@ -410,12 +517,26 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_SelectAll]
 AS
 BEGIN
-    SELECT Appointments.*, Users.UserName
+    SELECT
+        Appointments.AppointmentID,
+        Appointments.DoctorID,
+        Appointments.PatientID,
+        Appointments.UserID,
+        Appointments.AppointmentDate,
+        Appointments.AppointmentStatus,
+        Appointments.Description,
+        Appointments.SpecialRemarks,
+        Appointments.Created,
+        Appointments.Modified,
+        Appointments.TotalConsultedAmount, 
+        Doctors.Name AS DoctorName,
+        Patients.Name AS PatientName,
+        Users.UserName
     FROM Appointments
-    INNER JOIN Doctors ON Appointments.DoctorID = Doctors.DoctorID
-    INNER JOIN Patients ON Appointments.PatientID = Patients.PatientID
-    INNER JOIN Users ON Appointments.UserID = Users.UserID
-    ORDER BY AppointmentID;
+        INNER JOIN Doctors ON Appointments.DoctorID = Doctors.DoctorID
+        INNER JOIN Patients ON Appointments.PatientID = Patients.PatientID
+        INNER JOIN Users ON Appointments.UserID = Users.UserID
+    ORDER BY Appointments.AppointmentID;
 END
 GO
 
@@ -426,9 +547,26 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_SelectByPK]
     @AppointmentID INT
 AS
 BEGIN
-    SELECT * FROM Appointments
-    WHERE AppointmentID = @AppointmentID
-    ORDER BY AppointmentID;
+    SELECT
+        Appointments.AppointmentID,
+        Appointments.DoctorID,
+        Appointments.PatientID,
+        Appointments.UserID,
+        Appointments.AppointmentDate,
+        Appointments.AppointmentStatus,
+        Appointments.Description,
+        Appointments.SpecialRemarks,
+        Appointments.Created,
+        Appointments.Modified,
+        Appointments.TotalConsultedAmount,
+        Doctors.Name AS DoctorName,
+        Patients.Name AS PatientName,
+        Users.UserName
+    FROM Appointments
+        INNER JOIN Doctors ON Appointments.DoctorID = Doctors.DoctorID
+        INNER JOIN Patients ON Appointments.PatientID = Patients.PatientID
+        INNER JOIN Users ON Appointments.UserID = Users.UserID
+    WHERE Appointments.AppointmentID = @AppointmentID;
 END
 GO
 
@@ -499,11 +637,20 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_MedicalRecords_SelectAll]
 AS
 BEGIN
-    SELECT MedicalRecords.*
+    SELECT
+        MedicalRecords.RecordID,
+        MedicalRecords.PatientID,
+        MedicalRecords.DoctorID,
+        MedicalRecords.VisitDate,
+        MedicalRecords.Diagnosis,
+        MedicalRecords.Treatment,
+        MedicalRecords.Created, 
+        Patients.Name AS PatientName,
+        Doctors.Name AS DoctorName
     FROM MedicalRecords
-    INNER JOIN Patients ON MedicalRecords.PatientID = Patients.PatientID
-    INNER JOIN Doctors ON MedicalRecords.DoctorID = Doctors.DoctorID
-    ORDER BY RecordID;
+        INNER JOIN Patients ON MedicalRecords.PatientID = Patients.PatientID
+        INNER JOIN Doctors ON MedicalRecords.DoctorID = Doctors.DoctorID
+    ORDER BY MedicalRecords.RecordID;
 END
 GO
 
@@ -514,9 +661,20 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_MedicalRecords_SelectByPK]
     @RecordID INT
 AS
 BEGIN
-    SELECT * FROM MedicalRecords
-    WHERE RecordID = @RecordID
-    ORDER BY RecordID;
+    SELECT
+        MedicalRecords.RecordID,
+        MedicalRecords.PatientID,
+        MedicalRecords.DoctorID,
+        MedicalRecords.VisitDate,
+        MedicalRecords.Diagnosis,
+        MedicalRecords.Treatment,
+        MedicalRecords.Created,
+        Patients.Name AS PatientName,
+        Doctors.Name AS DoctorName
+    FROM MedicalRecords
+        INNER JOIN Patients ON MedicalRecords.PatientID = Patients.PatientID
+        INNER JOIN Doctors ON MedicalRecords.DoctorID = Doctors.DoctorID
+    WHERE MedicalRecords.RecordID = @RecordID;
 END
 GO
 
@@ -577,7 +735,13 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Medications_SelectAll]
 AS
 BEGIN
-    SELECT Medications.*
+    SELECT
+        MedicationID,
+        Name,
+        Description,
+        Stock,
+        UnitPrice,
+        Created
     FROM Medications
     ORDER BY MedicationID;
 END
@@ -590,9 +754,15 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Medications_SelectByPK]
     @MedicationID INT
 AS
 BEGIN
-    SELECT * FROM Medications
-    WHERE MedicationID = @MedicationID
-    ORDER BY MedicationID;
+    SELECT
+        MedicationID,
+        Name,
+        Description,
+        Stock,
+        UnitPrice,
+        Created
+    FROM Medications
+    WHERE MedicationID = @MedicationID;
 END
 GO
 
@@ -650,11 +820,19 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Prescriptions_SelectAll]
 AS
 BEGIN
-    SELECT Prescriptions.*
+    SELECT
+        Prescriptions.PrescriptionID,
+        Prescriptions.RecordID,
+        Prescriptions.MedicationID,
+        Prescriptions.Dosage,
+        Prescriptions.Duration, 
+        MedicalRecords.PatientID,
+        MedicalRecords.DoctorID,
+        Medications.Name AS MedicationName
     FROM Prescriptions
-    INNER JOIN MedicalRecords ON Prescriptions.RecordID = MedicalRecords.RecordID
-    INNER JOIN Medications ON Prescriptions.MedicationID = Medications.MedicationID
-    ORDER BY PrescriptionID;
+        INNER JOIN MedicalRecords ON Prescriptions.RecordID = MedicalRecords.RecordID
+        INNER JOIN Medications ON Prescriptions.MedicationID = Medications.MedicationID
+    ORDER BY Prescriptions.PrescriptionID;
 END
 GO
 
@@ -665,9 +843,19 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Prescriptions_SelectByPK]
     @PrescriptionID INT
 AS
 BEGIN
-    SELECT * FROM Prescriptions
-    WHERE PrescriptionID = @PrescriptionID
-    ORDER BY PrescriptionID;
+    SELECT
+        Prescriptions.PrescriptionID,
+        Prescriptions.RecordID,
+        Prescriptions.MedicationID,
+        Prescriptions.Dosage,
+        Prescriptions.Duration,
+        MedicalRecords.PatientID,
+        MedicalRecords.DoctorID,
+        Medications.Name AS MedicationName
+    FROM Prescriptions
+        INNER JOIN MedicalRecords ON Prescriptions.RecordID = MedicalRecords.RecordID
+        INNER JOIN Medications ON Prescriptions.MedicationID = Medications.MedicationID
+    WHERE Prescriptions.PrescriptionID = @PrescriptionID;
 END
 GO
 
@@ -721,11 +909,16 @@ GO
 
 -- =============================================
 -- Procedure: PR_Wards_SelectAll
+-- Returns all wards
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Wards_SelectAll]
 AS
 BEGIN
-    SELECT Wards.*
+    SELECT
+        WardID,
+        Name,
+        Type,
+        Capacity
     FROM Wards
     ORDER BY WardID;
 END
@@ -738,9 +931,13 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Wards_SelectByPK]
     @WardID INT
 AS
 BEGIN
-    SELECT * FROM Wards
-    WHERE WardID = @WardID
-    ORDER BY WardID;
+    SELECT
+        WardID,
+        Name,
+        Type,
+        Capacity
+    FROM Wards
+    WHERE WardID = @WardID;
 END
 GO
 
@@ -795,11 +992,18 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Admissions_SelectAll]
 AS
 BEGIN
-    SELECT Admissions.* 
+    SELECT
+        Admissions.AdmissionID,
+        Admissions.PatientID,
+        Admissions.WardID,
+        Admissions.AdmissionDate,
+        Admissions.DischargeDate, 
+        Patients.Name AS PatientName,
+        Wards.Name AS WardName
     FROM Admissions
-    INNER JOIN Patients ON Admissions.PatientID = Patients.PatientID
-    INNER JOIN Wards ON Admissions.WardID = Wards.WardID
-    ORDER BY AdmissionID;
+        INNER JOIN Patients ON Admissions.PatientID = Patients.PatientID
+        INNER JOIN Wards ON Admissions.WardID = Wards.WardID
+    ORDER BY Admissions.AdmissionID;
 END
 GO
 
@@ -810,9 +1014,18 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Admissions_SelectByPK]
     @AdmissionID INT
 AS
 BEGIN
-    SELECT * FROM Admissions
-    WHERE AdmissionID = @AdmissionID
-    ORDER BY AdmissionID;
+    SELECT
+        Admissions.AdmissionID,
+        Admissions.PatientID,
+        Admissions.WardID,
+        Admissions.AdmissionDate,
+        Admissions.DischargeDate,
+        Patients.Name AS PatientName,
+        Wards.Name AS WardName
+    FROM Admissions
+        INNER JOIN Patients ON Admissions.PatientID = Patients.PatientID
+        INNER JOIN Wards ON Admissions.WardID = Wards.WardID
+    WHERE Admissions.AdmissionID = @AdmissionID;
 END
 GO
 
@@ -870,10 +1083,17 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_SelectAll]
 AS
 BEGIN
-    SELECT Billing.*
+    SELECT
+        Billing.BillID,
+        Billing.PatientID,
+        Billing.Amount,
+        Billing.Details,
+        Billing.BillingDate,
+        Billing.Status,
+        Patients.Name AS PatientName 
     FROM Billing
-    INNER JOIN Patients ON Billing.PatientID = Patients.PatientID
-    ORDER BY BillID;
+        INNER JOIN Patients ON Billing.PatientID = Patients.PatientID
+    ORDER BY Billing.BillID;
 END
 GO
 
@@ -884,9 +1104,17 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_SelectByPK]
     @BillID INT
 AS
 BEGIN
-    SELECT * FROM Billing
-    WHERE BillID = @BillID
-    ORDER BY BillID;
+    SELECT
+        Billing.BillID,
+        Billing.PatientID,
+        Billing.Amount,
+        Billing.Details,
+        Billing.BillingDate,
+        Billing.Status,
+        Patients.Name AS PatientName
+    FROM Billing
+        INNER JOIN Patients ON Billing.PatientID = Patients.PatientID
+    WHERE Billing.BillID = @BillID;
 END
 GO
 

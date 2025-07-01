@@ -1,7 +1,6 @@
--- Create the main hospital database
+
 CREATE DATABASE hms_database
 
--- Select the newly created database for use
 USE hms_database
 
 -- =====================================
