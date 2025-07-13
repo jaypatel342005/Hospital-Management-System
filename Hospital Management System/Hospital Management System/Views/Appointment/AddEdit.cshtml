@@ -1,0 +1,229 @@
+@{
+    var isEdit = ViewData["AppointmentId"] != null;
+    ViewData["Title"] = isEdit ? "Edit Appointment" : "Schedule Appointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Appointment">Appointments</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Appointment Details</h5>
+                    <form class="row g-3" method="post" novalidate>
+                        <input type="hidden" name="Id" value="@ViewData["AppointmentId"]" />
+                        <!-- Patient Selection -->
+                        <div class="col-md-6">
+                            <label for="patientId" class="form-label">Patient</label>
+                            <select class="form-select" id="patientId" name="PatientId" required>
+                                <option value="">Select Patient</option>
+                                @* <option value="1" @(ViewData["PatientId"]?.ToString() == "1" ? "selected" : "")>John Smith (#P001)</option>
+                                <option value="2" @(ViewData["PatientId"]?.ToString() == "2" ? "selected" : "")>Jane Doe (#P002)</option> *@
+                            </select>
+                        </div>
+                        <!-- Doctor Selection -->
+                        <div class="col-md-6">
+                            <label for="doctorId" class="form-label">Doctor</label>
+                            <select class="form-select" id="doctorId" name="DoctorId" required>
+                                <option value="">Select Doctor</option>
+                                @* <option value="1" @(ViewData["DoctorId"]?.ToString() == "1" ? "selected" : "")>Dr. Sarah Johnson (Cardiologist)</option>
+                                <option value="2" @(ViewData["DoctorId"]?.ToString() == "2" ? "selected" : "")>Dr. Michael Brown (General Physician)</option> *@
+                            </select>
+                        </div>
+                        <!-- Appointment Date -->
+                        <div class="col-md-6">
+                            <label for="appointmentDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="appointmentDate" name="AppointmentDate" required value="@ViewData["AppointmentDate"]" />
+                        </div>
+                        <!-- Appointment Time (Dynamic Time Slots) -->
+                        <div class="col-md-6">
+                            <label for="appointmentTime" class="form-label">Time</label>
+                            <select class="form-select" id="appointmentTime" name="AppointmentTime" required>
+                                <option value="">Select Time</option>
+                                <!-- Time slots will be populated dynamically -->
+                            </select>
+                        </div>
+                        <!-- Appointment Type -->
+                        <div class="col-md-6">
+                            <label for="appointmentType" class="form-label">Type</label>
+                            @{
+                                var appointmentType = ViewData["AppointmentType"]?.ToString();
+                                var types = new[] {
+                                    new { Value = "consultation", Text = "Consultation" },
+                                    new { Value = "followup", Text = "Follow-up" },
+                                    new { Value = "procedure", Text = "Procedure" },
+                                    new { Value = "checkup", Text = "Regular Checkup" }
+                                };
+                            }
+                            <select class="form-select" id="appointmentType" name="AppointmentType" required>
+                                <option value="">Select Type</option>
+                                @{
+                                    foreach (var t in types)
+                                    {
+                                        var selected = appointmentType == t.Value ? " selected" : "";
+                                        @Html.Raw($"<option value=\"{t.Value}\"{selected}>{t.Text}</option>");
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <!-- Duration -->
+                        <div class="col-md-6">
+                            <label for="duration" class="form-label">Duration (minutes)</label>
+                            @{
+                                var duration = ViewData["Duration"]?.ToString();
+                                var durations = new[] {
+                                    new { Value = "15", Text = "15 minutes" },
+                                    new { Value = "30", Text = "30 minutes" },
+                                    new { Value = "45", Text = "45 minutes" },
+                                    new { Value = "60", Text = "1 hour" }
+                                };
+                            }
+                            <select class="form-select" id="duration" name="Duration" required>
+                                @{
+                                    foreach (var d in durations)
+                                    {
+                                        var selected = duration == d.Value ? " selected" : "";
+                                        @Html.Raw($"<option value=\"{d.Value}\"{selected}>{d.Text}</option>");
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <!-- Status (only for edit) -->
+                        @if (isEdit)
+                        {
+                            var status = ViewData["Status"]?.ToString();
+                            var statuses = new[] {
+                                new { Value = "scheduled", Text = "Scheduled" },
+                                new { Value = "completed", Text = "Completed" },
+                                new { Value = "cancelled", Text = "Cancelled" }
+                            };
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="Status" required>
+                                @{
+                                    foreach (var s in statuses)
+                                    {
+                                        var selected = status == s.Value ? " selected" : "";
+                                        @Html.Raw($"<option value=\"{s.Value}\"{selected}>{s.Text}</option>");
+                                    }
+                                }
+                            </select>
+                        </div>
+                        }
+                        <!-- Notes -->
+                        <div class="col-12">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="Notes" rows="3">@ViewData["Notes"]</textarea>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end gap-2">
+                            <a href="/Appointment" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">@ViewData["Title"]</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Doctor Schedule Card -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctor's Schedule</h5>
+                    <div id="doctorSchedule" class="calendar-wrapper">
+                        <div class="text-center text-muted" id="doctorSchedulePlaceholder">
+                            Select a doctor to view their schedule
+                        </div>
+                        <div id="doctorCalendar" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize form validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+
+            // Update available time slots when date or doctor changes
+            const doctorSelect = document.getElementById('doctorId');
+            const dateInput = document.getElementById('appointmentDate');
+            const timeSelect = document.getElementById('appointmentTime');
+
+            async function updateAvailableTimeSlots() {
+                const doctorId = doctorSelect.value;
+                const date = dateInput.value;
+                timeSelect.innerHTML = '<option value="">Select Time</option>';
+                if (doctorId && date) {
+                    // TODO: Replace with actual API call
+                    // Example: fetch(`/api/appointments/available-times?doctorId=${doctorId}&date=${date}`)
+                    //   .then(res => res.json()).then(times => ...)
+                    const dummySlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "14:00", "14:30", "15:00"];
+                    dummySlots.forEach(slot => {
+                        const opt = document.createElement('option');
+                        opt.value = slot;
+                        opt.textContent = slot;
+                        if (slot === '@ViewData["AppointmentTime"]') opt.selected = true;
+                        timeSelect.appendChild(opt);
+                    });
+                }
+            }
+            doctorSelect.addEventListener('change', function() {
+                updateAvailableTimeSlots();
+                updateDoctorSchedule();
+            });
+            dateInput.addEventListener('change', updateAvailableTimeSlots);
+
+            // Doctor's schedule calendar
+            function updateDoctorSchedule() {
+                const doctorId = doctorSelect.value;
+                const calendarDiv = document.getElementById('doctorCalendar');
+                const placeholder = document.getElementById('doctorSchedulePlaceholder');
+                if (!doctorId) {
+                    calendarDiv.style.display = 'none';
+                    placeholder.style.display = 'block';
+                    return;
+                }
+                placeholder.style.display = 'none';
+                calendarDiv.style.display = 'block';
+                calendarDiv.innerHTML = '';
+                // TODO: Replace with actual API call for doctor's schedule
+                const events = [
+                    { title: 'Booked', start: '2025-07-05T09:00:00', end: '2025-07-05T09:30:00' },
+                    { title: 'Booked', start: '2025-07-05T10:00:00', end: '2025-07-05T10:30:00' }
+                ];
+                const calendar = new FullCalendar.Calendar(calendarDiv, {
+                    initialView: 'timeGridDay',
+                    slotMinTime: '08:00:00',
+                    slotMaxTime: '18:00:00',
+                    events: events,
+                    height: 350,
+                    headerToolbar: false
+                });
+                calendar.render();
+            }
+
+            // Initial population
+            updateAvailableTimeSlots();
+            if (doctorSelect.value) updateDoctorSchedule();
+        });
+    </script>
+}

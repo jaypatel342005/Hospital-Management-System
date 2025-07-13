@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Emergency Contacts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Emergency Contacts</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Patient")">Patients</a></li>
+            <li class="breadcrumb-item active">Emergency Contacts</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Emergency Contact</h5>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="contactName" class="form-label">Contact Name</label>
+                            <input type="text" class="form-control" id="contactName" name="ContactName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="relationship" class="form-label">Relationship</label>
+                            <input type="text" class="form-control" id="relationship" name="Relationship" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="Phone" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Existing Contacts</h5>
+                    @if (Model != null && Model.Any())
+                    {
+                        <ul>
+                            @foreach (var contact in Model)
+                            {
+                                <li><strong>@contact.ContactName</strong> (@contact.Relationship): @contact.Phone</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No emergency contacts.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

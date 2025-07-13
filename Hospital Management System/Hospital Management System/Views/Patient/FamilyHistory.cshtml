@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Family Medical History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Family Medical History</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Patient")">Patients</a></li>
+            <li class="breadcrumb-item active">Family History</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Family Medical History</h5>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="relation" class="form-label">Relation</label>
+                            <input type="text" class="form-control" id="relation" name="Relation" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="condition" class="form-label">Medical Condition</label>
+                            <input type="text" class="form-control" id="condition" name="Condition" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="Notes" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Existing Family History</h5>
+                    @if (Model != null && Model.Any())
+                    {
+                        <ul>
+                            @foreach (var item in Model)
+                            {
+                                <li><strong>@item.Relation:</strong> @item.Condition <span class="text-muted small">@item.Notes</span></li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No family history records.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

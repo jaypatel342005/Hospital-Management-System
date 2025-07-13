@@ -1,0 +1,148 @@
+@* @{
+    ViewData["Title"] = "Department Details";
+} *@
+
+@* <div class="pagetitle">
+    <h1>Department Details</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Department")">Departments</a></li>
+            <li class="breadcrumb-item active">Details</li>
+        </ol>
+    </nav>
+</div> *@
+
+<section class="section profile">
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                    <img src="~/img/departments/default-department.jpg" alt="Department" class="rounded-circle">
+                    <h2>Cardiology Department</h2>
+                    <h3>Dr. John Smith</h3>
+                    <div class="social-links mt-2">
+                        <a href="#" class="twitter"><i class="bi bi-envelope"></i></a>
+                        <a href="#" class="facebook"><i class="bi bi-telephone"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-body pt-3">
+                    <ul class="nav nav-tabs nav-tabs-bordered">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">Overview</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#staff">Staff</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#facilities">Facilities</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content pt-2">
+                        <div class="tab-pane fade show active profile-overview" id="overview">
+                            <h5 class="card-title">Department Details</h5>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Department Name</div>
+                                <div class="col-lg-9 col-md-8">Cardiology</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Head of Department</div>
+                                <div class="col-lg-9 col-md-8">Dr. John Smith</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Location</div>
+                                <div class="col-lg-9 col-md-8">Building A, 3rd Floor</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Contact Number</div>
+                                <div class="col-lg-9 col-md-8">+1 (123) 456-7890</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Email</div>
+                                <div class="col-lg-9 col-md-8">cardiology@hospital.com</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Status</div>
+                                <div class="col-lg-9 col-md-8">
+                                    <span class="badge bg-success">Active</span>
+                                </div>
+                            </div>
+
+                            <h5 class="card-title">Description</h5>
+                            <p class="small fst-italic">
+                                The Cardiology Department specializes in diagnosing and treating heart diseases and related conditions.
+                                Our team of experienced cardiologists provides comprehensive care using state-of-the-art technology.
+                            </p>
+                        </div>
+
+                        <div class="tab-pane fade profile-edit pt-3" id="staff">
+                            <h5 class="card-title">Staff Members</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Position</th>
+                                            <th>Contact</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @* Will be populated from controller *@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade pt-3" id="facilities">
+                            <h5 class="card-title">Department Facilities</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Operating Rooms</h5>
+                                            <p class="card-text">3 fully equipped operating rooms</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @* More facilities will be populated from controller *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Actions</h5>
+                    <a href="@Url.Action("Manage", "Department", new { id = ViewData["DepartmentId"] })" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Edit Department
+                    </a>
+                    <a href="@Url.Action("Index", "Department")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div> *@
+        </div>
+    </div>
+</section>
+
+@* @section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Any additional JavaScript for the details page
+        });
+    </script>
+} *@

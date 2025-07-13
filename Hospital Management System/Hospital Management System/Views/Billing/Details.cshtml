@@ -1,0 +1,628 @@
+﻿
+
+@section Styles {
+    <style>
+        .billing-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .billing-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: rgba(255, 255, 255, 0.1);
+                transform: rotate(45deg);
+            }
+
+            .billing-header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .billing-header .subtitle {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                position: relative;
+                z-index: 1;
+            }
+
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e8ecef;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .info-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+            }
+
+            .info-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            }
+
+            .info-card h4 {
+                color: #2c3e50;
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .info-card h4 i {
+                    color: #667eea;
+                    font-size: 1.2rem;
+                }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+            .info-row:last-child {
+                border-bottom: none;
+            }
+
+        .info-label {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-paid {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .status-unpaid {
+            background: linear-gradient(45deg, #dc3545, #fd7e14);
+            color: white;
+        }
+
+        .status-partially-paid {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+            color: white;
+        }
+
+        .amount-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+            .amount-display .currency {
+                font-size: 1.5rem;
+                color: #6c757d;
+                margin-right: 0.5rem;
+            }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+
+            .timeline-item::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 12px;
+                height: 12px;
+                background: #667eea;
+                border-radius: 50%;
+                border: 3px solid white;
+                box-shadow: 0 0 0 3px #667eea;
+            }
+
+            .timeline-item::after {
+                content: '';
+                position: absolute;
+                left: 5px;
+                top: 12px;
+                width: 2px;
+                height: calc(100% + 1rem);
+                background: #e9ecef;
+            }
+
+            .timeline-item:last-child::after {
+                display: none;
+            }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0.5rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn-custom {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+            .btn-primary-custom:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            }
+
+        .btn-success-custom {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+            .btn-success-custom:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
+            }
+
+        .btn-info-custom {
+            background: linear-gradient(45deg, #17a2b8, #6f42c1);
+            color: white;
+        }
+
+            .btn-info-custom:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(23, 162, 184, 0.4);
+            }
+
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+            .breakdown-table th,
+            .breakdown-table td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .breakdown-table th {
+                background: #f8f9fa;
+                font-weight: 600;
+                color: #2c3e50;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .breakdown-table tbody tr:hover {
+                background: #f8f9fa;
+            }
+
+        .total-row {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 700;
+        }
+
+            .total-row td {
+                border-bottom: none;
+            }
+
+      /*   media (max-width: 768px) {
+            .billing-header h1
+
+        {
+            font-size: 2rem;
+        }
+
+        .info-card {
+            padding: 1.5rem;
+        }
+
+        .amount-display {
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-custom {
+            justify-content: center;
+        }
+
+        } */
+    </style>
+}
+
+<div class="pagetitle">
+    <h1>Billing Details</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Dashboard">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Billing">Billing</a></li>
+            <li class="breadcrumb-item active">Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="billing-header">
+        <h1><i class="bi bi-receipt"></i> Invoice #B-2024-001</h1>
+        <p class="subtitle">Comprehensive billing details and payment history</p>
+    </div>
+
+    <div class="row">
+        <!-- Patient Information -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-person-fill"></i> Patient Information</h4>
+                <div class="info-row">
+                    <span class="info-label">Patient ID:</span>
+                    <span class="info-value">P-2024-001</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value">John Doe</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">john.doe@email.com</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">+1 234 567 8900</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Address:</span>
+                    <span class="info-value">123 Main St, City, State 12345</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Summary -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-credit-card-fill"></i> Billing Summary</h4>
+                <div class="info-row">
+                    <span class="info-label">Bill ID:</span>
+                    <span class="info-value">B-2024-001</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Billing Date:</span>
+                    <span class="info-value">January 15, 2024</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="status-badge status-partially-paid">Partially Paid</span>
+                </div>
+                <div class="amount-display">
+                    <span class="currency">$</span>2,450.00
+                </div>
+                <div class="text-center">
+                    <small class="text-muted">Total Amount Due</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Breakdown -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-list-check"></i> Bill Breakdown</h4>
+                <div class="table-responsive">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Service Description</th>
+                                <th>Date</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Initial Consultation</td>
+                                <td>Jan 10, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Cardiology</td>
+                                <td>$150.00</td>
+                            </tr>
+                            <tr>
+                                <td>ECG Test</td>
+                                <td>Jan 10, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Cardiology</td>
+                                <td>$200.00</td>
+                            </tr>
+                            <tr>
+                                <td>Blood Test Panel</td>
+                                <td>Jan 11, 2024</td>
+                                <td>Dr. Johnson</td>
+                                <td>Laboratory</td>
+                                <td>$300.00</td>
+                            </tr>
+                            <tr>
+                                <td>Medications</td>
+                                <td>Jan 12, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Pharmacy</td>
+                                <td>$180.00</td>
+                            </tr>
+                            <tr>
+                                <td>Follow-up Consultation</td>
+                                <td>Jan 15, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Cardiology</td>
+                                <td>$120.00</td>
+                            </tr>
+                            <tr>
+                                <td>Room Charges (3 days)</td>
+                                <td>Jan 10-12, 2024</td>
+                                <td>-</td>
+                                <td>General Ward</td>
+                                <td>$1,500.00</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="4"><strong>Total Amount</strong></td>
+                                <td><strong>$2,450.00</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment History -->
+    <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-clock-history"></i> Payment History</h4>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">January 12, 2024 - 2:30 PM</div>
+                        <div class="timeline-title">Partial Payment Received</div>
+                        <p class="mb-0">Amount: $1,000.00 via Credit Card</p>
+                        <small class="text-muted">Transaction ID: TXN-2024-001</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">January 10, 2024 - 10:15 AM</div>
+                        <div class="timeline-title">Bill Generated</div>
+                        <p class="mb-0">Initial bill created for $2,450.00</p>
+                        <small class="text-muted">Status: Pending Payment</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Outstanding Balance -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-exclamation-triangle-fill"></i> Outstanding Balance</h4>
+                <div class="amount-display" style="color: #dc3545;">
+                    <span class="currency">$</span>1,450.00
+                </div>
+                <div class="text-center mb-3">
+                    <small class="text-muted">Amount Remaining</small>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Amount Paid:</span>
+                    <span class="info-value" style="color: #28a745;">$1,000.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Payment Method:</span>
+                    <span class="info-value">Credit Card</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Last Payment:</span>
+                    <span class="info-value">January 12, 2024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Records Associated -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="info-card">
+                <h4><i class="bi bi-file-medical"></i> Associated Medical Records</h4>
+                <div class="table-responsive">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Record ID</th>
+                                <th>Visit Date</th>
+                                <th>Doctor</th>
+                                <th>Diagnosis</th>
+                                <th>Treatment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MR-2024-001</td>
+                                <td>Jan 10, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Hypertension</td>
+                                <td>Medication prescribed</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MR-2024-002</td>
+                                <td>Jan 15, 2024</td>
+                                <td>Dr. Smith</td>
+                                <td>Follow-up Consultation</td>
+                                <td>Medication adjustment</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="btn-custom btn-primary-custom">
+            <i class="bi bi-credit-card"></i> Make Payment
+        </button>
+        <button class="btn-custom btn-success-custom">
+            <i class="bi bi-download"></i> Download Invoice
+        </button>
+        <button class="btn-custom btn-info-custom">
+            <i class="bi bi-printer"></i> Print Invoice
+        </button>
+        <button class="btn-custom btn-outline-secondary">
+            <i class="bi bi-envelope"></i> Email Invoice
+        </button>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Add some interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate numbers on page load
+            const amountElements = document.querySelectorAll('.amount-display');
+            amountElements.forEach(element => {
+                const targetAmount = parseFloat(element.textContent.replace(/[$,]/g, ''));
+                animateNumber(element, targetAmount);
+            });
+
+            // Add click handlers for action buttons
+            document.querySelectorAll('.btn-custom').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    showNotification(`${action} clicked!`, 'info');
+                });
+            });
+        });
+
+        function animateNumber(element, target) {
+            const duration = 1000;
+            const start = 0;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = start + (target - start) * progress;
+
+                const currencySpan = element.querySelector('.currency');
+                const currencyText = currencySpan ? currencySpan.textContent : '$';
+                element.innerHTML = `<span class="currency">${currencyText}</span>${current.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+}

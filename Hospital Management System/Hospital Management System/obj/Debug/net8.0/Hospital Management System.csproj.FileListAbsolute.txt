@@ -1,0 +1,38 @@
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\appsettings.Development.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\appsettings.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.staticwebassets.runtime.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.staticwebassets.endpoints.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.exe
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.deps.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.runtimeconfig.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\Hospital Management System.pdb
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.GeneratedMSBuildEditorConfig.editorconfig
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.AssemblyInfoInputs.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.AssemblyInfo.cs
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.csproj.CoreCompileInputs.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.MvcApplicationPartsAssemblyInfo.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.RazorAssemblyInfo.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.RazorAssemblyInfo.cs
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.sourcelink.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\scopedcss\bundle\Hospital Management System.styles.css
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\scopedcss\projectbundle\Hospital Management System.bundle.scp.css
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\staticwebassets.build.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\staticwebassets.development.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\refint\Hospital Management System.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.pdb
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.genruntimeconfig.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\ref\Hospital Management System.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital Management System.csproj.AssemblyReference.cache
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\System.Data.SqlClient.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\runtimes\win-arm64\native\sni.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\runtimes\win-x64\native\sni.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\runtimes\win-x86\native\sni.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll
+C:\College programming\Hospital Management System (.NET)\Hospital Management System\Hospital Management System\obj\Debug\net8.0\Hospital.78AF1D08.Up2Date

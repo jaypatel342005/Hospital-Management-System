@@ -1,0 +1,606 @@
+@{
+    ViewData["Title"] = "Patient Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Patient Details</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Patients">Patient Management</a></li>
+            <li class="breadcrumb-item active">Patient Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section profile">
+    <div class="row">
+        <!-- Patient Profile Overview -->
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                    <!-- Patient Avatar -->
+                    <div class="avatar-lg mb-3">
+                        <span class="avatar-title rounded-circle bg-primary text-white fs-2">
+                            JS
+                        </span>
+                    </div>
+
+                    <h2>John Smith</h2>
+                    <h6 class="text-muted">Patient ID: #P001</h6>
+
+                    <div class="row mt-3 w-100">
+                        <div class="col-6 text-center">
+                            <div class="info-item">
+                                <span class="info-label">Age</span>
+                                <span class="info-value">35 Years</span>
+                            </div>
+                        </div>
+                        <div class="col-6 text-center">
+                            <div class="info-item">
+                                <span class="info-label">Gender</span>
+                                <span class="info-value">Male</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <span class="badge bg-success">Active Patient</span>
+                    </div>
+
+                    <div class="mt-3 w-100">
+                        <button class="btn btn-primary w-100 mb-2" onclick="editPatient()">
+                            <i class="bi bi-pencil"></i> Edit Patient
+                        </button>
+                        <button class="btn btn-outline-success w-100 mb-2" onclick="bookAppointment()">
+                            <i class="bi bi-calendar-plus"></i> Book Appointment
+                        </button>
+                        <button class="btn btn-outline-info w-100" onclick="printPatientDetails()">
+                            <i class="bi bi-printer"></i> Print Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Details Tabs -->
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-body pt-3">
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs nav-tabs-bordered">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
+                                <i class="bi bi-person"></i> Overview
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#medical-history">
+                                <i class="bi bi-file-medical"></i> Medical History
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appointments">
+                                <i class="bi bi-calendar"></i> Appointments
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#billing">
+                                <i class="bi bi-receipt"></i> Billing
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content pt-2">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                            <h5 class="card-title">Personal Information</h5>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Full Name</div>
+                                <div class="col-lg-9 col-md-8">John Smith</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Date of Birth</div>
+                                <div class="col-lg-9 col-md-8">January 15, 1989</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Gender</div>
+                                <div class="col-lg-9 col-md-8">Male</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Email</div>
+                                <div class="col-lg-9 col-md-8">john.smith@email.com</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Phone</div>
+                                <div class="col-lg-9 col-md-8">+1 234 567 8901</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Address</div>
+                                <div class="col-lg-9 col-md-8">123 Main Street, Apartment 4B</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">City</div>
+                                <div class="col-lg-9 col-md-8">New York</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">State</div>
+                                <div class="col-lg-9 col-md-8">NY</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Registration Date</div>
+                                <div class="col-lg-9 col-md-8">January 15, 2024</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3 col-md-4 label">Status</div>
+                                <div class="col-lg-9 col-md-8">
+                                    <span class="badge bg-success">Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical History Tab -->
+                        <div class="tab-pane fade" id="medical-history">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title">Medical History</h5>
+                                <button class="btn btn-sm btn-primary" onclick="addMedicalRecord()">
+                                    <i class="bi bi-plus"></i> Add Record
+                                </button>
+                            </div>
+
+                            <!-- Medical Records Timeline (matches MedicalRecords table) -->
+                            <div class="medical-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-primary"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <h6>Visit Date: March 15, 2024</h6>
+                                            <small class="text-muted">Doctor: Dr. Sarah Johnson</small>
+                                        </div>
+                                        <div class="timeline-body">
+                                            <p><strong>Diagnosis:</strong> General health assessment - Normal</p>
+                                            <p><strong>Treatment:</strong> Recommended regular exercise and balanced diet</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-warning"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <h6>Visit Date: February 10, 2024</h6>
+                                            <small class="text-muted">Doctor: Dr. Michael Brown</small>
+                                        </div>
+                                        <div class="timeline-body">
+                                            <p><strong>Diagnosis:</strong> Seasonal Influenza (H1N1)</p>
+                                            <p><strong>Treatment:</strong> Tamiflu 75mg (Twice daily for 5 days), Paracetamol 500mg (as needed for fever), rest, and fluids</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-success"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <h6>Visit Date: January 15, 2024</h6>
+                                            <small class="text-muted">Doctor: Dr. Sarah Johnson</small>
+                                        </div>
+                                        <div class="timeline-body">
+                                            <p><strong>Diagnosis:</strong> Comprehensive health screening - Excellent</p>
+                                            <p><strong>Treatment:</strong> Continue current lifestyle habits</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Appointments Tab -->
+                        <div class="tab-pane fade" id="appointments">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title">Appointments</h5>
+                                <button class="btn btn-sm btn-primary" onclick="bookAppointment()">
+                                    <i class="bi bi-calendar-plus"></i> Book New
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date & Time</th>
+                                            <th>Doctor</th>
+                                            <th>Status</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">March 25, 2024</div>
+                                                <small class="text-muted">10:00 AM</small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">Dr. Sarah Johnson</div>
+                                                <small class="text-muted">Cardiologist</small>
+                                            </td>
+                                            <td><span class="badge bg-warning">Scheduled</span></td>
+                                            <td>Follow-up consultation</td>
+                                            <td>$150.00</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="rescheduleAppointment(1)">
+                                                    <i class="bi bi-calendar"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(1)">
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">March 15, 2024</div>
+                                                <small class="text-muted">02:30 PM</small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">Dr. Sarah Johnson</div>
+                                                <small class="text-muted">Cardiologist</small>
+                                            </td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td>Routine checkup</td>
+                                            <td>$120.00</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(2)">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">February 10, 2024</div>
+                                                <small class="text-muted">11:15 AM</small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">Dr. Michael Brown</div>
+                                                <small class="text-muted">General Physician</small>
+                                            </td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td>Flu symptoms</td>
+                                            <td>$80.00</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(3)">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Billing Tab -->
+                        <div class="tab-pane fade" id="billing">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title">Billing Information</h5>
+                                <button class="btn btn-sm btn-primary" onclick="generateBill()">
+                                    <i class="bi bi-receipt"></i> Generate Bill
+                                </button>
+                            </div>
+
+                            <!-- Billing Summary Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Total Billed</h5>
+                                            <h3>$1,250.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Paid</h5>
+                                            <h3>$900.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-warning text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Pending</h5>
+                                            <h3>$350.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card bg-danger text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Overdue</h5>
+                                            <h3>$0.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Billing History -->
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Bill ID</th>
+                                            <th>Date</th>
+                                            <th>Description</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#B001</td>
+                                            <td>March 15, 2024</td>
+                                            <td>Consultation + Lab Tests</td>
+                                            <td>$350.00</td>
+                                            <td><span class="badge bg-warning">Unpaid</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-success" onclick="payBill(1)">
+                                                    <i class="bi bi-credit-card"></i> Pay
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(1)">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#B002</td>
+                                            <td>February 10, 2024</td>
+                                            <td>Consultation + Medications</td>
+                                            <td>$150.00</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(2)">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="downloadReceipt(2)">
+                                                    <i class="bi bi-download"></i> Receipt
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#B003</td>
+                                            <td>January 15, 2024</td>
+                                            <td>Annual Physical Exam</td>
+                                            <td>$200.00</td>
+                                            <td><span class="badge bg-success">Paid</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(3)">
+                                                    <i class="bi bi-eye"></i> View
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-info" onclick="downloadReceipt(3)">
+                                                    <i class="bi bi-download"></i> Receipt
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CSS Styles -->
+<style>
+    .avatar-lg {
+        width: 80px;
+        height: 80px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .profile-overview .row {
+        margin-bottom: 1rem;
+    }
+
+    .profile-overview .label {
+        font-weight: 600;
+        color: #2c384e;
+    }
+
+    .nav-tabs-bordered .nav-link {
+        border: 1px solid #dee2e6;
+        border-bottom-color: transparent;
+        margin-bottom: -1px;
+    }
+
+        .nav-tabs-bordered .nav-link.active {
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+
+    .medical-timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+        .medical-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #dee2e6;
+        }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -1.5rem;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        z-index: 1;
+    }
+
+    .timeline-content {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.375rem;
+        border-left: 3px solid #007bff;
+    }
+
+    .timeline-header {
+        margin-bottom: 0.5rem;
+    }
+
+        .timeline-header h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .timeline-body p {
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-body ul {
+        padding-left: 1rem;
+    }
+
+    .card-title {
+        color: #2c384e;
+        font-weight: 600;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border-top: none;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    // Patient action functions
+    function editPatient() {
+        console.log('Edit patient functionality');
+        // Implement edit patient modal or redirect
+    }
+
+    function bookAppointment() {
+        console.log('Book appointment functionality');
+        // Implement appointment booking modal
+    }
+
+    function printPatientDetails() {
+        console.log('Print patient details');
+        window.print();
+    }
+
+    // Medical history functions
+    function addMedicalRecord() {
+        console.log('Add medical record functionality');
+        // Implement add medical record modal
+    }
+
+    // Appointment functions
+    function rescheduleAppointment(appointmentId) {
+        console.log('Reschedule appointment:', appointmentId);
+        // Implement reschedule functionality
+    }
+
+    function cancelAppointment(appointmentId) {
+        if (confirm('Are you sure you want to cancel this appointment?')) {
+            console.log('Cancel appointment:', appointmentId);
+            // Implement cancel functionality
+        }
+    }
+
+    function viewAppointmentDetails(appointmentId) {
+        console.log('View appointment details:', appointmentId);
+        // Implement view appointment details modal
+    }
+
+    // Billing functions
+    function generateBill() {
+        console.log('Generate bill functionality');
+        // Implement generate bill modal
+    }
+
+    function payBill(billId) {
+        console.log('Pay bill:', billId);
+        // Implement payment functionality
+    }
+
+    function viewBillDetails(billId) {
+        console.log('View bill details:', billId);
+        // Implement view bill details modal
+    }
+
+    function downloadReceipt(billId) {
+        console.log('Download receipt:', billId);
+        // Implement download receipt functionality
+    }
+
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>

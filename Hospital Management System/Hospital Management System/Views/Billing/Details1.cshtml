@@ -1,0 +1,738 @@
+﻿@{
+    ViewData["Title"] = "Payment Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Payment Details</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/Billing">Billing</a></li>
+            <li class="breadcrumb-item active">Payment Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <!-- Main Bill Details Card -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-receipt-cutoff me-2"></i>Bill Details
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-success" id="billStatus">Paid</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="printBill()">
+                            <i class="bi bi-printer me-1"></i>Print
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="downloadPDF()">
+                            <i class="bi bi-download me-1"></i>Download PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Bill Header -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Bill Information</h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td class="fw-bold">Bill ID:</td>
+                                    <td id="billId">BL-2024-001</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Bill Date:</td>
+                                    <td id="billDate">15 Dec 2024</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Due Date:</td>
+                                    <td id="dueDate">30 Dec 2024</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Patient Information</h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td class="fw-bold">Name:</td>
+                                    <td id="patientName">John Doe</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Patient ID:</td>
+                                    <td id="patientId">PT-2024-001</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Contact:</td>
+                                    <td id="patientPhone">+1 234 567 8900</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bill Items -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">Bill Breakdown</h6>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="billItemsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>Consultation Fee</strong>
+                                            <br><small class="text-muted">Dr. Smith - Cardiology</small>
+                                        </td>
+                                        <td>1</td>
+                                        <td>$150.00</td>
+                                        <td>$150.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Diagnostic Tests</strong>
+                                            <br><small class="text-muted">ECG, Blood Test</small>
+                                        </td>
+                                        <td>2</td>
+                                        <td>$75.00</td>
+                                        <td>$150.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Medications</strong>
+                                            <br><small class="text-muted">Prescribed medicines</small>
+                                        </td>
+                                        <td>1</td>
+                                        <td>$80.00</td>
+                                        <td>$80.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Room Charges</strong>
+                                            <br><small class="text-muted">Private Room - 2 days</small>
+                                        </td>
+                                        <td>2</td>
+                                        <td>$200.00</td>
+                                        <td>$400.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Bill Summary -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-primary mb-3">Payment Summary</h6>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span id="subtotal">$780.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Tax (10%):</span>
+                                        <span id="tax">$78.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Discount:</span>
+                                        <span id="discount" class="text-success">-$50.00</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between fw-bold fs-5 text-primary">
+                                        <span>Total Amount:</span>
+                                        <span id="totalAmount">$808.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <span>Amount Paid:</span>
+                                        <span id="amountPaid" class="text-success">$808.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Outstanding:</span>
+                                        <span id="outstanding" class="text-danger">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="text-primary mb-3">Quick Actions</h6>
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-success" onclick="processPayment()" id="payBtn">
+                                            <i class="bi bi-credit-card me-2"></i>Process Payment
+                                        </button>
+                                        <button class="btn btn-info" onclick="sendReminder()">
+                                            <i class="bi bi-bell me-2"></i>Send Reminder
+                                        </button>
+                                        <button class="btn btn-warning" onclick="applyDiscount()">
+                                            <i class="bi bi-percent me-2"></i>Apply Discount
+                                        </button>
+                                        <button class="btn btn-secondary" onclick="editBill()">
+                                            <i class="bi bi-pencil me-2"></i>Edit Bill
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Payment History Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Payment History
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline" id="paymentHistory">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Payment Received</h6>
+                                <p class="mb-1 text-muted">Amount: $808.00</p>
+                                <small class="text-muted">15 Dec 2024, 10:30 AM</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-info"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Bill Generated</h6>
+                                <p class="mb-1 text-muted">Total: $808.00</p>
+                                <small class="text-muted">15 Dec 2024, 9:00 AM</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-warning"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Consultation Completed</h6>
+                                <p class="mb-1 text-muted">Dr. Smith - Cardiology</p>
+                                <small class="text-muted">15 Dec 2024, 8:00 AM</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Information Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Related Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Appointment ID:</span>
+                                <span class="badge bg-primary">APT-2024-001</span>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Department:</span>
+                                <span>Cardiology</span>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Doctor:</span>
+                                <span>Dr. Smith</span>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Insurance:</span>
+                                <span class="badge bg-success">Covered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-wallet2 me-2"></i>Payment Methods
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="card">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card" checked>
+                                <label class="form-check-label" for="card">
+                                    <i class="bi bi-credit-card me-2"></i>Credit/Debit Card
+                                </label>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="cash">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cash" value="cash">
+                                <label class="form-check-label" for="cash">
+                                    <i class="bi bi-cash me-2"></i>Cash
+                                </label>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="insurance">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="insurance" value="insurance">
+                                <label class="form-check-label" for="insurance">
+                                    <i class="bi bi-shield-check me-2"></i>Insurance
+                                </label>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="bank">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="bank">
+                                <label class="form-check-label" for="bank">
+                                    <i class="bi bi-bank me-2"></i>Bank Transfer
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">
+                    <i class="bi bi-credit-card me-2"></i>Process Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="paymentAmount" class="form-label">Payment Amount</label>
+                                <input type="number" class="form-control" id="paymentAmount" value="808.00" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="paymentMethod" class="form-label">Payment Method</label>
+                                <select class="form-select" id="paymentMethodSelect">
+                                    <option value="card">Credit/Debit Card</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="insurance">Insurance</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentNotes" class="form-label">Payment Notes</label>
+                        <textarea class="form-control" id="paymentNotes" rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                    <div class="card-payment-details" id="cardPaymentDetails">
+                        <h6 class="text-primary mb-3">Card Details</h6>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="cardNumber" class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="123">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="confirmPayment()">
+                    <i class="bi bi-check-circle me-2"></i>Process Payment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Discount Modal -->
+<div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="discountModalLabel">
+                    <i class="bi bi-percent me-2"></i>Apply Discount
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="discountForm">
+                    <div class="mb-3">
+                        <label for="discountType" class="form-label">Discount Type</label>
+                        <select class="form-select" id="discountType">
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="discountValue" class="form-label">Discount Value</label>
+                        <input type="number" class="form-control" id="discountValue" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="discountReason" class="form-label">Reason</label>
+                        <textarea class="form-control" id="discountReason" rows="2" placeholder="Reason for discount..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="applyDiscountConfirm()">
+                    <i class="bi bi-check-circle me-2"></i>Apply Discount
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 8px;
+            bottom: -12px;
+            width: 2px;
+            background-color: #e9ecef;
+        }
+
+        .timeline-item:last-child:before {
+            display: none;
+        }
+
+    .timeline-marker {
+        position: absolute;
+        left: -27px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px #e9ecef;
+    }
+
+    .timeline-content h6 {
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .payment-method {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .payment-method:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .payment-method input[type="radio"]:checked + label {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+    .card-payment-details {
+        display: block;
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .badge {
+        font-size: 0.85em;
+    }
+
+    .table-responsive {
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    /* media print {
+            .btn, .card-header .d-flex .gap-2, .modal
+
+        {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        } */
+</style>
+
+<script>
+    // Payment processing functionality
+    function processPayment() {
+        const outstanding = parseFloat(document.getElementById('outstanding').textContent.replace('$', ''));
+        if (outstanding > 0) {
+            const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            paymentModal.show();
+        } else {
+            Swal.fire({
+                title: 'Payment Complete',
+                text: 'This bill has already been paid in full.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
+    function confirmPayment() {
+        const amount = document.getElementById('paymentAmount').value;
+        const method = document.getElementById('paymentMethodSelect').value;
+
+        if (!amount || parseFloat(amount) <= 0) {
+            Swal.fire({
+                title: 'Invalid Amount',
+                text: 'Please enter a valid payment amount.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Simulate payment processing
+        Swal.fire({
+            title: 'Processing Payment...',
+            text: 'Please wait while we process your payment.',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        setTimeout(() => {
+            // Update payment status
+            document.getElementById('amountPaid').textContent = '$' + amount;
+            document.getElementById('outstanding').textContent = '$0.00';
+            document.getElementById('billStatus').textContent = 'Paid';
+            document.getElementById('billStatus').className = 'badge bg-success';
+
+            // Add to payment history
+            addPaymentToHistory(amount, method);
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+
+            Swal.fire({
+                title: 'Payment Successful!',
+                text: `Payment of $${amount} has been processed successfully.`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }, 2000);
+    }
+
+    function addPaymentToHistory(amount, method) {
+        const timeline = document.getElementById('paymentHistory');
+        const newItem = document.createElement('div');
+        newItem.className = 'timeline-item';
+        newItem.innerHTML = `
+            <div class="timeline-marker bg-success"></div>
+            <div class="timeline-content">
+                <h6 class="mb-1">Payment Received</h6>
+                <p class="mb-1 text-muted">Amount: $${amount} (${method})</p>
+                <small class="text-muted">${new Date().toLocaleString()}</small>
+            </div>
+        `;
+        timeline.insertBefore(newItem, timeline.firstChild);
+    }
+
+    function applyDiscount() {
+        const discountModal = new bootstrap.Modal(document.getElementById('discountModal'));
+        discountModal.show();
+    }
+
+    function applyDiscountConfirm() {
+        const discountType = document.getElementById('discountType').value;
+        const discountValue = parseFloat(document.getElementById('discountValue').value);
+        const reason = document.getElementById('discountReason').value;
+
+        if (!discountValue || discountValue <= 0) {
+            Swal.fire({
+                title: 'Invalid Discount',
+                text: 'Please enter a valid discount value.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        let discountAmount = 0;
+        const currentSubtotal = parseFloat(document.getElementById('subtotal').textContent.replace('$', ''));
+
+        if (discountType === 'percentage') {
+            discountAmount = (currentSubtotal * discountValue) / 100;
+        } else {
+            discountAmount = discountValue;
+        }
+
+        // Update discount display
+        document.getElementById('discount').textContent = `-$${discountAmount.toFixed(2)}`;
+
+        // Recalculate total
+        const tax = parseFloat(document.getElementById('tax').textContent.replace('$', ''));
+        const newTotal = currentSubtotal + tax - discountAmount;
+        document.getElementById('totalAmount').textContent = `$${newTotal.toFixed(2)}`;
+
+        // Update outstanding if not paid
+        const amountPaid = parseFloat(document.getElementById('amountPaid').textContent.replace('$', ''));
+        const outstanding = newTotal - amountPaid;
+        document.getElementById('outstanding').textContent = `$${outstanding.toFixed(2)}`;
+
+        bootstrap.Modal.getInstance(document.getElementById('discountModal')).hide();
+
+        Swal.fire({
+            title: 'Discount Applied!',
+            text: `Discount of $${discountAmount.toFixed(2)} has been applied.`,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function sendReminder() {
+        Swal.fire({
+            title: 'Send Payment Reminder',
+            text: 'Are you sure you want to send a payment reminder to the patient?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Send',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Simulate sending reminder
+                Swal.fire({
+                    title: 'Reminder Sent!',
+                    text: 'Payment reminder has been sent to the patient via email and SMS.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
+
+    function editBill() {
+        Swal.fire({
+            title: 'Edit Bill',
+            text: 'Redirecting to bill edit page...',
+            icon: 'info',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        // Redirect to edit page
+        setTimeout(() => {
+            window.location.href = '/Billing/Edit/' + document.getElementById('billId').textContent;
+        }, 1500);
+    }
+
+    function printBill() {
+        window.print();
+    }
+
+    function downloadPDF() {
+        Swal.fire({
+            title: 'Generating PDF...',
+            text: 'Please wait while we generate your PDF.',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        setTimeout(() => {
+            Swal.fire({
+                title: 'PDF Generated!',
+                text: 'Your PDF has been downloaded successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
+            // Simulate PDF download
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = 'bill-' + document.getElementById('billId').textContent + '.pdf';
+            link.click();
+        }, 2000);
+    }
+
+    // Payment method selector
+    document.getElementById('paymentMethodSelect').addEventListener('change', function() {
+        const cardDetails = document.getElementById('cardPaymentDetails');
+        if (this.value === 'card') {
+            cardDetails.style.display = 'block';
+        } else {
+            cardDetails.style.display = 'none';
+        }
+    });
+
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+<!-- Include SweetAlert2 for better notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

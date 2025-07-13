@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Assign Departments";
+}
+
+<div class="pagetitle">
+    <h1>Assign Departments</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Doctor")">Doctors</a></li>
+            <li class="breadcrumb-item active">Assign Departments</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Assign Departments to Doctor</h5>
+                    <form method="post">
+                        <input type="hidden" name="DoctorId" value="@ViewData["DoctorId"]" />
+                        <div class="mb-3">
+                            <label for="departments" class="form-label">Departments</label>
+                            <select multiple class="form-select" id="departments" name="DepartmentIds">
+                                <option value="1">Cardiology</option>
+                                <option value="2">Emergency</option>
+                                <option value="3">Neurology</option>
+                                @* Populate from controller *@
+                            </select>
+                            <div class="form-text">Hold Ctrl (Windows) or Command (Mac) to select multiple departments.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                        <a href="@Url.Action("Details", "Doctor", new { id = ViewData["DoctorId"] })" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
