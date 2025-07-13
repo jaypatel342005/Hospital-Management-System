@@ -1,1 +1,35 @@
+# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+## VS folders
 .vs/
+Generated\ Files/
+
+## Others
+*.log
+*.tlog
+*.cache
+*.dbmdl
+*.pdb
+
+## IIS Express
+.vsconfig
+.vscode/
+.idea/
