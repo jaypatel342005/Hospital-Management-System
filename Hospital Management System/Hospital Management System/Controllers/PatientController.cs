@@ -30,6 +30,31 @@ namespace Hospital_Management_System.Controllers
             return View(table);
             connection.Close();
         }
+
+        public IActionResult PatientDelete(int PatientID)
+        {
+            try
+            {
+                string connectionString = this._configuration.GetConnectionString("ConnectionString");
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = connection.CreateCommand();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "PR_Patients_DeleteByPK";
+                    command.Parameters.Add("@PatientID", SqlDbType.Int).Value = PatientID;
+                    command.ExecuteNonQuery();
+                }
+                TempData["SuccessMessage"] = "Patient deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the Patient. Please try again or contact support.";
+                Console.WriteLine(ex.ToString());
+            }
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Details()
         {
             return View();

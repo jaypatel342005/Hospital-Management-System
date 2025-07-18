@@ -7,422 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointments Management - Hospital Management System</title>
 
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" as="style">
+
+    <!-- Load critical CSS first -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --primary-color: #4154f1;
-            --secondary-color: #717ff5;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --light-bg: #f4f6fd;
-            --dark-text: #2c384e;
-            --light-text: #6c757d;
-        }
+    <!-- Load non-critical CSS with media query optimization -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-        }
-
-        a, a:visited, a:active {
-            text-decoration: none !important;
-        }
-
-            a:hover {
-                text-decoration: underline;
-            }
-
-        .main-content {
-            padding: 20px;
-        }
-
-        .page-title {
-            margin-bottom: 30px;
-        }
-
-            .page-title h1 {
-                font-size: 2rem;
-                font-weight: 700;
-                color: var(--dark-text);
-                margin-bottom: 10px;
-            }
-
-        .breadcrumb {
-            background: transparent;
-            padding: 0;
-            margin: 0;
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-            color: var(--light-text);
-        }
-
-        .stats-cards {
-            margin-bottom: 30px;
-        }
-
-        .stats-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border: none;
-            transition: transform 0.3s ease;
-        }
-
-            .stats-card:hover {
-                transform: translateY(-5px);
-            }
-
-            .stats-card .icon {
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 24px;
-                color: white;
-                margin-bottom: 15px;
-            }
-
-                .stats-card .icon.primary {
-                    background: var(--primary-color);
-                }
-
-                .stats-card .icon.success {
-                    background: var(--success-color);
-                }
-
-                .stats-card .icon.warning {
-                    background: var(--warning-color);
-                }
-
-                .stats-card .icon.danger {
-                    background: var(--danger-color);
-                }
-
-            .stats-card h3 {
-                font-size: 2rem;
-                font-weight: 700;
-                margin-bottom: 5px;
-            }
-
-            .stats-card p {
-                color: var(--light-text);
-                margin: 0;
-            }
-
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background: white;
-            border-bottom: 1px solid #ebeef4;
-            padding: 20px;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--dark-text);
-            margin: 0;
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 10px;
-        }
-
-            .view-toggle .btn {
-                padding: 8px 16px;
-                border-radius: 6px;
-                font-weight: 500;
-                transition: all 0.3s ease;
-            }
-
-                .view-toggle .btn.active {
-                    background: var(--primary-color);
-                    color: white;
-                    border-color: var(--primary-color);
-                }
-
-        .filters-section {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .table {
-            margin: 0;
-        }
-
-            .table th {
-                background: #f8f9fa;
-                border: none;
-                font-weight: 600;
-                color: var(--dark-text);
-                padding: 15px;
-            }
-
-            .table td {
-                border: none;
-                padding: 15px;
-                vertical-align: middle;
-            }
-
-            .table tbody tr {
-                border-bottom: 1px solid #ebeef4;
-            }
-
-                .table tbody tr:hover {
-                    background: #f8f9fa;
-                }
-
-        .badge {
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 20px;
-        }
-
-            .badge.bg-scheduled {
-                background: var(--primary-color) !important;
-            }
-
-            .badge.bg-completed {
-                background: var(--success-color) !important;
-            }
-
-            .badge.bg-cancelled {
-                background: var(--danger-color) !important;
-            }
-
-            .badge.bg-pending {
-                background: var(--warning-color) !important;
-            }
-
-        .btn-group .btn {
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            margin-right: 5px;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            border-color: var(--success-color);
-        }
-
-        .btn-warning {
-            background: var(--warning-color);
-            border-color: var(--warning-color);
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-
-        .calendar-view {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-            .calendar-view.active {
-                display: block;
-            }
-
-        .list-view.active {
-            display: block;
-        }
-
-        .list-view {
-            display: none;
-        }
-
-        #calendar {
-            max-width: 100%;
-            margin: 0 auto;
-        }
-
-        .fc-toolbar {
-            margin-bottom: 20px;
-        }
-
-        .fc-toolbar-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--dark-text);
-        }
-
-        .fc-button {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-            .fc-button:hover {
-                background: var(--secondary-color);
-                border-color: var(--secondary-color);
-            }
-
-        .fc-event {
-            border: none;
-            border-radius: 6px;
-            padding: 2px 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-            .fc-event.scheduled {
-                background: var(--primary-color);
-                color: white;
-            }
-
-            .fc-event.completed {
-                background: var(--success-color);
-                color: white;
-            }
-
-            .fc-event.cancelled {
-                background: var(--danger-color);
-                color: white;
-            }
-
-            .fc-event.pending {
-                background: var(--warning-color);
-                color: white;
-            }
-
-        .search-box {
-            position: relative;
-        }
-
-            .search-box input {
-                padding-left: 40px;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-                height: 42px;
-            }
-
-            .search-box .search-icon {
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--light-text);
-            }
-
-        .form-label {
-            font-weight: 600;
-            color: var(--dark-text);
-            margin-bottom: 8px;
-        }
-
-        .form-control, .form-select {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 10px 15px;
-            font-size: 0.875rem;
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(65, 84, 241, 0.25);
-            }
-
-        .calendar-tooltip {
-            position: absolute;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            z-index: 1000;
-            max-width: 250px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            pointer-events: none;
-        }
-
-        .fc-event {
-            cursor: pointer;
-            border: none !important;
-            border-radius: 6px !important;
-            padding: 2px 6px !important;
-            font-size: 0.875rem !important;
-            font-weight: 500 !important;
-        }
-
-        .fc-daygrid-event {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @@media (max-width: 768px) {
-            .main-content {
-                padding: 15px;
-            }
-
-            .page-title h1 {
-                font-size: 1.5rem;
-            }
-
-            .stats-cards {
-                margin-bottom: 20px;
-            }
-
-            .stats-card {
-                margin-bottom: 15px;
-            }
-
-            .view-toggle {
-                flex-direction: column;
-                gap: 5px;
-            }
-
-            .filters-section {
-                padding: 15px;
-            }
-
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-
-            .fc-toolbar {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
+    <!-- Critical inline styles -->
+    <link href="~/css/Appoinment.css" rel="stylesheet" />
 </head>
 <body>
     <div class="main-content">
@@ -442,8 +39,9 @@
             @{
                 int totalAppointments = Model?.Rows.Count ?? 0;
                 int completedAppointments = 0;
-                int pendingAppointments = 0;
+                int ScheduledAppointments = 0;
                 int cancelledAppointments = 0;
+         
 
                 if (Model != null)
                 {
@@ -455,27 +53,85 @@
                             case "completed":
                                 completedAppointments++;
                                 break;
-                            case "pending":
-                                pendingAppointments++;
+                            case "scheduled":
+                                ScheduledAppointments++;
                                 break;
                             case "cancelled":
                                 cancelledAppointments++;
                                 break;
+                            
                         }
                     }
                 }
             }
 
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="stats-card">
-                    <div class="icon primary">
-                        <i class="bi bi-calendar-check"></i>
+            <div class="row  g-3">
+
+
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon info">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3>@totalAppointments</h3>
+                                <p>Total Appointments</p>
+                            </div>
+                        </div>
                     </div>
-                    <h3>@totalAppointments</h3>
-                    <p>Total Appointments</p>
                 </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon success">
+                                <i class="bi bi-check2-circle"></i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3>@completedAppointments</h3>
+                                <p>Completed Appointments</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon primary">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3>@ScheduledAppointments</h3>
+                                <p>Scheduled Appointments</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="stats-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon danger">
+                                <i class="bi bi-x-circle"></i>
+                            </div>
+                            <div class="stats-card-content">
+                                <h3>@cancelledAppointments</h3>
+                                <p>Cancelled Appointments</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+
+
+
+            @* <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="stats-card">
                     <div class="icon success">
                         <i class="bi bi-check-circle"></i>
@@ -483,17 +139,17 @@
                     <h3>@completedAppointments</h3>
                     <p>Completed</p>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            </div> *@
+            @* <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="stats-card">
                     <div class="icon warning">
                         <i class="bi bi-clock"></i>
                     </div>
-                    <h3>@pendingAppointments</h3>
-                    <p>Pending</p>
+                    <h3>@ScheduledAppointments</h3>
+                    <p>Scheduled</p>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            </div> *@
+        @*     <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="stats-card">
                     <div class="icon danger">
                         <i class="bi bi-x-circle"></i>
@@ -502,7 +158,7 @@
                     <p>Cancelled</p>
                 </div>
             </div>
-        </div>
+        </div> *@
 
         <!-- Filters Section -->
         <div class="filters-section">
@@ -535,7 +191,8 @@
                             })
                             .Where(d => !string.IsNullOrEmpty(d.DoctorName))
                             .GroupBy(d => d.DoctorID)
-                            .Select(g => g.First());
+                            .Select(g => g.First())
+                            .Take(50); // Limit to improve performance
 
                             foreach (var doctor in doctors)
                             {
@@ -550,10 +207,10 @@
                 <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
                     <div class="d-flex gap-2">
                         <a href="@Url.Action("AddEdit", "Appointment")" class="btn btn-primary">
-                            <i class="bi bi-plus"></i> New Appointment
+                            <i class="bi bi-plus"></i> <span class="d-none d-sm-inline">New Appointment</span>
                         </a>
                         <button class="btn btn-outline-secondary" onclick="exportData()">
-                            <i class="bi bi-download"></i> Export
+                            <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Export</span>
                         </button>
                     </div>
                 </div>
@@ -562,8 +219,8 @@
 
         <!-- Main Content Card -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Appointments</h5>
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <h5 class="card-title mb-3 mb-md-0">Appointments</h5>
                 <div class="view-toggle">
                     <button class="btn btn-outline-primary active" onclick="switchView('list')">
                         <i class="bi bi-list"></i> List View
@@ -574,61 +231,200 @@
                 </div>
             </div>
             <div class="card-body p-0">
-                <!-- List View -->
-                <div class="list-view active">
-                    <div class="table-responsive">
-                        <table class="table" id="appointmentsTable">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Patient</th>
-                                    <th>Doctor</th>
-                                    <th>Date & Time</th>
-                                    <th>Status</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="appointmentsTableBody">
-                                @if (Model != null && Model.Rows.Count > 0)
-                                {
-                                    foreach (DataRow row in Model.Rows)
-                                    {
-                                        string status = row["AppointmentStatus"]?.ToString()?.ToLower() ?? "";
-                                        string badgeClass = status switch
-                                        {
-                                            "completed" => "bg-completed",
-                                            "pending" => "bg-pending",
-                                            "cancelled" => "bg-cancelled",
-                                            _ => "bg-scheduled"
-                                        };
+                <!-- Loading indicator -->
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading appointments...</p>
+                </div>
 
-                                        <tr>
-                                            <td>@row["AppointmentID"]</td>
-                                            <td>@row["PatientName"]</td>
-                                            <td>@row["DoctorName"]</td>
-                                            <td>
+                <!-- List View -->
+                <div class="list-view active" id="listView">
+                    <!-- Desktop Table View -->
+                    <div class="desktop-table">
+                        <div class="table-responsive">
+                         <table class="table table-striped table-hover datatable" id="appointmentsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="appointmentsTableBody">
+            @if (Model != null && Model.Rows.Count > 0)
+            {
+                int maxRowsToShow = 50;
+                int rowCount = 0;
+
+                foreach (DataRow row in Model.Rows)
+                {
+                    if (rowCount >= maxRowsToShow) break;
+
+                    string status = row["AppointmentStatus"]?.ToString()?.ToLower() ?? "";
+                    string badgeClass = status switch
+                    {
+                        "completed" => "success",
+                        "pending" => "warning",
+                        "cancelled" => "danger",
+                        _ => "primary"
+                    };
+
+                    <tr>
+                        <td><strong>@row["AppointmentID"]</strong></td>
+                        <td>@row["PatientName"]</td>
+                        <td>@row["DoctorName"]</td>
+                        <td>
+                            @if (DateTime.TryParse(row["AppointmentDate"]?.ToString(), out DateTime appointmentDate))
+                            {
+                                <span class="d-block d-md-none">@appointmentDate.ToString("dd/MM/yy")</span>
+                                <span class="d-none d-md-block">@appointmentDate.ToString("dd/MM/yyyy hh:mm tt")</span>
+                            }
+                            else
+                            {
+                                @row["AppointmentDate"]
+                            }
+                        </td>
+                        <td>
+                            <span class="badge bg-@badgeClass">@row["AppointmentStatus"]</span>
+                        </td>
+                        <td>
+                            @{
+                                string description = row["Description"]?.ToString() ?? "";
+                                string truncated = description.Length > 30 ? description.Substring(0, 30) + "..." : description;
+                            }
+                            <span title="@description">@truncated</span>
+                        </td>
+                        <td>
+                            @if (decimal.TryParse(row["TotalConsultedAmount"]?.ToString(), out decimal amount))
+                            {
+                                @(Math.Floor(amount).ToString("C0"))
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" 
+                                   class="btn btn-outline-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" 
+                                   class="btn btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm"
+                                                        onclick="confirmDelete(@row["AppointmentID"])" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                       
+                            </div>
+                        </td>
+                    </tr>
+
+                    rowCount++;
+                }
+
+                if (Model.Rows.Count > maxRowsToShow)
+                {
+                    <tr id="loadMoreRow">
+                        <td colspan="8" class="text-center py-3">
+                            <button class="btn btn-outline-primary" onclick="loadMoreAppointments()">
+                                Load More (@(Model.Rows.Count - maxRowsToShow) more)
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <i class="bi bi-calendar-x" style="font-size: 2rem; color: var(--light-text);"></i>
+                        <p class="mt-2 mb-0">No appointments found</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+                    </div>
+
+
+
+
+
+
+
+
+                    <!-- Mobile Card View -->
+                    <div class="mobile-cards" id="mobileCards">
+                        @if (Model != null && Model.Rows.Count > 0)
+                        {
+                            int maxRowsToShow = 50;
+                            int rowCount = 0;
+
+                            foreach (DataRow row in Model.Rows)
+                            {
+                                if (rowCount >= maxRowsToShow) break;
+
+                                string status = row["AppointmentStatus"]?.ToString()?.ToLower() ?? "";
+                                string badgeClass = status switch
+                                {
+                                    "completed" => "bg-success",
+                                    "pending" => "bg-warning",
+                                    "cancelled" => "bg-danger",
+                                    _ => "bg-primary"
+                                };
+
+                                <div class="appointment-card">
+                                    <div class="appointment-card-header">
+                                        <div>
+                                            <h6 class="appointment-card-title">@row["PatientName"]</h6>
+                                            <small class="text-muted">ID: @row["AppointmentID"]</small>
+                                        </div>
+                                        <span class="badge @badgeClass">@row["AppointmentStatus"]</span>
+                                    </div>
+                                    <div class="appointment-card-body">
+                                        <div class="appointment-card-item">
+                                            <span class="appointment-card-label">Doctor</span>
+                                            <span class="appointment-card-value">@row["DoctorName"]</span>
+                                        </div>
+                                        <div class="appointment-card-item">
+                                            <span class="appointment-card-label">Date & Time</span>
+                                            <span class="appointment-card-value">
                                                 @if (DateTime.TryParse(row["AppointmentDate"]?.ToString(), out DateTime appointmentDate))
                                                 {
-                                                    @appointmentDate.ToString("dd/MM/yyyy hh:mm tt")
+                                                    @appointmentDate.ToString("dd/MM/yy hh:mm tt")
                                                 }
                                                 else
                                                 {
                                                     @row["AppointmentDate"]
                                                 }
-                                            </td>
-                                            <td>
-                                                <span class="badge @badgeClass">@row["AppointmentStatus"]</span>
-                                            </td>
-                                            <td>
+                                            </span>
+                                        </div>
+                                        <div class="appointment-card-item">
+                                            <span class="appointment-card-label">Description</span>
+                                            <span class="appointment-card-value">
                                                 @{
                                                     string description = row["Description"]?.ToString() ?? "";
-                                                    string truncatedDescription = description.Length > 50 ? description.Substring(0, 50) + "..." : description;
+                                                    string truncatedDescription = description.Length > 40 ? description.Substring(0, 40) + "..." : description;
                                                 }
-                                                <span title="@description">@truncatedDescription</span>
-                                            </td>
-                                            <td>
+                                                @truncatedDescription
+                                            </span>
+                                        </div>
+                                        <div class="appointment-card-item">
+                                            <span class="appointment-card-label">Amount</span>
+                                            <span class="appointment-card-value">
                                                 @if (decimal.TryParse(row["TotalConsultedAmount"]?.ToString(), out decimal amount))
                                                 {
                                                     @amount.ToString("C")
@@ -637,107 +433,268 @@
                                                 {
                                                     <span>-</span>
                                                 }
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-primary" title="View Details">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-warning" title="Edit">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAppointment(@row["AppointmentID"])" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4">
-                                            <i class="bi bi-calendar-x" style="font-size: 2rem; color: var(--light-text);"></i>
-                                            <p class="mt-2 mb-0">No appointments found</p>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="appointment-card-actions">
+                                        <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+                                         <button class="btn btn-outline-danger btn-sm"
+                                                        onclick="confirmDelete(@row["AppointmentID"])" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                    </div>
+                                </div>
+                                rowCount++;
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="bi bi-calendar-x" style="font-size: 2rem; color: var(--light-text);"></i>
+                                <p class="mt-2 mb-0">No appointments found</p>
+                            </div>
+                        }
                     </div>
                 </div>
 
                 <!-- Calendar View -->
-                <div class="calendar-view">
+                <div class="calendar-view" id="calendarView">
                     <div id="calendar"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 
+    <!-- Load JavaScript after DOM content -->
     <script>
-        // Global variables
-        let calendar;
-        let appointmentsData = [];
 
-        // Convert server data to JavaScript format
-        @if (Model != null && Model.Rows.Count > 0)
-        {
+
+
+
+
+
+
+
+         window.onload = function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
                     <text>
-                    appointmentsData = [
-                        @foreach (DataRow row in Model.Rows)
-                        {
-                                    var appointmentDate = row["AppointmentDate"];
-                                    var dateString = "";
-                                    if (appointmentDate != null && DateTime.TryParse(appointmentDate.ToString(), out DateTime parsedDate))
-                                    {
-                                                dateString = parsedDate.ToString("yyyy-MM-ddTHH:mm:ss");
-                                    }
-
-                                    <text>
-                                    {
-                                        id: '@row["AppointmentID"]',
-                                        title: '@Html.Raw(Json.Serialize($"{row["PatientName"]} - {row["DoctorName"]}"))',
-                                        start: '@dateString',
-                                        className: '@(row["AppointmentStatus"]?.ToString()?.ToLower() ?? "scheduled")',
-                                        patientName: '@Html.Raw(Json.Serialize(row["PatientName"]?.ToString() ?? ""))',
-                                        doctorName: '@Html.Raw(Json.Serialize(row["DoctorName"]?.ToString() ?? ""))',
-                                        status: '@Html.Raw(Json.Serialize(row["AppointmentStatus"]?.ToString() ?? ""))',
-                                        description: '@Html.Raw(Json.Serialize(row["Description"]?.ToString() ?? ""))',
-                                        amount: '@(row["TotalConsultedAmount"]?.ToString() ?? "0")'
-                                    }@(Model.Rows.IndexOf(row) == Model.Rows.Count - 1 ? "" : ",")
-                                    </text>
-                        }
-                    ];
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '@TempData["SuccessMessage"]'
+                    });
                     </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '@TempData["ErrorMessage"]'
+                    });
+                    </text>
+            }
+        };
+
+            function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this department?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Appointment/AppointmentDelete?AppointmentID=${id}`;
+                }
+            });
         }
 
-        // Initialize calendar
+
+
+
+
+        // Store appointment data for JavaScript processing
+        let appointmentsData = [];
+        let allAppointments = [];
+        let currentPage = 1;
+        let pageSize = 50;
+        let calendar;
+
+        @if (Model != null && Model.Rows.Count > 0)
+        {
+                <text>
+                allAppointments = [
+                    @for (int i = 0; i < Model.Rows.Count; i++)
+                    {
+                            DataRow row = Model.Rows[i];
+                            var appointmentDate = row["AppointmentDate"];
+                            var dateString = "";
+                            if (appointmentDate != null && DateTime.TryParse(appointmentDate.ToString(), out DateTime parsedDate))
+                            {
+                                    dateString = parsedDate.ToString("yyyy-MM-ddTHH:mm:ss");
+                            }
+
+                            <text>
+                            {
+                                id: '@row["AppointmentID"]',
+                                patientName: @Html.Raw(Json.Serialize(row["PatientName"]?.ToString() ?? "")),
+                                doctorName: @Html.Raw(Json.Serialize(row["DoctorName"]?.ToString() ?? "")),
+                                appointmentDate: '@dateString',
+                                status: @Html.Raw(Json.Serialize(row["AppointmentStatus"]?.ToString() ?? "")),
+                                description: @Html.Raw(Json.Serialize(row["Description"]?.ToString() ?? "")),
+                                amount: '@(row["TotalConsultedAmount"]?.ToString() ?? "0")'
+                            }@(i == Model.Rows.Count - 1 ? "" : ",")
+                            </text>
+                    }
+                ];
+                </text>
+        }
+
+        // Initialize page when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing calendar with data:', appointmentsData);
-            initializeCalendar();
-            setupEventListeners();
+            initializePage();
         });
 
+        function initializePage() {
+            setupEventListeners();
+            loadCalendarResources();
+            // Convert appointments data to calendar format
+            convertAppointmentsToCalendarFormat();
+        }
+
+        function convertAppointmentsToCalendarFormat() {
+            appointmentsData = allAppointments.map(appointment => {
+                if (!appointment.appointmentDate) {
+                    console.warn('Appointment missing date:', appointment);
+                    return null;
+                }
+
+                const appointmentDateTime = new Date(appointment.appointmentDate);
+                if (isNaN(appointmentDateTime.getTime())) {
+                    console.warn('Invalid date for appointment:', appointment);
+                    return null;
+                }
+
+                // Get status color
+                const statusColors = {
+                    'completed': '#198754',
+                    'pending': '#ffc107',
+                    'cancelled': '#dc3545',
+                    'scheduled': '#4154f1'
+                };
+
+                const status = appointment.status.toLowerCase();
+                const backgroundColor = statusColors[status] || statusColors['scheduled'];
+                const textColor = status === 'pending' ? '#000' : '#fff';
+
+                return {
+                    id: appointment.id,
+                    title: `${appointment.patientName} - ${appointment.doctorName}`,
+                    start: appointmentDateTime.toISOString(),
+                    backgroundColor: backgroundColor,
+                    borderColor: backgroundColor,
+                    textColor: textColor,
+                    extendedProps: {
+                        patientName: appointment.patientName,
+                        doctorName: appointment.doctorName,
+                        status: appointment.status,
+                        description: appointment.description,
+                        amount: appointment.amount ? `$${appointment.amount}` : ''
+                    }
+                };
+            }).filter(event => event !== null);
+
+            console.log('Converted appointments for calendar:', appointmentsData);
+        }
+
+        function setupEventListeners() {
+            // Search functionality with debounce
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(filterTable, 300);
+            });
+
+            // Filter functionality
+            document.getElementById('statusFilter').addEventListener('change', filterTable);
+            document.getElementById('doctorFilter').addEventListener('change', filterTable);
+            document.getElementById('dateFilter').addEventListener('change', filterTable);
+        }
+
+        function loadCalendarResources() {
+            // Load FullCalendar CSS
+            const calendarCSS = document.createElement('link');
+            calendarCSS.rel = 'stylesheet';
+            calendarCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.min.css';
+            document.head.appendChild(calendarCSS);
+
+            // Load FullCalendar JS
+            const calendarJS = document.createElement('script');
+            calendarJS.src = 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js';
+            calendarJS.onload = function() {
+                console.log('FullCalendar loaded successfully');
+            };
+            document.head.appendChild(calendarJS);
+        }
+
+        function switchView(viewType) {
+            const listView = document.getElementById('listView');
+            const calendarView = document.getElementById('calendarView');
+            const listBtn = document.querySelector('.view-toggle button:first-child');
+            const calendarBtn = document.querySelector('.view-toggle button:last-child');
+
+            if (viewType === 'list') {
+                listView.style.display = 'block';
+                calendarView.style.display = 'none';
+                listBtn.classList.add('active');
+                calendarBtn.classList.remove('active');
+            } else {
+                listView.style.display = 'none';
+                calendarView.style.display = 'block';
+                listBtn.classList.remove('active');
+                calendarBtn.classList.add('active');
+
+                // Initialize calendar on demand
+                if (!calendar) {
+                    // Wait for FullCalendar to load
+                    const checkFullCalendar = setInterval(() => {
+                        if (typeof FullCalendar !== 'undefined') {
+                            clearInterval(checkFullCalendar);
+                            initializeCalendar();
+                        }
+                    }, 100);
+                } else {
+                    // Refresh calendar events
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(appointmentsData);
+                }
+            }
+        }
+
         function initializeCalendar() {
-            var calendarEl = document.getElementById('calendar');
+            const calendarEl = document.getElementById('calendar');
 
             if (!calendarEl) {
                 console.error('Calendar element not found');
                 return;
             }
 
-            // Filter out events with invalid dates
-            const validEvents = appointmentsData.filter(appointment => {
-                return appointment.start && appointment.start !== '';
-            });
-
-            console.log('Valid events for calendar:', validEvents);
+            console.log('Initializing calendar with events:', appointmentsData);
 
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -747,137 +704,102 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                events: validEvents,
+                events: appointmentsData,
                 eventClick: function(info) {
-                    showAppointmentDetails(info.event.id);
+                    showAppointmentDetails(info.event);
                 },
                 eventDidMount: function(info) {
-                    // Add custom styling based on status
-                    const status = info.event.extendedProps.status || info.event.classNames[0];
+                    // Events are already styled via backgroundColor and textColor
                     const element = info.el;
-
-                    // Remove default styling and add custom
-                    element.style.border = 'none';
                     element.style.borderRadius = '6px';
                     element.style.padding = '2px 6px';
                     element.style.fontSize = '0.875rem';
                     element.style.fontWeight = '500';
-
-                    switch(status?.toLowerCase()) {
-                        case 'completed':
-                            element.style.backgroundColor = '#198754';
-                            element.style.color = 'white';
-                            break;
-                        case 'pending':
-                            element.style.backgroundColor = '#ffc107';
-                            element.style.color = 'black';
-                            break;
-                        case 'cancelled':
-                            element.style.backgroundColor = '#dc3545';
-                            element.style.color = 'white';
-                            break;
-                        default: // scheduled
-                            element.style.backgroundColor = '#4154f1';
-                            element.style.color = 'white';
-                    }
+                    element.style.cursor = 'pointer';
                 },
                 eventMouseEnter: function(info) {
-                    // Show tooltip on hover
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'calendar-tooltip';
-                    tooltip.innerHTML = `
-                        <strong>${info.event.extendedProps.patientName}</strong><br>
-                        <strong>Doctor:</strong> ${info.event.extendedProps.doctorName}<br>
-                        <strong>Status:</strong> ${info.event.extendedProps.status}<br>
-                        <strong>Time:</strong> ${info.event.start.toLocaleTimeString()}<br>
-                        ${info.event.extendedProps.description ? `<strong>Description:</strong> ${info.event.extendedProps.description}<br>` : ''}
-                        ${info.event.extendedProps.amount ? `<strong>Amount:</strong> ${info.event.extendedProps.amount}` : ''}
-                    `;
-                    tooltip.style.cssText = `
-                        position: absolute;
-                        background: rgba(0,0,0,0.8);
-                        color: white;
-                        padding: 8px 12px;
-                        border-radius: 4px;
-                        font-size: 12px;
-                        z-index: 1000;
-                        max-width: 250px;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                    `;
-
-                    document.body.appendChild(tooltip);
-
-                    const rect = info.el.getBoundingClientRect();
-                    tooltip.style.left = rect.left + 'px';
-                    tooltip.style.top = (rect.bottom + 5) + 'px';
-
-                    info.el.tooltip = tooltip;
+                    showTooltip(info);
                 },
                 eventMouseLeave: function(info) {
-                    if (info.el.tooltip) {
-                        document.body.removeChild(info.el.tooltip);
-                        info.el.tooltip = null;
-                    }
+                    hideTooltip();
+                },
+                displayEventTime: true,
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
                 }
             });
 
             try {
                 calendar.render();
-                console.log('Calendar rendered successfully');
+                console.log('Calendar rendered successfully with', appointmentsData.length, 'events');
             } catch (error) {
                 console.error('Error rendering calendar:', error);
             }
         }
 
-        function setupEventListeners() {
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function() {
-                filterTable();
-            });
+        function showTooltip(info) {
+            hideTooltip(); // Remove any existing tooltip
 
-            // Filter functionality
-            document.getElementById('statusFilter').addEventListener('change', function() {
-                filterTable();
-            });
+            const tooltip = document.createElement('div');
+            tooltip.className = 'calendar-tooltip';
+            tooltip.id = 'calendar-tooltip';
 
-            document.getElementById('doctorFilter').addEventListener('change', function() {
-                filterTable();
-            });
+            const props = info.event.extendedProps;
+            const startTime = info.event.start ? info.event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
 
-            document.getElementById('dateFilter').addEventListener('change', function() {
-                filterTable();
-            });
+            tooltip.innerHTML = `
+                <div><strong>Patient:</strong> ${props.patientName}</div>
+                <div><strong>Doctor:</strong> ${props.doctorName}</div>
+                <div><strong>Status:</strong> ${props.status}</div>
+                <div><strong>Time:</strong> ${startTime}</div>
+                ${props.description ? `<div><strong>Description:</strong> ${props.description}</div>` : ''}
+                ${props.amount ? `<div><strong>Amount:</strong> ${props.amount}</div>` : ''}
+            `;
+
+            document.body.appendChild(tooltip);
+
+            // Position tooltip
+            const rect = info.el.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            let top = rect.top - tooltipRect.height - 10;
+
+            // Adjust if tooltip goes off screen
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipRect.width - 10;
+            }
+            if (top < 10) top = rect.bottom + 10;
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
         }
 
-        function switchView(viewType) {
-            const listView = document.querySelector('.list-view');
-            const calendarView = document.querySelector('.calendar-view');
-            const listBtn = document.querySelector('.view-toggle button:first-child');
-            const calendarBtn = document.querySelector('.view-toggle button:last-child');
-
-            if (viewType === 'list') {
-                listView.classList.add('active');
-                calendarView.classList.remove('active');
-                listBtn.classList.add('active');
-                calendarBtn.classList.remove('active');
-            } else {
-                listView.classList.remove('active');
-                calendarView.classList.add('active');
-                listBtn.classList.remove('active');
-                calendarBtn.classList.add('active');
-
-                // Initialize calendar if it doesn't exist, otherwise refresh it
-                if (!calendar) {
-                    setTimeout(() => {
-                        initializeCalendar();
-                    }, 100);
-                } else {
-                    setTimeout(() => {
-                        calendar.render();
-                        calendar.updateSize();
-                    }, 100);
-                }
+        function hideTooltip() {
+            const tooltip = document.getElementById('calendar-tooltip');
+            if (tooltip) {
+                tooltip.remove();
             }
+        }
+
+        function showAppointmentDetails(event) {
+            const props = event.extendedProps;
+            const startTime = event.start ? event.start.toLocaleString() : 'N/A';
+
+            const details = `
+                Appointment ID: ${event.id}
+                Patient: ${props.patientName}
+                Doctor: ${props.doctorName}
+                Date & Time: ${startTime}
+                Status: ${props.status}
+                Description: ${props.description || 'N/A'}
+                Amount: ${props.amount || 'N/A'}
+            `;
+
+            alert(details);
         }
 
         function filterTable() {
@@ -890,7 +812,7 @@
             const rows = tbody.querySelectorAll('tr');
 
             rows.forEach(row => {
-                if (row.cells.length === 1) return; // Skip "no data" row
+                if (row.id === 'loadMoreRow' || row.cells.length === 1) return;
 
                 const patientName = row.cells[1].textContent.toLowerCase();
                 const doctorName = row.cells[2].textContent.toLowerCase();
@@ -900,28 +822,16 @@
 
                 let showRow = true;
 
-                // Search filter
                 if (searchTerm) {
-                    showRow = showRow && (
-                        patientName.includes(searchTerm) ||
-                        doctorName.includes(searchTerm) ||
-                        description.includes(searchTerm)
-                    );
+                    showRow = patientName.includes(searchTerm) ||
+                             doctorName.includes(searchTerm) ||
+                             description.includes(searchTerm);
                 }
 
-                // Status filter
                 if (statusFilter && showRow) {
                     showRow = status.includes(statusFilter);
                 }
 
-                // Doctor filter
-                if (doctorFilter && showRow) {
-                    // This would need to be implemented based on your doctor ID logic
-                    // For now, we'll filter by doctor name
-                    showRow = doctorName === doctorFilter.toLowerCase();
-                }
-
-                // Date filter
                 if (dateFilter && showRow) {
                     const filterDate = new Date(dateFilter);
                     const appointmentDateObj = new Date(appointmentDate);
@@ -932,33 +842,39 @@
             });
         }
 
-        function showAppointmentDetails(appointmentId) {
-            // Redirect to details page
-            window.location.href = '@Url.Action("Details", "Appointment")' + '/' + appointmentId;
+        function loadMoreAppointments() {
+            document.getElementById('loadMoreRow').style.display = 'none';
+            // Add logic to load more rows here
         }
 
         function deleteAppointment(appointmentId) {
-
+            if (confirm('Are you sure you want to delete this appointment?')) {
+                // Add delete logic here
+                console.log('Deleting appointment:', appointmentId);
+            }
         }
 
         function exportData() {
-            // Simple CSV export
             const table = document.getElementById('appointmentsTable');
-            const rows = Array.from(table.querySelectorAll('tr'));
+            const rows = Array.from(table.querySelectorAll('tr:not(#loadMoreRow)'));
             const csvContent = rows.map(row => {
                 const cells = Array.from(row.querySelectorAll('th, td'));
                 return cells.slice(0, -1).map(cell => `"${cell.textContent.trim()}"`).join(',');
             }).join('\n');
 
             const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = 'appointments_' + new Date().toISOString().split('T')[0] + '.csv';
             a.click();
-            window.URL.revokeObjectURL(url);
+            URL.revokeObjectURL(url);
         }
     </script>
-  
+
+
+
+    <!-- Load remaining CSS asynchronously -->
+
 </body>
 </html>

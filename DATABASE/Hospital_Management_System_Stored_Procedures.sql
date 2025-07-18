@@ -283,6 +283,59 @@ END
 GO
 
 -- =============================================
+-- Procedure: PR_Doctors_UpdateStatusByPK
+-- Description: Toggle doctor's active status (Active/Inactive)
+-- =============================================
+CREATE OR ALTER PROCEDURE [dbo].[PR_Doctors_UpdateStatusByPK]
+    @DoctorID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        -- Check if doctor exists
+        IF NOT EXISTS (SELECT 1 FROM Doctors WHERE DoctorID = @DoctorID)
+        BEGIN
+            RAISERROR('Doctor with ID %d does not exist.', 16, 1, @DoctorID);
+            RETURN;
+        END
+        
+        -- Toggle the IsActive status
+        UPDATE Doctors
+        SET 
+            IsActive = CASE 
+                WHEN IsActive = 1 THEN 0 
+                ELSE 1 
+            END,
+            Modified = GETDATE()
+        WHERE DoctorID = @DoctorID;
+        
+        -- Return success message with current status
+        SELECT 
+            DoctorID,
+            Name,
+            IsActive,
+            CASE 
+                WHEN IsActive = 1 THEN 'Doctor activated successfully'
+                ELSE 'Doctor deactivated successfully'
+            END AS StatusMessage
+        FROM Doctors 
+        WHERE DoctorID = @DoctorID;
+        
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END
+GO
+
+
+-- =============================================
 -- Procedure: PR_Doctors_DeleteByPK
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Doctors_DeleteByPK]
@@ -500,7 +553,7 @@ END
 GO
 
 -- =============================================
--- Procedure: PR_Patients_DeleteByPK
+-- Procedure:	
 -- =============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Patients_DeleteByPK]
     @PatientID INT

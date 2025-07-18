@@ -22,12 +22,12 @@
         margin-bottom: 2rem;
     }
 
-    .pagetitle h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
+        .pagetitle h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
 
     .breadcrumb {
         background: transparent;
@@ -41,9 +41,9 @@
         transition: color 0.3s;
     }
 
-    .breadcrumb-item a:hover {
-        color: var(--secondary-color);
-    }
+        .breadcrumb-item a:hover {
+            color: var(--secondary-color);
+        }
 
     .breadcrumb-item.active {
         color: #6c757d;
@@ -58,10 +58,10 @@
         overflow: hidden;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--hover-shadow);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
 
     .card-body {
         padding: 2rem;
@@ -83,10 +83,10 @@
         transition: all 0.3s ease;
     }
 
-    .form-control:focus, .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(65, 84, 241, 0.25);
-    }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(65, 84, 241, 0.25);
+        }
 
     .btn-primary {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -97,10 +97,10 @@
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(65, 84, 241, 0.4);
-    }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(65, 84, 241, 0.4);
+        }
 
     .doctor-image {
         width: 100px;
@@ -113,8 +113,8 @@
 
     .status-badge {
         position: absolute;
-        top: 5px;
-        right: 5px;
+        top: 15px;
+        right: 15px;
         padding: 0.25rem 0.75rem;
         font-size: 0.7rem;
         font-weight: 600;
@@ -161,10 +161,10 @@
         gap: 0.5rem;
     }
 
-    .doctor-info i {
-        width: 16px;
-        text-align: center;
-    }
+        .doctor-info i {
+            width: 16px;
+            text-align: center;
+        }
 
     .doctor-dates {
         font-size: 0.75rem;
@@ -193,91 +193,132 @@
         transition: all 0.3s ease;
     }
 
-    .btn-action:hover {
-        transform: scale(1.1);
-    }
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
 
     .btn-view {
         border-color: var(--primary-color);
         color: var(--primary-color);
     }
 
-    .btn-view:hover {
-        background: var(--primary-color);
-        color: white;
-    }
+        .btn-view:hover {
+            background: var(--primary-color);
+            color: white;
+        }
 
     .btn-edit {
         border-color: var(--success-color);
         color: var(--success-color);
     }
 
-    .btn-edit:hover {
-        background: var(--success-color);
-        color: white;
-    }
+        .btn-edit:hover {
+            background: var(--success-color);
+            color: white;
+        }
 
     .btn-delete {
         border-color: var(--danger-color);
         color: var(--danger-color);
     }
 
-    .btn-delete:hover {
-        background: var(--danger-color);
-        color: white;
-    }
+        .btn-delete:hover {
+            background: var(--danger-color);
+            color: white;
+        }
 
     .btn-toggle {
         border-color: var(--warning-color);
         color: var(--warning-color);
     }
 
-    .btn-toggle:hover {
-        background: var(--warning-color);
-        color: white;
-    }
+        .btn-toggle:hover {
+            background: var(--warning-color);
+            color: white;
+        }
 
     .stats-card {
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         color: white;
-        text-align: center;
-        padding: 1.5rem;
         border-radius: var(--border-radius);
         margin-bottom: 2rem;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
     }
 
-    .stats-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+        }
 
-    .stats-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
+        .stats-card h4 {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-card small {
+            opacity: 0.9;
+            font-size: 0.85rem;
+        }
+
+        .stats-card .fs-2 {
+            opacity: 0.7;
+        }
 
     .inactive-card {
         opacity: 0.7;
         background: #f8f9fa;
     }
 
-    .inactive-card .card-body {
-        position: relative;
+        .inactive-card .card-body {
+            position: relative;
+        }
+
+        .inactive-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(220, 53, 69, 0.1);
+            pointer-events: none;
+        }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        border: 3px solid #e9ecef;
+        transition: all 0.3s ease;
     }
 
-    .inactive-card::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(220, 53, 69, 0.1);
-        pointer-events: none;
+    .avatar-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
     }
 
-    
+    .doctor-card:hover .avatar {
+        border-color: var(--primary-color);
+        transform: scale(1.05);
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
 </style>
 
 <div class="container-fluid py-4">
@@ -299,28 +340,77 @@
 
         @* Quick Stats *@
         <div class="row mb-4">
-            <div class="col-md-3">
+            @{
+                int totalDoctors = 0;
+                int activeDoctors = 0;
+                int inactiveDoctors = 0;
+                int recentlyAdded = 0;
+
+                if (Model != null && Model.Rows.Count > 0)
+                {
+                    totalDoctors = Model.Rows.Count;
+                    var currentMonth = DateTime.Now.Month;
+                    var currentYear = DateTime.Now.Year;
+
+                    foreach (System.Data.DataRow row in Model.Rows)
+                    {
+                        var isActive = row["IsActive"].ToString().ToLower() == "true";
+                        if (isActive) activeDoctors++;
+                        else inactiveDoctors++;
+
+                        if (DateTime.TryParse(row["Created"].ToString(), out DateTime createdDate))
+                        {
+                            if (createdDate.Month == currentMonth && createdDate.Year == currentYear)
+                            {
+                                recentlyAdded++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            <div class="col-md-3 col-6">
                 <div class="stats-card">
-                    <div class="stats-number">@ViewBag.TotalDoctors</div>
-                    <div class="stats-label">Total Doctors</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">@totalDoctors</h4>
+                            <small>Total Doctors</small>
+                        </div>
+                        <i class="bi bi-people fs-2"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card" style="background: linear-gradient(135deg, #198754, #20c997);">
-                    <div class="stats-number">@ViewBag.ActiveDoctors</div>
-                    <div class="stats-label">Active Doctors</div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--success-color), #20c997);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">@activeDoctors</h4>
+                            <small>Active Doctors</small>
+                        </div>
+                        <i class="bi bi-check-circle fs-2"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card" style="background: linear-gradient(135deg, #dc3545, #e55563);">
-                    <div class="stats-number">@ViewBag.InactiveDoctors</div>
-                    <div class="stats-label">Inactive Doctors</div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #fd7e14);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">@inactiveDoctors</h4>
+                            <small>Inactive Doctors</small>
+                        </div>
+                        <i class="bi bi-exclamation-circle fs-2"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="stats-card" style="background: linear-gradient(135deg, #ffc107, #ffcd39);">
-                    <div class="stats-number">@ViewBag.RecentlyAdded</div>
-                    <div class="stats-label">Added This Month</div>
+            <div class="col-md-3 col-6">
+                <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #ffc720);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">@recentlyAdded</h4>
+                            <small>Added This Month</small>
+                        </div>
+                        <i class="bi bi-calendar-plus fs-2"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -360,6 +450,9 @@
                     </div>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <button class="btn btn-outline-secondary me-2" id="clearFilters">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+                    </button>
                     <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
                         <i class="bi bi-person-plus me-2"></i>Add New Doctor
                     </a>
@@ -369,60 +462,203 @@
 
         @* Doctors Grid *@
         <div class="row" id="doctorsGrid">
-           
-            @foreach (DataRow dataRow in Model.Rows){
-           
-                <div class="col-md-6 col-lg-4 col-xl-3 mb-4" data-aos="zoom-in">
-                    <div class="card h-100">
-                        <div class="card-body text-center position-relative">
-                            <div class="badge bg-@(dataRow["IsActive"].ToString().ToLower() == "true" ? "success" : "danger")">
-                                @(dataRow["IsActive"].ToString().ToLower() == "true" ? "Active" : "Inactive")
-                            </div>
+            @if (Model != null && Model.Rows.Count > 0)
+            {
+                foreach (DataRow dataRow in Model.Rows)
+                {
+                    var doctorName = dataRow["Name"].ToString();
+                    var cleanName = doctorName.Replace("Dr.", "").Replace("DR.", "").Replace("dr.", "").Trim();
+                    var firstLetter = !string.IsNullOrEmpty(cleanName) ? cleanName.Substring(0, 1).ToUpper() : "D";
+                    var isActive = dataRow["IsActive"].ToString().ToLower() == "true";
+                    var specialization = dataRow["Specialization"].ToString();
+                    var status = isActive ? "active" : "inactive";
 
-                            <div class="mb-3">
-                                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face"
-                                     alt="@dataRow["Name"]" class="doctor-image">
-                            </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 mb-4 doctor-card"
+                         data-aos="zoom-in"
+                         data-name="@doctorName.ToLower()"
+                         data-specialization="@specialization.ToLower()"
+                         data-status="@status">
+                        <div class="card h-100 @(isActive ? "" : "inactive-card")">
+                            <div class="card-body text-center position-relative">
+                                <div class="status-badge @(isActive ? "status-active" : "status-inactive")">
+                                    @(isActive ? "Active" : "Inactive")
+                                </div>
 
-                            <h5 class="doctor-name">@dataRow["Name"]</h5>
-                            <div class="doctor-specialty">@dataRow["Specialization"]</div>
-                            <div class="doctor-qualification">@dataRow["Qualification"]</div>
+                                <div class="avatar bg-light rounded-circle">
+                                    <span class="avatar-title">@firstLetter</span>
+                                </div>
 
-                            <div class="doctor-info">
-                                <i class="bi bi-telephone text-primary"></i>
-                                <span>@dataRow["Phone"]</span>
-                            </div>
-                            <div class="doctor-info">
-                                <i class="bi bi-envelope text-info"></i>
-                                <span>@dataRow["Email"]</span>
-                            </div>
+                                <h5 class="doctor-name">@doctorName</h5>
+                                <div class="doctor-specialty">@specialization</div>
+                                <div class="doctor-qualification">@dataRow["Qualification"]</div>
 
-                            <div class="doctor-dates">
-                                <div><i class="bi bi-calendar-plus"></i> Added: @dataRow["Created"]</div>
-                                <div><i class="bi bi-calendar-check"></i>Updated: @dataRow["Modified"]</div>
-                            </div>
+                                <div class="doctor-info">
+                                    <i class="bi bi-telephone text-primary"></i>
+                                    <span>@dataRow["Phone"]</span>
+                                </div>
+                                <div class="doctor-info">
+                                    <i class="bi bi-envelope text-info"></i>
+                                    <span>@dataRow["Email"]</span>
+                                </div>
 
-                            <div class="action-buttons">
-                                <button class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-action btn-toggle" data-bs-toggle="tooltip" title="Deactivate Doctor">
-                                    <i class="bi bi-eye-slash"></i>
-                                </button>
-                                <button class="btn btn-action btn-delete" data-bs-toggle="tooltip" title="Delete Doctor">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                                <div class="doctor-dates">
+                                    <div><i class="bi bi-calendar-plus"></i> Added: @DateTime.Parse(dataRow["Created"].ToString()).ToString("MMM dd, yyyy")</div>
+                                    <div><i class="bi bi-calendar-check"></i> Updated: @DateTime.Parse(dataRow["Modified"].ToString()).ToString("MMM dd, yyyy")</div>
+                                </div>
+
+                                <div class="action-buttons">
+                                    <button class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <form asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
+                                        <button type="submit" class="btn btn-action btn-toggle" data-bs-toggle="tooltip" title="@(isActive ? "Deactivate" : "Activate") Doctor">
+                                            <i class="bi bi-@(isActive ? "eye-slash" : "eye")"></i>
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-action btn-delete" data-bs-toggle="tooltip"
+                                            onclick="confirmDelete(@dataRow["DoctorID"])" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                }
             }
+            else
+            {
+                <div class="col-12">
+                    <div class="no-results">
+                        <i class="bi bi-people"></i>
+                        <h4>No Doctors Found</h4>
+                        <p>Start by adding your first doctor to the system.</p>
+                    </div>
+                </div>
+            }
+        </div>
 
-            
+        @* No Results Message (Hidden by default) *@
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="bi bi-search"></i>
+            <h4>No Results Found</h4>
+            <p>Try adjusting your search criteria or filters.</p>
         </div>
     </section>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips (Bootstrap 5 way)
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Get filter elements
+            const searchInput = document.getElementById('searchInput');
+            const specializationFilter = document.getElementById('specializationFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearFiltersBtn = document.getElementById('clearFilters');
+            const doctorsGrid = document.getElementById('doctorsGrid');
+            const noResults = document.getElementById('noResults');
+
+            function filterDoctors() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const selectedSpecialization = specializationFilter.value.toLowerCase().trim();
+                const selectedStatus = statusFilter.value.toLowerCase().trim();
+
+                const doctorCards = document.querySelectorAll('.doctor-card');
+                let visibleCount = 0;
+
+                doctorCards.forEach(card => {
+                    const name = card.getAttribute('data-name') || '';
+                    const specialization = card.getAttribute('data-specialization') || '';
+                    const status = card.getAttribute('data-status') || '';
+
+                    const matchesSearch = !searchTerm || name.includes(searchTerm);
+                    const matchesSpecialization = !selectedSpecialization || specialization.includes(selectedSpecialization);
+                    const matchesStatus = !selectedStatus || status === selectedStatus;
+
+                    if (matchesSearch && matchesSpecialization && matchesStatus) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0 && doctorCards.length > 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
+
+            function clearFilters() {
+                searchInput.value = '';
+                specializationFilter.value = '';
+                statusFilter.value = '';
+                filterDoctors();
+            }
+
+            // Add event listeners
+            if (searchInput) {
+                searchInput.addEventListener('input', filterDoctors);
+            }
+            if (specializationFilter) {
+                specializationFilter.addEventListener('change', filterDoctors);
+            }
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterDoctors);
+            }
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearFilters);
+            }
+
+            // Success/Error messages
+            @if (TempData["SuccessMessage"] != null)
+            {
+                            <text>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: '@TempData["SuccessMessage"]'
+                            });
+                            </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                            <text>
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: '@TempData["ErrorMessage"]'
+                            });
+                            </text>
+            }
+        });
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Doctor?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Doctor/DoctorDelete?DoctorID=${id}`;
+                }
+            });
+        }
+    </script>
+}

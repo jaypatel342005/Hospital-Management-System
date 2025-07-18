@@ -1,12 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
     public class BillingController : Controller
     {
+        private IConfiguration _configuration;
+
+        public BillingController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+            using var connection = new SqlConnection(connectionString);
+            using var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "PR_Billing_SelectAll";
+
+            connection.Open();
+            using var reader = command.ExecuteReader();
+            var table = new DataTable();
+            table.Load(reader);
+            return View(table);
+            connection.Close();
         }
 
         public IActionResult Details()

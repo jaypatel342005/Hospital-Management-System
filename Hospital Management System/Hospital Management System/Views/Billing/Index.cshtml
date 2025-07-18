@@ -1,549 +1,336 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Management - HMS</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #012970;
-            --secondary-color: #899bbd;
-            --success-color: #198754;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --light-bg: #f6f9ff;
-        }
-        body {
-            background: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        a, a:visited, a:active {
-            text-decoration: none !important;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .main-wrapper {
-            min-height: 100vh;
-        }
-        .page-header {
-            background: white;
-            padding: 1.5rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 0 0 20px 20px;
-        }
-        .stats-card {
-            background: linear-gradient(135deg, var(--primary-color), #4154f1);
-            color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 24px rgba(65,84,241,0.08);
-            transition: box-shadow 0.2s, transform 0.2s;
-        }
-        .stats-card:hover {
-            box-shadow: 0 8px 32px rgba(65,84,241,0.15);
-            transform: translateY(-2px) scale(1.02);
-        }
-        .filter-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        .payment-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.10);
-            transition: box-shadow 0.2s, transform 0.2s;
-            border: 1px solid #e0e6ed;
-        }
-        .payment-card:hover {
-            box-shadow: 0 10px 32px rgba(65,84,241,0.15);
-            transform: translateY(-4px) scale(1.01);
-        }
-        .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .status-paid {
-            background: rgba(25, 135, 84, 0.1);
-            color: var(--success-color);
-        }
-        .status-unpaid {
-            background: rgba(220, 53, 69, 0.1);
-            color: var(--danger-color);
-        }
-        .status-partial {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning-color);
-        }
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 0.6rem 1.5rem;
-            transition: background 0.2s;
-        }
+﻿@model System.Data.DataTable
+@{
+    ViewData["Title"] = "Payment Management";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+<style>
+    :root {
+        --primary-color: #012970;
+        --secondary-color: #899bbd;
+        --success-color: #198754;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --light-bg: #f6f9ff;
+    }
+
+    body {
+        background: var(--light-bg);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .page-header {
+        background: white;
+        padding: 1.5rem 0;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-radius: 0 0 20px 20px;
+    }
+
+    .stats-card {
+        background: linear-gradient(135deg, var(--primary-color), #4154f1);
+        color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 24px rgba(65,84,241,0.08);
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+        border: 1px solid #e0e6ed;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-paid {
+        background: rgba(25, 135, 84, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-unpaid {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+
+    .status-partial {
+        background: rgba(255, 193, 7, 0.1);
+        color: var(--warning-color);
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+    }
+
         .btn-primary:hover, .btn-outline-primary:hover {
             background: #4154f1;
             color: #fff;
         }
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            border-radius: 8px;
-            transition: background 0.2s, color 0.2s;
-        }
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #e0e6ed;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(65,84,241,0.08);
-        }
-        .view-toggle {
-            background: white;
-            border-radius: 10px;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .view-toggle .btn {
-            border-radius: 6px;
-        }
-        .calendar-container {
-            background: white;
-            border-radius: 15px;
-            padding: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        .fc-toolbar-title {
-            color: var(--primary-color) !important;
-        }
-        .fc-button-primary {
-            background: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
-        }
-        .amount-display {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        .patient-info {
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-        }
-        .quick-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
+
+    .amount-display {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .patient-info {
+        color: var(--secondary-color);
+        font-size: 0.9rem;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
         .quick-actions .btn {
             padding: 0.3rem 0.8rem;
             font-size: 0.8rem;
         }
-        /* Responsive Enhancements */
-        /* media (max-width: 992px) {
-            .stats-card, .payment-card, .filter-card, .calendar-container {
-                padding: 1rem;
+
+    .hidden {
+        display: none !important;
+    }
+</style>
+
+<div class="page-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="h3 mb-0"><i class="bi bi-credit-card me-2"></i>Payment Management</h1>
+                <p class="text-muted mb-0">Manage all billing and payment records</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="@Url.Action("AddEdit", "Billing")" class="btn btn-success me-2">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Bill
+                </a>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="bi bi-printer me-2"></i>Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        @{
+            decimal totalAmount = 0;
+            decimal paidAmount = 0;
+            decimal unpaidAmount = 0;
+            decimal partialAmount = 0;
+
+            if (Model != null && Model.Rows.Count > 0)
+            {
+                foreach (System.Data.DataRow row in Model.Rows)
+                {
+                    var amount = Convert.ToDecimal(row["Amount"]);
+                    var status = row["Status"].ToString();
+
+                    totalAmount += amount;
+                    if (status == "Paid") paidAmount += amount;
+                    else if (status == "Unpaid") unpaidAmount += amount;
+                    else if (status == "Partially Paid") partialAmount += amount;
+                }
             }
         }
-        media (max-width: 768px) {
-            .filter-card .row > div {
-                margin-bottom: 1rem;
-            }
-            .quick-actions {
-                flex-direction: column;
-                gap: 0.3rem;
-            }
-        }
-        media (max-width: 576px) {
-            .page-header {
-                padding: 1rem 0;
-            }
-            .stats-card, .payment-card, .filter-card, .calendar-container {
-                padding: 0.7rem;
-            }
-        } *
-        /* Loading Spinner */
-        .spinner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-        }
-    </style>
-</head>
-<body>
-    <div class="main-wrapper">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h1 class="h3 mb-0"><i class="bi bi-credit-card me-2"></i>Payment Management</h1>
-                        <p class="text-muted mb-0">Manage all billing and payment records</p>
+
+        <div class="col-md-3 col-6">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">₹@totalAmount.ToString("N0")</h4>
+                        <small>Total Amount</small>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary" onclick="generateReport()">
-                            <i class="bi bi-file-earmark-excel me-2"></i>Export Report
-                        </button>
-                    </div>
+                    <i class="bi bi-currency-rupee fs-2"></i>
                 </div>
             </div>
         </div>
-
-        <div class="container-fluid">
-            <!-- Stats Cards -->
-            <div class="row mb-4">
-                <div class="col-md-3 col-6">
-                    <div class="stats-card">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0" id="totalAmount">₹0</h4>
-                                <small>Total Amount</small>
-                            </div>
-                            <i class="bi bi-currency-rupee fs-2"></i>
-                        </div>
+        <div class="col-md-3 col-6">
+            <div class="stats-card" style="background: linear-gradient(135deg, var(--success-color), #20c997);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">₹@paidAmount.ToString("N0")</h4>
+                        <small>Paid Amount</small>
                     </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, var(--success-color), #20c997);">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0" id="paidAmount">₹0</h4>
-                                <small>Paid Amount</small>
-                            </div>
-                            <i class="bi bi-check-circle fs-2"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #fd7e14);">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0" id="unpaidAmount">₹0</h4>
-                                <small>Unpaid Amount</small>
-                            </div>
-                            <i class="bi bi-exclamation-circle fs-2"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #ffc720);">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h4 class="mb-0" id="partialAmount">₹0</h4>
-                                <small>Partial Amount</small>
-                            </div>
-                            <i class="bi bi-clock fs-2"></i>
-                        </div>
-                    </div>
+                    <i class="bi bi-check-circle fs-2"></i>
                 </div>
             </div>
-
-            <!-- View Toggle -->
-            <div class="view-toggle">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary active" onclick="switchView('list')">
-                        <i class="bi bi-list-ul me-1"></i>List View
-                    </button>
-                    <button type="button" class="btn btn-outline-primary" onclick="switchView('calendar')">
-                        <i class="bi bi-calendar-event me-1"></i>Calendar View
-                    </button>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #fd7e14);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">₹@unpaidAmount.ToString("N0")</h4>
+                        <small>Unpaid Amount</small>
+                    </div>
+                    <i class="bi bi-exclamation-circle fs-2"></i>
                 </div>
             </div>
-
-            <!-- Filters -->
-            <div class="filter-card">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Search Patient</label>
-                        <input type="text" class="form-control" id="searchPatient" placeholder="Enter patient name...">
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #ffc720);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">₹@partialAmount.ToString("N0")</h4>
+                        <small>Partial Amount</small>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" id="statusFilter">
-                            <option value="">All Status</option>
-                            <option value="Paid">Paid</option>
-                            <option value="Unpaid">Unpaid</option>
-                            <option value="Partially Paid">Partially Paid</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">From Date</label>
-                        <input type="date" class="form-control" id="fromDate">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">To Date</label>
-                        <input type="date" class="form-control" id="toDate">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Amount Range</label>
-                        <select class="form-select" id="amountRange">
-                            <option value="">All Amounts</option>
-                            <option value="0-1000">₹0 - ₹1,000</option>
-                            <option value="1000-5000">₹1,000 - ₹5,000</option>
-                            <option value="5000-10000">₹5,000 - ₹10,000</option>
-                            <option value="10000+">₹10,000+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button class="btn btn-outline-primary w-100" onclick="clearFilters()">
-                            <i class="bi bi-arrow-clockwise"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- List View -->
-            <div id="listView">
-                <div class="row" id="paymentList">
-                    <!-- Payment cards will be dynamically populated here -->
-                </div>
-            </div>
-
-            <!-- Calendar View -->
-            <div id="calendarView" style="display: none;">
-                <div class="calendar-container">
-                    <div id="calendar"></div>
+                    <i class="bi bi-clock fs-2"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Payment Detail Modal -->
-    <div class="modal fade" id="paymentModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Payment Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="paymentDetails">
-                    <!-- Payment details will be populated here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="updatePaymentStatus()">Update Status</button>
-                </div>
+    <!-- Simple Search Filter -->
+    <div class="filter-card">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Search Patient</label>
+                <input type="text" class="form-control" id="search" placeholder="Enter patient name..."
+                       oninput="filterCards()" autocomplete="off">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="statusFilter" onchange="filterCards()">
+                    <option value="">All Status</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">From Date</label>
+                <input type="date" class="form-control" id="fromDate" onchange="filterCards()">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-outline-primary w-100" onclick="clearFilters()">
+                    <i class="bi bi-arrow-clockwise"></i> Clear
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.8/index.global.min.js"></script>
+    <!-- Payment List -->
+    <div class="row" id="paymentList">
+        @if (Model != null && Model.Rows.Count > 0)
+        {
+            @foreach (System.Data.DataRow row in Model.Rows)
+            {
+                var statusClass = row["Status"].ToString() == "Paid" ? "status-paid" :
+                row["Status"].ToString() == "Unpaid" ? "status-unpaid" : "status-partial";
+                var amount = Convert.ToDecimal(row["Amount"]);
+                var billingDate = Convert.ToDateTime(row["BillingDate"]);
+
+                <div class="col-md-6 col-lg-4 payment-item"
+                     data-patient="@row["PatientName"].ToString().ToLower()"
+                     data-status="@row["Status"]"
+                     data-date="@billingDate.ToString("yyyy-MM-dd")">
+                    <div class="payment-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="mb-1">@row["PatientName"]</h5>
+                                <p class="patient-info mb-0">Bill #@row["BillID"]</p>
+                            </div>
+                            <span class="status-badge @statusClass">@row["Status"]</span>
+                        </div>
+                        <div class="amount-display mb-2">₹@amount.ToString("N0")</div>
+                        <p class="text-truncate w-100 mb-3">@row["Details"]</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar me-1"></i>@billingDate.ToString("dd/MM/yyyy")
+                            </small>
+                            <div class="quick-actions">
+                                <a href="@Url.Action("Details", "Billing", new { id = row["BillID"] })"
+                                   class="btn btn-outline-primary btn-sm" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("AddEdit", "Billing", new { id = row["BillID"] })"
+                                   class="btn btn-outline-info btn-sm" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                @if (row["Status"].ToString() != "Paid")
+                                {
+                                    <form method="post" action="@Url.Action("UpdateStatus", "Billing")"
+                                          style="display:inline;" onsubmit="return confirm('Mark as Paid?')">
+                                        <input type="hidden" name="billId" value="@row["BillID"]" />
+                                        <input type="hidden" name="status" value="Paid" />
+                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Mark as Paid">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No payments found</h4>
+                    <p class="text-muted">Start by adding a new billing record.</p>
+                    <a href="@Url.Action("AddEdit", "Billing")" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Bill
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
     <script>
-        // Sample data - Replace with actual API calls
-        const samplePayments = [
-            { billId: 1, patientName: "John Doe", amount: 2500, status: "Paid", date: "2024-01-15", details: "Consultation & Lab Tests" },
-            { billId: 2, patientName: "Sarah Wilson", amount: 15000, status: "Unpaid", date: "2024-01-20", details: "Surgery - Appendectomy" },
-            { billId: 3, patientName: "Mike Johnson", amount: 8000, status: "Partially Paid", date: "2024-01-22", details: "ICU Admission" },
-            { billId: 4, patientName: "Emily Davis", amount: 3200, status: "Paid", date: "2024-01-25", details: "Physiotherapy Sessions" },
-            { billId: 5, patientName: "Robert Brown", amount: 12000, status: "Unpaid", date: "2024-01-28", details: "Cardiac Checkup" }
-        ];
-
-        let currentView = 'list';
-        let calendar;
-        let payments = [...samplePayments];
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCalendar();
-            renderPayments();
-            updateStats();
-            attachEventListeners();
-        });
-
-        function initializeCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: payments.map(p => ({
-                    id: p.billId,
-                    title: `${p.patientName} - ₹${p.amount}`,
-                    start: p.date,
-                    color: p.status === 'Paid' ? '#198754' : p.status === 'Unpaid' ? '#dc3545' : '#ffc107'
-                })),
-                eventClick: function(info) {
-                    const payment = payments.find(p => p.billId == info.event.id);
-                    showPaymentDetails(payment);
-                }
-            });
-        }
-
-        function renderPayments() {
-            const container = document.getElementById('paymentList');
-            container.innerHTML = '';
-
-            payments.forEach(payment => {
-                const statusClass = payment.status === 'Paid' ? 'status-paid' :
-                                  payment.status === 'Unpaid' ? 'status-unpaid' : 'status-partial';
-
-                const card = `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="payment-card">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h5 class="mb-1">${payment.patientName}</h5>
-                                    <p class="patient-info mb-0">Bill #${payment.billId}</p>
-                                </div>
-                                <span class="status-badge ${statusClass}">${payment.status}</span>
-                            </div>
-                            <div class="amount-display mb-2">₹${payment.amount.toLocaleString()}</div>
-                            <p class="text-muted mb-3">${payment.details}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="bi bi-calendar me-1"></i>${new Date(payment.date).toLocaleDateString()}
-                                </small>
-                                <div class="quick-actions">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="showPaymentDetails(${JSON.stringify(payment).replace(/"/g, '&quot;')})">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="btn btn-outline-success btn-sm" onclick="markAsPaid(${payment.billId})">
-                                        <i class="bi bi-check"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
-
-        function updateStats() {
-            const total = payments.reduce((sum, p) => sum + p.amount, 0);
-            const paid = payments.filter(p => p.status === 'Paid').reduce((sum, p) => sum + p.amount, 0);
-            const unpaid = payments.filter(p => p.status === 'Unpaid').reduce((sum, p) => sum + p.amount, 0);
-            const partial = payments.filter(p => p.status === 'Partially Paid').reduce((sum, p) => sum + p.amount, 0);
-
-            document.getElementById('totalAmount').textContent = `₹${total.toLocaleString()}`;
-            document.getElementById('paidAmount').textContent = `₹${paid.toLocaleString()}`;
-            document.getElementById('unpaidAmount').textContent = `₹${unpaid.toLocaleString()}`;
-            document.getElementById('partialAmount').textContent = `₹${partial.toLocaleString()}`;
-        }
-
-        function attachEventListeners() {
-            ['searchPatient', 'statusFilter', 'fromDate', 'toDate', 'amountRange'].forEach(id => {
-                document.getElementById(id).addEventListener('input', filterPayments);
-            });
-        }
-
-        function filterPayments() {
-            const searchTerm = document.getElementById('searchPatient').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
+        // Minimal JavaScript for filtering
+        function filterCards() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
             const fromDate = document.getElementById('fromDate').value;
-            const toDate = document.getElementById('toDate').value;
-            const amountRange = document.getElementById('amountRange').value;
+            const items = document.querySelectorAll('.payment-item');
 
-            payments = samplePayments.filter(payment => {
-                const matchesSearch = payment.patientName.toLowerCase().includes(searchTerm);
-                const matchesStatus = !statusFilter || payment.status === statusFilter;
-                const matchesFromDate = !fromDate || new Date(payment.date) >= new Date(fromDate);
-                const matchesToDate = !toDate || new Date(payment.date) <= new Date(toDate);
+            items.forEach(item => {
+                const patient = item.dataset.patient;
+                const itemStatus = item.dataset.status;
+                const itemDate = item.dataset.date;
 
-                let matchesAmount = true;
-                if (amountRange) {
-                    const [min, max] = amountRange.split('-').map(v => v.replace('+', ''));
-                    matchesAmount = payment.amount >= parseInt(min) &&
-                                  (!max || payment.amount <= parseInt(max));
-                }
+                const matchesSearch = !search || patient.includes(search);
+                const matchesStatus = !status || itemStatus === status;
+                const matchesDate = !fromDate || itemDate >= fromDate;
 
-                return matchesSearch && matchesStatus && matchesFromDate && matchesToDate && matchesAmount;
+                item.classList.toggle('hidden', !(matchesSearch && matchesStatus && matchesDate));
             });
-
-            renderPayments();
-            updateStats();
-            if (calendar) {
-                calendar.removeAllEvents();
-                calendar.addEventSource(payments.map(p => ({
-                    id: p.billId,
-                    title: `${p.patientName} - ₹${p.amount}`,
-                    start: p.date,
-                    color: p.status === 'Paid' ? '#198754' : p.status === 'Unpaid' ? '#dc3545' : '#ffc107'
-                })));
-            }
-        }
-
-        function switchView(view) {
-            currentView = view;
-            document.querySelectorAll('.view-toggle .btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (view === 'list') {
-                document.getElementById('listView').style.display = 'block';
-                document.getElementById('calendarView').style.display = 'none';
-            } else {
-                document.getElementById('listView').style.display = 'none';
-                document.getElementById('calendarView').style.display = 'block';
-                if (calendar) calendar.render();
-            }
-        }
-
-        function showPaymentDetails(payment) {
-            const details = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Patient Information</h6>
-                        <p><strong>Name:</strong> ${payment.patientName}</p>
-                        <p><strong>Bill ID:</strong> #${payment.billId}</p>
-                        <p><strong>Date:</strong> ${new Date(payment.date).toLocaleDateString()}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Payment Information</h6>
-                        <p><strong>Amount:</strong> ₹${payment.amount.toLocaleString()}</p>
-                        <p><strong>Status:</strong> <span class="badge bg-${payment.status === 'Paid' ? 'success' : payment.status === 'Unpaid' ? 'danger' : 'warning'}">${payment.status}</span></p>
-                        <p><strong>Details:</strong> ${payment.details}</p>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('paymentDetails').innerHTML = details;
-            new bootstrap.Modal(document.getElementById('paymentModal')).show();
-        }
-
-        function markAsPaid(billId) {
-            const payment = payments.find(p => p.billId === billId);
-            if (payment) {
-                payment.status = 'Paid';
-                renderPayments();
-                updateStats();
-            }
         }
 
         function clearFilters() {
-            document.getElementById('searchPatient').value = '';
+            document.getElementById('search').value = '';
             document.getElementById('statusFilter').value = '';
             document.getElementById('fromDate').value = '';
-            document.getElementById('toDate').value = '';
-            document.getElementById('amountRange').value = '';
-            payments = [...samplePayments];
-            renderPayments();
-            updateStats();
-        }
-
-        function generateReport() {
-            alert('Report generation functionality would be implemented here');
-        }
-
-        function updatePaymentStatus() {
-            alert('Payment status update functionality would be implemented here');
+            document.querySelectorAll('.payment-item').forEach(item => item.classList.remove('hidden'));
         }
     </script>
-</body>
-</html>
+}

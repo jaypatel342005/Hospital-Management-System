@@ -1,3 +1,5 @@
+wwwroot\css\Appoinment.css
+wwwroot\css\Patient.css
 wwwroot\css\style.css
 wwwroot\favicon.ico
 wwwroot\img\apple-touch-icon.png
@@ -24,6 +26,7 @@ wwwroot\img\slides-2.jpg
 wwwroot\img\slides-3.jpg
 wwwroot\js\AppointmentJS.js
 wwwroot\js\main.js
+wwwroot\js\Patient.js
 wwwroot\scss\Readme.txt
 wwwroot\vendor\apexcharts\apexcharts.amd.js
 wwwroot\vendor\apexcharts\apexcharts.common.js

@@ -29,6 +29,61 @@ namespace Hospital_Management_System.Controllers
             
             
         }
+
+
+        public IActionResult DoctorDelete(int DoctorID)
+        {
+            try
+            {
+                string connectionString = this._configuration.GetConnectionString("ConnectionString");
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = connection.CreateCommand();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "PR_Doctors_DeleteByPK";
+                    command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                    command.ExecuteNonQuery();
+                }
+
+                TempData["SuccessMessage"] = "Doctor deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the Doctor. Please try again or contact support.";
+                Console.WriteLine(ex.ToString());
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+        public IActionResult DoctorStatusUpdate(int DoctorID)
+        {
+            try
+            {
+                string connectionString = this._configuration.GetConnectionString("ConnectionString");
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = connection.CreateCommand();
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "PR_Doctors_UpdateStatusByPK";
+                    command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                    command.ExecuteNonQuery();
+                }
+
+               
+            }
+            catch (Exception ex)
+            {
+               
+                Console.WriteLine(ex.ToString());
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Details()
         {
             return View();

@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\js\AppointmentJS.js" />
+    <None Include="wwwroot\js\Patient.js" />
   </ItemGroup>
 
   <ItemGroup>

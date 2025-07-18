@@ -16,6 +16,87 @@
     </nav>
 </div>
 
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xxl-3 col-md-6">
+        <div class="card info-card sales-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Patients</h5>
+                <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="ps-3">
+                        <h6>@Model.Rows.Count</h6>
+                        <span class="text-success small pt-1 fw-bold">All Time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-md-6">
+        <div class="card info-card revenue-card">
+            <div class="card-body">
+                <h5 class="card-title">Active Patients</h5>
+                <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <div class="ps-3">
+                        <h6>@Model.AsEnumerable().Count(row => row["IsActive"].ToString().ToLower() == "true")</h6>
+                        <span class="text-success small pt-1 fw-bold">Currently Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-md-6">
+        <div class="card info-card customers-card">
+            <div class="card-body">
+                <h5 class="card-title">New This Month</h5>
+                <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <div class="ps-3">
+                        <h6>@Model.AsEnumerable().Count(row => DateTime.Parse(row["Created"].ToString()).Month == DateTime.Now.Month && DateTime.Parse(row["Created"].ToString()).Year == DateTime.Now.Year)</h6>
+                        <span class="text-success small pt-1 fw-bold">This Month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-md-6">
+        <div class="card info-card">
+            <div class="card-body">
+                <h5 class="card-title">Avg Age</h5>
+                <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-calendar-date"></i>
+                    </div>
+                    <div class="ps-3">
+                        @{
+                            var ages = Model.AsEnumerable().Select(row =>
+                            {
+                                var dob = DateTime.Parse(row["DateOfBirth"].ToString());
+                                var age = DateTime.Today.Year - dob.Year;
+                                if (dob.Date > DateTime.Today.AddYears(-age)) age--;
+                                return age;
+                            }).ToList();
+                            var avgAge = ages.Any() ? ages.Average() : 0;
+                        }
+                        <h6>@Math.Round(avgAge, 0) Years</h6>
+                        <span class="text-muted small pt-1 fw-bold">Average</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="section">
     <div class="row">
         <div class="col-12">
@@ -30,7 +111,7 @@
                                 <span class="d-none d-sm-inline">Add New Patient</span>
                                 <span class="d-inline d-sm-none">Add</span>
                             </button>
-                            <!-- CORRECTED: Fixed export button to use correct table ID and function -->
+
                             <button class="btn btn-success" onclick="exportPatients()">
                                 <i class="bi bi-download"></i>
                                 <span class="d-none d-sm-inline">Export</span>
@@ -46,14 +127,14 @@
                     <div class="collapse" id="filterSection">
                         <div class="card card-body bg-light mb-3">
                             <div class="row g-3">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search patients..." onkeyup="applyFilters()">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search by name, email, phone, or city...">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="genderFilter" class="form-label">Gender</label>
-                                    <select class="form-select" id="genderFilter" onchange="applyFilters()">
-                                        <option value="">All</option>
+                                    <select class="form-select" id="genderFilter">
+                                        <option value="">All Genders</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                         <option value="Other">Other</option>
@@ -61,37 +142,21 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="statusFilter" class="form-label">Status</label>
-                                    <select class="form-select" id="statusFilter" onchange="applyFilters()">
-                                        <option value="">All</option>
+                                    <select class="form-select" id="statusFilter">
+                                        <option value="">All Status</option>
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <label for="cityFilter" class="form-label">City</label>
-                                    <select class="form-select" id="cityFilter" onchange="applyFilters()">
-                                        <option value="">All Cities</option>
-                                        <!-- Cities will be populated dynamically -->
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="ageFilter" class="form-label">Age Range</label>
-                                    <select class="form-select" id="ageFilter" onchange="applyFilters()">
-                                        <option value="">All Ages</option>
-                                        <option value="0-18">0-18</option>
-                                        <option value="19-30">19-30</option>
-                                        <option value="31-50">31-50</option>
-                                        <option value="51-70">51-70</option>
-                                        <option value="70+">70+</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1 d-flex align-items-end">
-                                    <button class="btn btn-outline-primary me-2" onclick="applyFilters()">Apply</button>
-                                    <button class="btn btn-outline-secondary" onclick="clearFilters()">Clear</button>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                        <i class="bi bi-x-circle"></i> Clear
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Mobile Cards View (Hidden on larger screens) -->
                     <div class="d-block d-lg-none">
@@ -276,211 +341,230 @@
                             </button>
                         </div>
                     }
-
-                  
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Add Patient Modal -->
-<div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addPatientModalLabel">Add New Patient</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="addPatientForm">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientName" class="form-label">Full Name *</label>
-                                <input type="text" class="form-control" id="patientName" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientEmail" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="patientEmail" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientPhone" class="form-label">Phone *</label>
-                                <input type="tel" class="form-control" id="patientPhone" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientDOB" class="form-label">Date of Birth *</label>
-                                <input type="date" class="form-control" id="patientDOB" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientGender" class="form-label">Gender *</label>
-                                <select class="form-select" id="patientGender" required>
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientCity" class="form-label">City *</label>
-                                <input type="text" class="form-control" id="patientCity" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientState" class="form-label">State *</label>
-                                <input type="text" class="form-control" id="patientState" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="patientStatus" class="form-label">Status</label>
-                                <select class="form-select" id="patientStatus">
-                                    <option value="true">Active</option>
-                                    <option value="false">Inactive</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label for="patientAddress" class="form-label">Address *</label>
-                                <textarea class="form-control" id="patientAddress" rows="3" required></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Patient</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center">
-                    <i class="bi bi-exclamation-triangle text-warning display-4"></i>
-                    <h5 class="mt-3">Are you sure?</h5>
-                    <p class="text-muted">This will permanently delete the patient and all associated data. This action cannot be undone.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Patient</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Custom Styles -->
-<style>
-    .avatar-sm {
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
+@SectionWriters Styles {
+<link href="~/css/Patient.css" rel="stylesheet" />
+}
 
-    .avatar-title {
-        font-size: 0.875rem;
-        font-weight: 500;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 
-    .table-responsive {
-        border-radius: 0.375rem;
-    }
-
-    .table {
-        width: 100%;
-    }
-
-        .table th {
-            background-color: #c0c0c0;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-    .badge {
-        font-size: 0.75rem;
-    }
-
-    .dropdown-menu {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0;
-    }
-
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-    }
-
-    .text-truncate {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .patient-card {
-        border-left: 4px solid #007bff;
-        transition: all 0.3s ease;
-    }
-
-        .patient-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-    .btn-group .btn {
-        border-radius: 0;
-    }
-
-        .btn-group .btn:first-child {
-            border-top-left-radius: 0.375rem;
-            border-bottom-left-radius: 0.375rem;
-        }
-
-        .btn-group .btn:last-child {
-            border-top-right-radius: 0.375rem;
-            border-bottom-right-radius: 0.375rem;
-        }
-</style>
-
-<!-- JavaScript -->
 @section Scripts {
-    <script type="module" src="JavaScript.js"></script>
+
+
+    <script src="@Url.Content("~/js/Patient.js")"></script>
+
+
+
+
+    <script>
+        // Document ready
+        window.onload = function () {
+             @if (TempData["SuccessMessage"] != null)
+             {
+                             <text>
+                             Swal.fire({
+                                 icon: 'success',
+                                 title: 'Success',
+                                 text: '@TempData["SuccessMessage"]'
+                             });
+                             </text>
+             }
+
+             @if (TempData["ErrorMessage"] != null)
+             {
+                             <text>
+                             Swal.fire({
+                                 icon: 'error',
+                                 title: 'Error',
+                                 text: '@TempData["ErrorMessage"]'
+                             });
+                             </text>
+             }
+         };
+
+             function confirmDelete(patientId) {
+             Swal.fire({
+                 title: 'Are you sure?',
+                 text: "Do you really want to delete this department?",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#d33',
+                 cancelButtonColor: '#6c757d',
+                 confirmButtonText: 'Yes, delete it!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     window.location.href = `/Patient/PatientDelete?PatientID=${patientId}`;
+                 }
+             });
+         }
+
+
+
+        // Other functions (implement as needed)
+        function viewPatient(patientId) {
+            window.location.href = `/Patient/PatientDetails?PatientID=${patientId}`;
+        }
+
+        function editPatient(patientId) {
+            window.location.href = `/Patient/PatientEdit?PatientID=${patientId}`;
+        }
+
+        function viewMedicalHistory(patientId) {
+            window.location.href = `/Patient/MedicalHistory?PatientID=${patientId}`;
+        }
+
+        function bookAppointment(patientId) {
+            window.location.href = `/Appointment/BookAppointment?PatientID=${patientId}`;
+        }
+
+
+
+
+function exportPatients() {
+    const table = document.getElementById('patientsTable');
+    if (!table) {
+        
+        const cards = document.querySelectorAll('.patient-card');
+        if (cards.length === 0) {
+            alert('No patients to export');
+            return;
+        }
+        exportFromCards(cards);
+        return;
+    }
+    
+    let csv = '';
+    const rows = table.querySelectorAll('tr');
+    
+    rows.forEach((row, index) => {
+        const cols = row.querySelectorAll(index === 0 ? 'th' : 'td');
+        const rowData = [];
+        
+        cols.forEach((col, colIndex) => {
+            if (colIndex === cols.length - 1) return; 
+            let text = col.textContent.trim();
+            text = text.replace(/"/g, '""'); 
+            rowData.push(`"${text}"`);
+        });
+        
+        csv += rowData.join(',') + '\n';
+    });
+    
+    downloadCSV(csv, 'patients.csv');
+}
+
+
+function exportFromCards(cards) {
+    let csv = 'ID,Name,Gender,Age,Email,Phone,City,Address,State,Status,Registered\n';
+    
+    cards.forEach(card => {
+        const name = card.querySelector('.card-title').textContent.trim();
+        const cardText = card.querySelector('.card-text').textContent;
+        const id = cardText.match(/ID:\s*(\d+)/)?.[1] || '';
+        const age = cardText.match(/Age:\s*(\d+)/)?.[1] || '';
+        const gender = card.querySelector('.badge.bg-primary').textContent.trim();
+        const status = card.querySelector('.badge.bg-success, .badge.bg-danger').textContent.trim();
+        
+        const contactInfo = card.querySelectorAll('.text-muted.small .col-12');
+        const email = contactInfo[0]?.textContent.replace('✉', '').trim() || '';
+        const phone = contactInfo[1]?.textContent.replace('📞', '').trim() || '';
+        const address = contactInfo[2]?.textContent.replace('🏠', '').trim() || '';
+        const location = contactInfo[3]?.textContent.replace('📍', '').trim() || '';
+        const [city, state] = location.split(',').map(s => s.trim());
+        const registered = contactInfo[4]?.textContent.replace('📅', '').trim() || '';
+        
+        csv += `"${id}","${name}","${gender}","${age}","${email}","${phone}","${city || ''}","${address}","${state || ''}","${status}","${registered}"\n`;
+    });
+    
+    downloadCSV(csv, 'patients.csv');
+}
+
+function downloadCSV(csv, filename) {
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const genderFilter = document.getElementById('genderFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+   
+    const tableRows = document.querySelectorAll('#patientsTable tbody tr');
+    tableRows.forEach(row => {
+        const name = row.children[1].textContent.toLowerCase();
+        const gender = row.children[2].textContent.trim();
+        const email = row.children[4].textContent.toLowerCase();
+        const phone = row.children[5].textContent.toLowerCase();
+        const city = row.children[6].textContent.toLowerCase();
+        const status = row.children[9].textContent.trim();
+        
+        const matchesSearch = !searchTerm || 
+            name.includes(searchTerm) || 
+            email.includes(searchTerm) || 
+            phone.includes(searchTerm) || 
+            city.includes(searchTerm);
+        
+        const matchesGender = !genderFilter || gender === genderFilter;
+        const matchesStatus = !statusFilter || status === statusFilter;
+        
+        row.style.display = matchesSearch && matchesGender && matchesStatus ? '' : 'none';
+    });
+    
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach(card => {
+        const name = card.querySelector('.card-title').textContent.toLowerCase();
+        const gender = card.querySelector('.badge.bg-primary').textContent.trim();
+        const status = card.querySelector('.badge.bg-success, .badge.bg-danger').textContent.trim();
+        const cardText = card.textContent.toLowerCase();
+        
+        const matchesSearch = !searchTerm || cardText.includes(searchTerm);
+        const matchesGender = !genderFilter || gender === genderFilter;
+        const matchesStatus = !statusFilter || status === statusFilter;
+        
+        card.parentElement.style.display = matchesSearch && matchesGender && matchesStatus ? '' : 'none';
+    });
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('genderFilter').value = '';
+    document.getElementById('statusFilter').value = '';
+    applyFilters();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+    
+    const genderFilter = document.getElementById('genderFilter');
+    if (genderFilter) {
+        genderFilter.addEventListener('change', applyFilters);
+    }
+    
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
+});
+
+
+
+    </script>
 }

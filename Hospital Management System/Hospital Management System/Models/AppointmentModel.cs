@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Hospital_Management_System.Models
 {
-    public class Appointment
+    public class AppointmentModel
     {
         public int AppointmentID { get; set; }
 
