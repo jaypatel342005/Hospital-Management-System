@@ -1,13 +1,14 @@
+@model DoctorModel
 @{
-    ViewData["Title"] = ViewData["DoctorId"] == null ? "Add Doctor" : "Edit Doctor";
+    ViewData["Title"] = Model?.DoctorID == null ? "Add Doctor" : "Edit Doctor";
 }
 
 <div class="pagetitle">
     <h1>@ViewData["Title"]</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Doctor")">Doctors</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Doctor" asp-action="Index">Doctors</a></li>
             <li class="breadcrumb-item active">@ViewData["Title"]</li>
         </ol>
     </nav>
@@ -19,42 +20,76 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Doctor Information</h5>
-                    <form class="row g-3" method="post">
-                        <input type="hidden" name="Id" value="@ViewData["DoctorId"]" />
-                        <div class="col-md-6">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" name="FirstName" required>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="col-md-6">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" name="LastName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="Email" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="specialization" class="form-label">Specialization</label>
-                            <input type="text" class="form-control" id="specialization" name="Specialization" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="tel" class="form-control" id="phone" name="Phone">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="status" class="form-label">Status</label>
-                            <select class="form-select" id="status" name="Status" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
+                    }
+
+                    <form class="row g-3" asp-controller="Doctor" asp-action="DoctorSave" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input asp-for="DoctorID" type="hidden" />
+                        
+
                         <div class="col-md-12">
-                            <label for="profilePicture" class="form-label">Profile Picture URL</label>
-                            <input type="text" class="form-control" id="profilePicture" name="ProfilePicture">
+                            <label asp-for="Name" class="form-label">Full Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter doctor's full name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="doctor@example.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" type="tel" class="form-control" placeholder="9999999999" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Qualification" class="form-label">Qualification</label>
+                            <input asp-for="Qualification" class="form-control" placeholder="e.g., MBBS, MD, PhD" />
+                            <span asp-validation-for="Qualification" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Specialization" class="form-label">Specialization</label>
+                            <input asp-for="Specialization" class="form-control" placeholder="e.g., Cardiology, Neurology" />
+                            <span asp-validation-for="Specialization" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="IsActive" class="form-label">Status</label>
+                            <select asp-for="IsActive" class="form-select">
+                                <option value="">-- Select Status --</option>
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                            <span asp-validation-for="IsActive" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserID" class="form-label fw-bold">Created By (User)</label>
+                            <select asp-for="UserID" asp-items="ViewBag.UserList" class="form-select">
+                                <option value="">-- Select User --</option>
+                            </select>
+                            <span asp-validation-for="UserID" class="text-danger"></span>
+                        </div>
+
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Save Doctor</button>
-                            <a href="@Url.Action("Index", "Doctor")" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Doctor
+                            </button>
+                            <a asp-controller="Doctor" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -62,3 +97,7 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

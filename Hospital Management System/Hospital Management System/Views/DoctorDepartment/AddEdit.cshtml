@@ -1,0 +1,264 @@
+﻿@model DoctorDepartmentsModel
+@{
+    ViewData["Title"] = Model?.DoctorDepartmentID == null || Model.DoctorDepartmentID <= 0 ? "Add Doctor-Department Association" : "Edit Doctor-Department Association";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "DoctorDepartment")">Doctor Departments</a></li>
+            <li class="breadcrumb-item active">@(Model?.DoctorDepartmentID == null || Model.DoctorDepartmentID <= 0 ? "Add" : "Edit")</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-0">Doctor-Department Association</h5>
+                            <small class="text-muted">Associate doctors with departments</small>
+                        </div>
+                    </div>
+
+                    <form method="post" asp-controller="DoctorDepartment" asp-action="DoctorDepartmentSave" id="doctorDepartmentForm">
+                        <input asp-for="DoctorDepartmentID" type="hidden" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DoctorID" class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1"></i>Doctor
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="DoctorID" class="form-select" asp-items="ViewBag.DoctorList" required>
+                                        <option value="">-- Select Doctor --</option>
+                                    </select>
+                                    <span asp-validation-for="DoctorID" class="text-danger"></span>
+                                    <div class="form-text">Choose the doctor to associate with a department</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DepartmentID" class="form-label fw-bold">
+                                        <i class="bi bi-building me-1"></i>Department
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="DepartmentID" class="form-select" asp-items="ViewBag.DepartmentList" required>
+                                        <option value="">-- Select Department --</option>
+                                    </select>
+                                    <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                                    <div class="form-text">Choose the department to associate with the doctor</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserID" class="form-label fw-bold">
+                                <i class="bi bi-person-check me-1"></i>Managed By (User)
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="UserID" class="form-select" asp-items="ViewBag.UserList" required>
+                                <option value="">-- Select User --</option>
+                            </select>
+                            <span asp-validation-for="UserID" class="text-danger"></span>
+                            <div class="form-text">Select the user who will manage this association</div>
+                        </div>
+
+                        @* Display audit information for existing records *@
+                        @if (Model?.DoctorDepartmentID != null && Model.DoctorDepartmentID > 0)
+                        {
+                            <div class="mb-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-info-circle me-1"></i>Association Information
+                                        </h6>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <strong>Created:</strong><br>
+                                                    @(Model.Created?.ToString("MMMM dd, yyyy 'at' h:mm tt") ?? "N/A")
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted">
+                                                    <strong>Last Modified:</strong><br>
+                                                    @(Model.Modified?.ToString("MMMM dd, yyyy 'at' h:mm tt") ?? "N/A")
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    @(Model?.DoctorDepartmentID == null || Model.DoctorDepartmentID <= 0 ? "Create Association" : "Update Association")
+                                </button>
+                                <a href="@Url.Action("Index", "DoctorDepartment")" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Cancel
+                                </a>
+                            </div>
+
+                            @if (Model?.DoctorDepartmentID != null && Model.DoctorDepartmentID > 0)
+                            {
+                                <button type="button" class="btn btn-outline-danger" onclick="confirmDelete(@Model.DoctorDepartmentID)">
+                                    <i class="bi bi-trash me-1"></i>Delete Association
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Form validation enhancement
+        document.getElementById('doctorDepartmentForm').addEventListener('submit', function(e) {
+            const doctorId = document.querySelector('[name="DoctorID"]').value;
+            const departmentId = document.querySelector('[name="DepartmentID"]').value;
+            const userId = document.querySelector('[name="UserID"]').value;
+
+            if (!doctorId || !departmentId || !userId) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Please fill in all required fields.',
+                    confirmButtonColor: '#0d6efd'
+                });
+                return false;
+            }
+
+            // Check for duplicate association (optional - you might want to implement this server-side)
+            // This is just a UI enhancement
+        });
+
+        // Delete confirmation function
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this doctor-department association? This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/DoctorDepartment/DoctorDepartmentDelete?DoctorDepartmentID=${id}`;
+                }
+            });
+        }
+
+        // Enhanced dropdown interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const doctorSelect = document.querySelector('[name="DoctorID"]');
+            const departmentSelect = document.querySelector('[name="DepartmentID"]');
+
+            // Add change event listeners for better UX
+            doctorSelect.addEventListener('change', function() {
+                if (this.value) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            departmentSelect.addEventListener('change', function() {
+                if (this.value) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                }
+            });
+
+            // Show success/error messages
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonColor: '#198754'
+                    });
+                    </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '@TempData["ErrorMessage"]',
+                        confirmButtonColor: '#dc3545'
+                    });
+                    </text>
+            }
+        });
+    </script>
+}
+
+<style>
+    .form-select:focus,
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-select.is-valid,
+    .form-control.is-valid {
+        border-color: #198754;
+    }
+
+    .form-select.is-invalid,
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .bg-primary.rounded-circle {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    }
+
+    .btn {
+        border-radius: 0.375rem;
+        font-weight: 500;
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .text-danger {
+        font-size: 0.875rem;
+    }
+
+    .card-title {
+        color: #495057;
+        font-weight: 600;
+    }
+</style>

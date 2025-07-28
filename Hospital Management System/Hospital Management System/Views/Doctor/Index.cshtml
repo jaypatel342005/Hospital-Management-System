@@ -18,13 +18,19 @@
         --border-radius: 10px;
     }
 
+
+    .py-4 {
+        padding-top: 0.2rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
     .pagetitle {
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
 
         .pagetitle h1 {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
         }
@@ -510,9 +516,14 @@
                                     <button class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                    <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
+                                    @* <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
                                         <i class="bi bi-pencil"></i>
-                                    </button>
+                                    </button> *@
+                                    <form asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
+                                        <button type="submit" class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </form>
                                     <form asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
                                         <button type="submit" class="btn btn-action btn-toggle" data-bs-toggle="tooltip" title="@(isActive ? "Deactivate" : "Activate") Doctor">
                                             <i class="bi bi-@(isActive ? "eye-slash" : "eye")"></i>

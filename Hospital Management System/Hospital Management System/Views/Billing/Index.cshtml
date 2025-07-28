@@ -273,14 +273,21 @@
                                 </a>
                                 @if (row["Status"].ToString() != "Paid")
                                 {
-                                    <form method="post" action="@Url.Action("UpdateStatus", "Billing")"
-                                          style="display:inline;" onsubmit="return confirm('Mark as Paid?')">
-                                        <input type="hidden" name="billId" value="@row["BillID"]" />
-                                        <input type="hidden" name="status" value="Paid" />
-                                        <button type="submit" class="btn btn-outline-success btn-sm" title="Mark as Paid">
-                                            <i class="bi bi-check"></i>
-                                        </button>
-                                    </form>
+                                    // <form method="post" "
+                                    //       style="display:inline;" onclick="confirmDelete(@row["BillID"])">
+                                    //     <input type="hidden" name="billId" value="@row["BillID"]" />
+                                    //     <input type="hidden" name="status" value="Paid" />
+                                    //     <button type="submit" class="btn btn-outline-success btn-sm" title="Mark as Paid">
+                                    //         <i class="bi bi-check"></i>
+                                    //     </button>
+                                    // </form>
+
+                                    <button class="btn btn-outline-success btn-sm"
+                                            onclick="confirmUpdate(@row["BillID"])" title="Mark as Paid">
+                                                        <i class="bi bi-check"></i>
+                                     </button>
+
+
                                 }
                             </div>
                         </div>
@@ -305,7 +312,59 @@
 </div>
 
 @section Scripts {
+
+
+
+
+
+
+
     <script>
+
+
+        window.onload = function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                        <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: '@TempData["SuccessMessage"]'
+                        });
+                        </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                        <text>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: '@TempData["ErrorMessage"]'
+                        });
+                        </text>
+            }
+        };
+
+            function confirmUpdate(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to Mark this Paid?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, Update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Billing/StatusUpdate?BillID=${id}`;
+                }
+            });
+        }
+
+
+
+
         // Minimal JavaScript for filtering
         function filterCards() {
             const search = document.getElementById('search').value.toLowerCase();

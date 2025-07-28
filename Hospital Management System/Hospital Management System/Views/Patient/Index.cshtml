@@ -206,9 +206,9 @@
                                                 <button class="btn btn-outline-primary btn-sm" onclick="editPatient(@dataRow["PatientID"])">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-outline-success btn-sm" onclick="viewMedicalHistory(@dataRow["PatientID"])">
+                                                @* <button class="btn btn-outline-success btn-sm" onclick="viewMedicalHistory(@dataRow["PatientID"])">
                                                     <i class="bi bi-file-medical"></i>
-                                                </button>
+                                                </button> *@
                                                 <button class="btn btn-outline-warning btn-sm" onclick="bookAppointment(@dataRow["PatientID"])">
                                                     <i class="bi bi-calendar-plus"></i>
                                                 </button>
@@ -303,11 +303,11 @@
                                                                 <i class="bi bi-pencil"></i> Edit
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        @* <li>
                                                             <a class="dropdown-item" href="#" onclick="viewMedicalHistory(@dataRow["PatientID"])">
                                                                 <i class="bi bi-file-medical"></i> Medical History
                                                             </a>
-                                                        </li>
+                                                        </li> *@
                                                         <li>
                                                             <a class="dropdown-item" href="#" onclick="bookAppointment(@dataRow["PatientID"])">
                                                                 <i class="bi bi-calendar-plus"></i> Book Appointment
@@ -350,7 +350,7 @@
 
 
 <!-- Custom Styles -->
-@SectionWriters Styles {
+@section Styles {
 <link href="~/css/Patient.css" rel="stylesheet" />
 }
 
@@ -392,7 +392,7 @@
              function confirmDelete(patientId) {
              Swal.fire({
                  title: 'Are you sure?',
-                 text: "Do you really want to delete this department?",
+                         text: "Do you really want to delete this Patient?",
                  icon: 'warning',
                  showCancelButton: true,
                  confirmButtonColor: '#d33',
@@ -421,7 +421,7 @@
         }
 
         function bookAppointment(patientId) {
-            window.location.href = `/Appointment/BookAppointment?PatientID=${patientId}`;
+                 window.location.href = `/Appointment/AddEdit?PatientID=${patientId}`;
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hospital_Management_System.Models
@@ -6,7 +7,7 @@ namespace Hospital_Management_System.Models
     public class DepartmentsModel
     {
         [Key]
-        public int DepartmentID { get; set; }
+        public int? DepartmentID { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -16,19 +17,15 @@ namespace Hospital_Management_System.Models
         public string Description { get; set; }
 
         [Required]
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
-        [Required]
-        public DateTime Created { get; set; } = DateTime.Now;
 
-        [Required]
-        public DateTime Modified { get; set; }
+        public DateTime? Created { get; set; }
+
+     
+        public DateTime? Modified { get; set; }
 
         [Required]
         public int UserID { get; set; }
-
-        // Navigation property
-        //[ForeignKey("UserID")]
-        //public virtual User User { get; set; }
     }
 }

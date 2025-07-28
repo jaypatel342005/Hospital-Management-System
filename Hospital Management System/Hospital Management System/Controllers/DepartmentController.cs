@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hospital_Management_System.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -31,6 +33,32 @@ namespace Hospital_Management_System.Controllers
         }
 
 
+        private List<SelectListItem> GetUserList()
+        {
+            List<SelectListItem> userList = new List<SelectListItem>();
+            string connectionString = _configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT UserID, UserName FROM [Users] WHERE IsActive = 1", conn))
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        userList.Add(new SelectListItem
+                        {
+                            Value = reader["UserID"].ToString(),
+                            Text = reader["UserName"].ToString()
+                        });
+                    }
+                }
+            }
+            return userList;
+        }
+
+
+
+
         public IActionResult DepartmentDelete(int DepartmentID)
         {
             try
@@ -60,6 +88,80 @@ namespace Hospital_Management_System.Controllers
 
 
 
+        public IActionResult DepartmentSave(DepartmentsModel departmentsModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string connectionString = this._configuration.GetConnectionString("ConnectionString");
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+                        using (SqlCommand command = connection.CreateCommand())
+                        {
+                            command.CommandType = CommandType.StoredProcedure;
+                            if (departmentsModel.DepartmentID == null)
+                            {
+                                command.CommandText = "PR_Departments_Insert";
+                                TempData["SuccessMessage"] = "Department added successfully.";
+                            }
+                            else
+                            {
+                                command.CommandText = "PR_Departments_UpdateByPK";
+                                command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = departmentsModel.DepartmentID;
+                                TempData["SuccessMessage"] = "Department updated successfully.";
+                            }
+                            command.Parameters.Add("@DepartmentName", SqlDbType.VarChar).Value = departmentsModel.DepartmentName;
+                            command.Parameters.Add("@Description", SqlDbType.VarChar).Value = departmentsModel.Description ?? (object)DBNull.Value;
+                            command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = departmentsModel.IsActive;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = departmentsModel.UserID;
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while saving the department. Please try again.";
+                
+                Console.WriteLine(ex.ToString());
+            }
+            ViewBag.UserList = GetUserList();
+            return View("AddEdit", departmentsModel);
+        }
+
+
+
+        public IActionResult DepartmentEdit(int DepartmentID)
+        {
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand command = connection.CreateCommand();
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.CommandText = "PR_Departments_SelectByPK";
+            command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = DepartmentID;
+            SqlDataReader reader = command.ExecuteReader();
+            DataTable dataTable = new DataTable();
+            dataTable.Load(reader);
+            connection.Close();
+
+            DepartmentsModel departmentsModel = new DepartmentsModel();
+            departmentsModel.DepartmentID = Convert.ToInt32(dataTable.Rows[0]["DepartmentID"]);
+            departmentsModel.DepartmentName = dataTable.Rows[0]["DepartmentName"].ToString();
+            departmentsModel.Description = dataTable.Rows[0]["Description"].ToString();
+            departmentsModel.IsActive = Convert.ToBoolean(dataTable.Rows[0]["IsActive"]);
+            departmentsModel.UserID = Convert.ToInt32(dataTable.Rows[0]["UserID"]);
+
+            ViewBag.UserList = GetUserList();
+            return View("AddEdit", departmentsModel);
+        }
+
+
+
 
         public IActionResult Details()
         {
@@ -68,7 +170,8 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult AddEdit()
         {
-            return View();
+            ViewBag.UserList = GetUserList();
+            return View("AddEdit", new DepartmentsModel());
         }
 
        

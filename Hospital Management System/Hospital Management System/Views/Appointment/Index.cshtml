@@ -24,12 +24,27 @@
 <body>
     <div class="main-content">
         <!-- Page Title -->
-        <div class="page-title">
+        @* <div class="page-title">
             <h1><i class="bi bi-calendar-event"></i> Appointments Management</h1>
-            <nav aria-label="breadcrumb">
+            <nav aria-label="breadcrumb ">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")" class="text-decoration-none">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Dashboard")" >Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Appointments</li>
+                </ol>
+            </nav>
+        </div> *@
+
+
+        <div class="pagetitle">
+<h1><i class="bi bi-calendar-event"></i> Appointments Management</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Index", "Dashboard")">
+                            <i class="bi bi-house me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Appointments</li>
                 </ol>
             </nav>
         </div>
@@ -317,10 +332,13 @@
                                    class="btn btn-outline-primary" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" 
+                                @* <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" 
                                    class="btn btn-outline-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
-                                </a>
+                                </a> *@
+                                <a class="btn btn-outline-warning" title="Edit" asp-controller="Appointment" asp-action="AppointmentEdit" asp-route-AppointmentID="@row["AppointmentID"]">
+                                                       <i class="bi bi-pencil"></i> 
+                                         </a>
                                 <button class="btn btn-outline-danger btn-sm"
                                                         onclick="confirmDelete(@row["AppointmentID"])" title="Delete">
                                                     <i class="bi bi-trash"></i>
@@ -440,9 +458,12 @@
                                         <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i> View
                                         </a>
-                                        <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-warning">
+                                        @* <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-warning">
                                             <i class="bi bi-pencil"></i> Edit
-                                        </a>
+                                        </a> *@
+                                        <a class="btn btn-sm btn-outline-warning"  asp-controller="Appointment" asp-action="AppointmentEdit" asp-route-AppointmentID="@row["AppointmentID"]">
+                                                       <i class="bi bi-pencil"></i> Edit
+                                         </a>
                                          <button class="btn btn-outline-danger btn-sm"
                                                         onclick="confirmDelete(@row["AppointmentID"])" title="Delete">
                                                     <i class="bi bi-trash"></i>

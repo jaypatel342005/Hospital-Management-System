@@ -20,28 +20,44 @@
 /* Base Styles */
 
 
+.row > * {
+    flex-shrink: 0px;
+    margin-top: 0px;
 
-
-/* Layout */
-.main-content {
-    padding: 20px;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    
 }
 
-.page-title {
-    margin-bottom: 30px;
+.pagetitle {
+    margin-bottom: 0px;
 }
 
-    .page-title h1 {
-        font-size: 2rem;
+    .pagetitle h1 {
+        font-size: 1.6rem;
         font-weight: 700;
-        color: var(--dark-text);
-        margin-bottom: 10px;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
     }
 
 .breadcrumb {
     background: transparent;
     padding: 0;
     margin: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+    .breadcrumb-item a:hover {
+        color: var(--secondary-color);
+    }
+
+.breadcrumb-item.active {
+    color: #6c757d;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {

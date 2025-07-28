@@ -56,7 +56,7 @@
         }
 
     function bookAppointment(patientId) {
-        window.location.href = `/Appointment/BookAppointment?PatientID=${patientId}`;
+        window.location.href = `/Appointment/AddEdit?PatientID=${patientId}`;
         }
 
 

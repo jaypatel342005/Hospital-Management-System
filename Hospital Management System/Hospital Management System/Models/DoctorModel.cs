@@ -5,43 +5,39 @@ namespace Hospital_Management_System.Models
 {
     public class DoctorModel
     {
-        [Key]
-        public int DoctorID { get; set; }
+        public int? DoctorID { get; set; }
 
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(20)]
-        [Phone]
+        [Required(ErrorMessage = "Phone number is required")]
+        [RegularExpression(@"[1-9]{10}$", ErrorMessage = "Please enter a valid phone number")]
         public string Phone { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Qualification is required")]
+        [StringLength(200, ErrorMessage = "Qualification cannot be longer than 200 characters")]
         public string Qualification { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Specialization is required")]
+        [StringLength(200, ErrorMessage = "Specialization cannot be longer than 200 characters")]
         public string Specialization { get; set; }
 
-        [Required]
         public bool IsActive { get; set; } = true;
 
-        [Required]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Created { get; set; }
 
-        [Required]
-        public DateTime Modified { get; set; }
+        public DateTime? Modified { get; set; }
 
-        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid user")]
         public int UserID { get; set; }
 
         // Navigation property (assumes User model exists)
         //[ForeignKey("UserID")]
-        //public virtual User User { get; set; }
+        //public virtual User? User { get; set; }
     }
 }

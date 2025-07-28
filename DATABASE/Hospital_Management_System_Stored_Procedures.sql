@@ -593,39 +593,9 @@ BEGIN
 END
 GO
 
--- =============================================
--- Procedure: PR_Appointments_SelectByPK
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_SelectByPK]
-    @AppointmentID INT
-AS
-BEGIN
-    SELECT
-        Appointments.AppointmentID,
-        Appointments.DoctorID,
-        Appointments.PatientID,
-        Appointments.UserID,
-        Appointments.AppointmentDate,
-        Appointments.AppointmentStatus,
-        Appointments.Description,
-        Appointments.SpecialRemarks,
-        Appointments.Created,
-        Appointments.Modified,
-        Appointments.TotalConsultedAmount,
-        Doctors.Name AS DoctorName,
-        Patients.Name AS PatientName,
-        Users.UserName
-    FROM Appointments
-        INNER JOIN Doctors ON Appointments.DoctorID = Doctors.DoctorID
-        INNER JOIN Patients ON Appointments.PatientID = Patients.PatientID
-        INNER JOIN Users ON Appointments.UserID = Users.UserID
-    WHERE Appointments.AppointmentID = @AppointmentID;
-END
-GO
-
--- =============================================
+-- ==============================================
 -- Procedure: PR_Appointments_Insert
--- =============================================
+-- ==============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_Insert]
     @DoctorID INT,
     @PatientID INT,
@@ -634,17 +604,39 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_Insert]
     @AppointmentStatus NVARCHAR(50),
     @Description NVARCHAR(250),
     @SpecialRemarks NVARCHAR(100),
-    @TotalConsultedAmount DECIMAL(5,2)
+    @TotalConsultedAmount DECIMAL(10,2) = NULL
 AS
 BEGIN
-    INSERT INTO Appointments (DoctorID, PatientID, UserID, AppointmentDate, AppointmentStatus, Description, SpecialRemarks, TotalConsultedAmount, Created, Modified)
-    VALUES (@DoctorID, @PatientID, @UserID, @AppointmentDate, @AppointmentStatus, @Description, @SpecialRemarks, @TotalConsultedAmount, GETDATE(), GETDATE());
+    INSERT INTO Appointments (
+        DoctorID, 
+        PatientID, 
+        UserID, 
+        AppointmentDate, 
+        AppointmentStatus, 
+        Description, 
+        SpecialRemarks, 
+        Created, 
+        Modified, 
+        TotalConsultedAmount
+    )
+    VALUES (
+        @DoctorID, 
+        @PatientID, 
+        @UserID, 
+        @AppointmentDate, 
+        @AppointmentStatus, 
+        @Description, 
+        @SpecialRemarks, 
+        GETDATE(), 
+        GETDATE(), 
+        @TotalConsultedAmount
+    );
 END
 GO
 
--- =============================================
+-- ==============================================
 -- Procedure: PR_Appointments_UpdateByPK
--- =============================================
+-- ==============================================
 CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_UpdateByPK]
     @AppointmentID INT,
     @DoctorID INT,
@@ -654,7 +646,7 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_UpdateByPK]
     @AppointmentStatus NVARCHAR(50),
     @Description NVARCHAR(250),
     @SpecialRemarks NVARCHAR(100),
-    @TotalConsultedAmount DECIMAL(5,2)
+    @TotalConsultedAmount DECIMAL(10,2) = NULL
 AS
 BEGIN
     UPDATE Appointments
@@ -666,9 +658,39 @@ BEGIN
         AppointmentStatus = @AppointmentStatus,
         Description = @Description,
         SpecialRemarks = @SpecialRemarks,
-        TotalConsultedAmount = @TotalConsultedAmount,
-        Modified = GETDATE()
+        Modified = GETDATE(),
+        TotalConsultedAmount = @TotalConsultedAmount
     WHERE AppointmentID = @AppointmentID;
+END
+GO
+
+-- ==============================================
+-- Procedure: PR_Appointments_SelectByPK
+-- ==============================================
+CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_SelectByPK]
+    @AppointmentID INT
+AS
+BEGIN
+    SELECT 
+        a.AppointmentID,
+        a.DoctorID,
+        a.PatientID,
+        a.UserID,
+        a.AppointmentDate,
+        a.AppointmentStatus,
+        a.Description,
+        a.SpecialRemarks,
+        a.Created,
+        a.Modified,
+        a.TotalConsultedAmount,
+        d.Name AS DoctorName,
+        p.Name AS PatientName,
+        u.UserName AS UserName
+    FROM Appointments a
+    LEFT JOIN Doctors d ON a.DoctorID = d.DoctorID
+    LEFT JOIN Patients p ON a.PatientID = p.PatientID
+    LEFT JOIN Users u ON a.UserID = u.UserID
+    WHERE a.AppointmentID = @AppointmentID;
 END
 GO
 
@@ -1209,6 +1231,22 @@ BEGIN
     WHERE BillID = @BillID;
 END
 GO
+
+
+-- =============================================
+-- Procedure: PR_Billing_StatusUpdateByPK
+-- =============================================
+CREATE OR ALTER PROCEDURE [dbo].PR_Billing_StatusUpdateByPK
+    @BillID INT
+AS
+BEGIN
+    UPDATE Billing
+    SET 
+        Status = 'Paid'
+    WHERE BillID = @BillID;
+END
+GO
+
 
 -- =============================================
 -- Procedure: PR_Billing_DeleteByPK
