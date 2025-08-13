@@ -113,7 +113,21 @@
     .hidden {
         display: none !important;
     }
+
+    .payment-modal .form-control {
+        border-radius: 8px;
+    }
 </style>
+
+<div class="pagetitle">
+    <h1>Payment Management</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item active">Payment Management</li>
+        </ol>
+    </nav>
+</div>
 
 <div class="page-header">
     <div class="container-fluid">
@@ -123,8 +137,8 @@
                 <p class="text-muted mb-0">Manage all billing and payment records</p>
             </div>
             <div class="col-md-6 text-end">
-                <a href="@Url.Action("AddEdit", "Billing")" class="btn btn-success me-2">
-                    <i class="bi bi-plus-circle me-2"></i>Add New Bill
+                <a href="@Url.Action("GetOutstandingBills", "Billing")" class="btn btn-warning me-2">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Outstanding Bills
                 </a>
                 <button class="btn btn-primary" onclick="window.print()">
                     <i class="bi bi-printer me-2"></i>Print Report
@@ -138,22 +152,29 @@
     <!-- Stats Cards -->
     <div class="row mb-4">
         @{
-            decimal totalAmount = 0;
-            decimal paidAmount = 0;
-            decimal unpaidAmount = 0;
-            decimal partialAmount = 0;
+            decimal totalBillAmount = 0;
+            decimal totalPaidAmount = 0;
+            decimal totalBalanceAmount = 0;
+            int paidCount = 0;
+            int unpaidCount = 0;
+            int partialCount = 0;
 
             if (Model != null && Model.Rows.Count > 0)
             {
                 foreach (System.Data.DataRow row in Model.Rows)
                 {
-                    var amount = Convert.ToDecimal(row["Amount"]);
-                    var status = row["Status"].ToString();
+                    var billAmount = Convert.ToDecimal(row["BillAmount"]);
+                    var paidAmount = Convert.ToDecimal(row["PaidAmount"]);
+                    var balanceAmount = Convert.ToDecimal(row["BalanceAmount"]);
+                    var status = row["PaymentStatus"].ToString();
 
-                    totalAmount += amount;
-                    if (status == "Paid") paidAmount += amount;
-                    else if (status == "Unpaid") unpaidAmount += amount;
-                    else if (status == "Partially Paid") partialAmount += amount;
+                    totalBillAmount += billAmount;
+                    totalPaidAmount += paidAmount;
+                    totalBalanceAmount += balanceAmount;
+
+                    if (status == "Paid") paidCount++;
+                    else if (status == "Unpaid") unpaidCount++;
+                    else if (status == "Partial") partialCount++;
                 }
             }
         }
@@ -162,8 +183,8 @@
             <div class="stats-card">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">₹@totalAmount.ToString("N0")</h4>
-                        <small>Total Amount</small>
+                        <h4 class="mb-0">₹@totalBillAmount.ToString("N0")</h4>
+                        <small>Total Billed</small>
                     </div>
                     <i class="bi bi-currency-rupee fs-2"></i>
                 </div>
@@ -173,8 +194,8 @@
             <div class="stats-card" style="background: linear-gradient(135deg, var(--success-color), #20c997);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">₹@paidAmount.ToString("N0")</h4>
-                        <small>Paid Amount</small>
+                        <h4 class="mb-0">₹@totalPaidAmount.ToString("N0")</h4>
+                        <small>Total Paid (@paidCount bills)</small>
                     </div>
                     <i class="bi bi-check-circle fs-2"></i>
                 </div>
@@ -184,8 +205,8 @@
             <div class="stats-card" style="background: linear-gradient(135deg, var(--danger-color), #fd7e14);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">₹@unpaidAmount.ToString("N0")</h4>
-                        <small>Unpaid Amount</small>
+                        <h4 class="mb-0">₹@totalBalanceAmount.ToString("N0")</h4>
+                        <small>Outstanding (@unpaidCount unpaid)</small>
                     </div>
                     <i class="bi bi-exclamation-circle fs-2"></i>
                 </div>
@@ -195,8 +216,8 @@
             <div class="stats-card" style="background: linear-gradient(135deg, var(--warning-color), #ffc720);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0">₹@partialAmount.ToString("N0")</h4>
-                        <small>Partial Amount</small>
+                        <h4 class="mb-0">@partialCount</h4>
+                        <small>Partial Payments</small>
                     </div>
                     <i class="bi bi-clock fs-2"></i>
                 </div>
@@ -213,12 +234,12 @@
                        oninput="filterCards()" autocomplete="off">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Status</label>
+                <label class="form-label">Payment Status</label>
                 <select class="form-select" id="statusFilter" onchange="filterCards()">
                     <option value="">All Status</option>
                     <option value="Paid">Paid</option>
                     <option value="Unpaid">Unpaid</option>
-                    <option value="Partially Paid">Partially Paid</option>
+                    <option value="Partial">Partial</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -239,55 +260,60 @@
         {
             @foreach (System.Data.DataRow row in Model.Rows)
             {
-                var statusClass = row["Status"].ToString() == "Paid" ? "status-paid" :
-                row["Status"].ToString() == "Unpaid" ? "status-unpaid" : "status-partial";
-                var amount = Convert.ToDecimal(row["Amount"]);
-                var billingDate = Convert.ToDateTime(row["BillingDate"]);
+                var statusClass = row["PaymentStatus"].ToString() == "Paid" ? "status-paid" :
+                row["PaymentStatus"].ToString() == "Unpaid" ? "status-unpaid" : "status-partial";
+                var billAmount = Convert.ToDecimal(row["BillAmount"]);
+                var paidAmount = Convert.ToDecimal(row["PaidAmount"]);
+                var balanceAmount = Convert.ToDecimal(row["BalanceAmount"]);
+                var createdDate = Convert.ToDateTime(row["CreatedDate"]);
+                var appointmentDate = Convert.ToDateTime(row["AppointmentDate"]);
 
                 <div class="col-md-6 col-lg-4 payment-item"
                      data-patient="@row["PatientName"].ToString().ToLower()"
-                     data-status="@row["Status"]"
-                     data-date="@billingDate.ToString("yyyy-MM-dd")">
+                     data-status="@row["PaymentStatus"]"
+                     data-date="@createdDate.ToString("yyyy-MM-dd")">
                     <div class="payment-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
                                 <h5 class="mb-1">@row["PatientName"]</h5>
-                                <p class="patient-info mb-0">Bill #@row["BillID"]</p>
+                                <p class="patient-info mb-0">Bill #@row["BillID"] | Appointment #@row["AppointmentID"]</p>
+                                <p class="patient-info mb-0">Dr. @row["DoctorName"]</p>
                             </div>
-                            <span class="status-badge @statusClass">@row["Status"]</span>
+                            <span class="status-badge @statusClass">@row["PaymentStatus"]</span>
                         </div>
-                        <div class="amount-display mb-2">₹@amount.ToString("N0")</div>
-                        <p class="text-truncate w-100 mb-3">@row["Details"]</p>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <small class="text-muted">Bill Amount</small>
+                                <div class="amount-display">₹@billAmount.ToString("N0")</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Paid Amount</small>
+                                <div class="amount-display text-success">₹@paidAmount.ToString("N0")</div>
+                            </div>
+                        </div>
+                        @if (balanceAmount > 0)
+                        {
+                            <div class="mb-3">
+                                <small class="text-muted">Outstanding Amount</small>
+                                <div class="amount-display text-danger">₹@balanceAmount.ToString("N0")</div>
+                            </div>
+                        }
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                <i class="bi bi-calendar me-1"></i>@billingDate.ToString("dd/MM/yyyy")
+                                <i class="bi bi-calendar me-1"></i>@appointmentDate.ToString("dd/MM/yyyy")
                             </small>
                             <div class="quick-actions">
-                                <a href="@Url.Action("Details", "Billing", new { id = row["BillID"] })"
+                                <a href="@Url.Action("Details", "Billing", new { BillID = row["BillID"] })"
                                    class="btn btn-outline-primary btn-sm" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="@Url.Action("AddEdit", "Billing", new { id = row["BillID"] })"
-                                   class="btn btn-outline-info btn-sm" title="Edit">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                @if (row["Status"].ToString() != "Paid")
+                                @if (row["PaymentStatus"].ToString() != "Paid")
                                 {
-                                    // <form method="post" "
-                                    //       style="display:inline;" onclick="confirmDelete(@row["BillID"])">
-                                    //     <input type="hidden" name="billId" value="@row["BillID"]" />
-                                    //     <input type="hidden" name="status" value="Paid" />
-                                    //     <button type="submit" class="btn btn-outline-success btn-sm" title="Mark as Paid">
-                                    //         <i class="bi bi-check"></i>
-                                    //     </button>
-                                    // </form>
-
                                     <button class="btn btn-outline-success btn-sm"
-                                            onclick="confirmUpdate(@row["BillID"])" title="Mark as Paid">
-                                                        <i class="bi bi-check"></i>
-                                     </button>
-
-
+                                            onclick="openPaymentModal(@row["BillID"], '@row["PatientName"]', @balanceAmount)"
+                                            title="Record Payment">
+                                        <i class="bi bi-cash"></i>
+                                    </button>
                                 }
                             </div>
                         </div>
@@ -300,70 +326,92 @@
             <div class="col-12">
                 <div class="text-center py-5">
                     <i class="bi bi-inbox fs-1 text-muted"></i>
-                    <h4 class="mt-3 text-muted">No payments found</h4>
-                    <p class="text-muted">Start by adding a new billing record.</p>
-                    <a href="@Url.Action("AddEdit", "Billing")" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Add New Bill
-                    </a>
+                    <h4 class="mt-3 text-muted">No billing records found</h4>
+                    <p class="text-muted">Billing records are automatically created when appointments have amounts.</p>
                 </div>
             </div>
         }
     </div>
 </div>
 
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content payment-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Record Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="paymentForm" method="post" action="@Url.Action("RecordPayment", "Billing")">
+                <div class="modal-body">
+                    <input type="hidden" id="billId" name="BillID" />
+                    <div class="mb-3">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" id="patientName" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Outstanding Balance</label>
+                        <input type="text" id="balanceAmount" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentAmount" class="form-label">Payment Amount <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0.01" id="paymentAmount" name="PaymentAmount"
+                               class="form-control" placeholder="Enter payment amount" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Record Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-
-
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-
-
         window.onload = function () {
             @if (TempData["SuccessMessage"] != null)
             {
-                        <text>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: '@TempData["SuccessMessage"]'
-                        });
-                        </text>
+                    <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '@TempData["SuccessMessage"]'
+                    });
+                    </text>
             }
 
             @if (TempData["ErrorMessage"] != null)
             {
-                        <text>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: '@TempData["ErrorMessage"]'
-                        });
-                        </text>
+                    <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '@TempData["ErrorMessage"]'
+                    });
+                    </text>
             }
         };
 
-            function confirmUpdate(id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to Mark this Paid?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Update it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `/Billing/StatusUpdate?BillID=${id}`;
-                }
-            });
+        function openPaymentModal(billId, patientName, balanceAmount) {
+            document.getElementById('billId').value = billId;
+            document.getElementById('patientName').value = patientName;
+            document.getElementById('balanceAmount').value = '₹' + balanceAmount.toLocaleString();
+            document.getElementById('paymentAmount').max = balanceAmount;
+
+            var modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
         }
 
-
-
+        // Set payment amount to full balance when clicked
+        document.getElementById('balanceAmount').addEventListener('click', function() {
+            const balance = this.value.replace('₹', '').replace(/,/g, '');
+            document.getElementById('paymentAmount').value = balance;
+        });
 
         // Minimal JavaScript for filtering
         function filterCards() {

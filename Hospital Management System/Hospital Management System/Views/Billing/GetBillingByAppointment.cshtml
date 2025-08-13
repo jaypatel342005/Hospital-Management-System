@@ -1,0 +1,437 @@
+﻿@model List<BillingModel>
+
+@{
+    ViewData["Title"] = "Billing Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Billing Management</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Appointments")">Appointments</a></li>
+            <li class="breadcrumb-item active">Billing Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    @if (Model != null && Model.Any())
+    {
+        <!-- Header Section -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-lg-10">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-1">
+                                    <i class="bi bi-calendar-check text-primary me-2"></i>
+                                    Appointment #@Model.First().AppointmentID
+                                </h5>
+                                <p class="text-muted mb-0">Billing Overview</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-lg-10">
+                <div class="row">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Bills</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-receipt"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>@Model.Count()</h6>
+                                        <span class="text-muted small pt-1">Active Bills</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Amount</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>₹@Model.Sum(b => b.BillAmount).ToString("N2")</h6>
+                                        <span class="text-muted small pt-1">Total Invoiced</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card info-card customers-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Paid Amount</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>₹@Model.Sum(b => b.PaidAmount).ToString("N2")</h6>
+                                        @{
+                                            var paymentPercentage = Model.Sum(b => b.BillAmount) > 0 ? 
+                                                (Model.Sum(b => b.PaidAmount) / Model.Sum(b => b.BillAmount) * 100) : 0;
+                                        }
+                                        <span class="text-success small pt-1">@paymentPercentage.ToString("F1")% Collected</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card info-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Outstanding</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        @{
+                                            var totalOutstanding = Model.Sum(b => b.BillAmount - b.PaidAmount);
+                                        }
+                                        <h6 class="@(totalOutstanding > 0 ? "text-danger" : "text-success")">
+                                            $@totalOutstanding.ToString("N2")
+                                        </h6>
+                                        <span class="@(totalOutstanding > 0 ? "text-danger" : "text-success") small pt-1">
+                                            @(totalOutstanding > 0 ? "Pending" : "Fully Paid")
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bills Cards Grid - Centered and Wider -->
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="row justify-content-center">
+                    @foreach (var bill in Model.OrderByDescending(b => b.CreatedDate))
+                    {
+                        
+                            var outstanding = bill.BillAmount - bill.PaidAmount;
+                            var statusColor = bill.PaymentStatus.ToLower() switch
+                            {
+                                "paid" => "success",
+                                "partial" => "warning",
+                                "pending" => "danger",
+                                _ => "secondary"
+                            };
+                            var progressPercentage = bill.BillAmount > 0 ? (bill.PaidAmount / bill.BillAmount * 100) : 0;
+                        
+                        <div class="col-xl-8 col-lg-10 col-md-12 mb-4">
+                            <div class="card h-100 billing-card">
+                                <div class="card-header d-flex justify-content-between align-items-center py-3">
+                                    <div>
+                                        <h6 class="card-title mb-0">
+                                            <i class="bi bi-receipt-cutoff me-2 text-@statusColor"></i>
+                                            Bill #@bill.BillID
+                                        </h6>
+                                        <small class="text-muted">@bill.CreatedDate.ToString("MMM dd, yyyy • hh:mm tt")</small>
+                                    </div>
+                                    <span class="badge bg-@statusColor">
+                                        @bill.PaymentStatus
+                                    </span>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <!-- Amount Section -->
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <div class="text-center p-3 bg-light rounded">
+                                                <h5 class="text-primary mb-1">₹@bill.BillAmount.ToString("N2")</h5>
+                                                <small class="text-muted">Bill Amount</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center p-3 bg-light rounded">
+                                                <h5 class="text-success mb-1">₹@bill.PaidAmount.ToString("N2")</h5>
+                                                <small class="text-muted">Paid Amount</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Progress -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <small class="text-muted">Payment Progress</small>
+                                            <small class="fw-bold text-@statusColor">@progressPercentage.ToString("F1")%</small>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-@statusColor" role="progressbar" 
+                                                 style="width: @progressPercentage.ToString("F1")%">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Outstanding Amount -->
+                                    @if (outstanding > 0)
+                                    {
+                                        <div class="alert alert-warning py-2 mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small><i class="bi bi-exclamation-triangle me-1"></i> Outstanding</small>
+                                                <strong class="text-danger">₹@outstanding.ToString("N2")</strong>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-success py-2 mb-3">
+                                            <div class="text-center">
+                                                <small><i class="bi bi-check-circle me-1"></i> Fully Paid</small>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <!-- Payment Action Buttons -->
+                                    <div class="d-flex gap-2 mt-3">
+                                        @if (outstanding > 0)
+                                        {
+                                            <button type="button" class="btn btn-success btn-sm flex-fill" 
+                                                    onclick="openPaymentModal(@bill.BillID, @outstanding, '@bill.BillID')">
+                                                <i class="bi bi-credit-card me-1"></i>
+                                                Make Payment
+                                            </button>
+                                            
+                                            <button type="button" class="btn btn-warning btn-sm flex-fill"
+                                                    onclick="openPartialPaymentModal(@bill.BillID, @outstanding, '@bill.BillID')">
+                                                <i class="bi bi-cash-coin me-1"></i>
+                                                Partial Payment
+                                            </button>
+                                        }
+                                        
+                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="viewBillDetails(@bill.BillID)">
+                                            <i class="bi bi-eye me-1"></i>
+                                            Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty State -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="bi bi-receipt" style="font-size: 5rem; color: #dee2e6;"></i>
+                        </div>
+                        <h4 class="text-muted mb-3">No Billing Records Found</h4>
+                        <p class="text-muted mb-4">
+                            There are no billing records associated with this appointment.
+                        </p>
+                        <a href="@Url.Action("Index", "Appointments")" class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-2"></i> Back to Appointments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">
+                    <i class="bi bi-credit-card me-2"></i>Record Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="paymentForm" method="post" action="@Url.Action("RecordPayment", "Billing")">
+                <div class="modal-body">
+                    <input type="hidden" id="modalBillID" name="BillID" />
+                    
+                    <div class="mb-3">
+                        <label for="billInfo" class="form-label">Bill Information</label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Bill ID:</small>
+                                        <div class="fw-bold" id="displayBillID"></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Outstanding Amount:</small>
+                                        <div class="fw-bold text-danger" id="displayOutstanding"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="paymentAmount" class="form-label">Payment Amount <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="paymentAmount" name="PaymentAmount" 
+                                   step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                        <div class="form-text">Enter the amount to be paid</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-success btn-sm" onclick="setFullPayment()">
+                                Pay Full Amount
+                            </button>
+                            <button type="button" class="btn btn-outline-info btn-sm" onclick="setHalfPayment()">
+                                Pay Half
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-2"></i>Record Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.125);
+    }
+    
+    .billing-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .progress {
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+    
+    .card-icon {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .info-card .card-icon {
+        background: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+    
+    .revenue-card .card-icon {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+    
+    .customers-card .card-icon {
+        background: rgba(13, 202, 240, 0.1);
+        color: #0dcaf0;
+    }
+    
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    .alert {
+        border-radius: 8px;
+    }
+    
+    .btn-group {
+        border-radius: 8px;
+    }
+    
+    .modal-content {
+        border-radius: 12px;
+    }
+</style>
+
+<script>
+    let currentOutstandingAmount = 0;
+
+    function openPaymentModal(billId, outstandingAmount, displayBillId) {
+        currentOutstandingAmount = outstandingAmount;
+        
+        document.getElementById('modalBillID').value = billId;
+        document.getElementById('displayBillID').textContent = '#' + displayBillId;
+        document.getElementById('displayOutstanding').textContent = '₹' + outstandingAmount.toFixed(2);
+        document.getElementById('paymentAmount').value = outstandingAmount.toFixed(2);
+        
+        var modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+    }
+
+    function openPartialPaymentModal(billId, outstandingAmount, displayBillId) {
+        currentOutstandingAmount = outstandingAmount;
+        
+        document.getElementById('modalBillID').value = billId;
+        document.getElementById('displayBillID').textContent = '#' + displayBillId;
+        document.getElementById('displayOutstanding').textContent = '$' + outstandingAmount.toFixed(2);
+        document.getElementById('paymentAmount').value = '';
+        
+        var modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+    }
+
+    function setFullPayment() {
+        document.getElementById('paymentAmount').value = currentOutstandingAmount.toFixed(2);
+    }
+
+    function setHalfPayment() {
+        document.getElementById('paymentAmount').value = (currentOutstandingAmount / 2).toFixed(2);
+    }
+
+    function viewBillDetails(billId) {
+        window.location.href = '@Url.Action("Details", "Billing")' + '?BillID=' + billId;
+    }
+
+    // Form validation
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+        
+        if (paymentAmount <= 0) {
+            e.preventDefault();
+            alert('Please enter a valid payment amount greater than 0.');
+            return false;
+        }
+        
+        if (paymentAmount > currentOutstandingAmount) {
+            if (!confirm('Payment amount exceeds outstanding balance. Do you want to continue?')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+</script>

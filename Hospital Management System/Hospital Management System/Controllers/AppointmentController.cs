@@ -280,9 +280,173 @@ namespace Hospital_Management_System.Controllers
 
 
 
-        public IActionResult Details()
+        public IActionResult Details(int AppointmentID)
         {
-            return View();
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+
+            // Get Appointment Details using existing stored procedure
+            DataTable appointmentTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Appointments_SelectByPK";
+                command.Parameters.Add("@AppointmentID", SqlDbType.Int).Value = AppointmentID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                appointmentTable = new DataTable();
+                appointmentTable.Load(reader);
+            }
+
+            // Check if appointment exists
+            if (appointmentTable.Rows.Count == 0)
+            {
+                return NotFound("Appointment not found");
+            }
+
+            var appointmentRow = appointmentTable.Rows[0];
+            int patientID = Convert.ToInt32(appointmentRow["PatientID"]);
+            int doctorID = Convert.ToInt32(appointmentRow["DoctorID"]);
+
+            // Get Patient Details
+            DataTable patientTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Patients_SelectByPK";
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = patientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                patientTable = new DataTable();
+                patientTable.Load(reader);
+            }
+
+            // Get Doctor Details
+            DataTable doctorTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Doctors_SelectByPK";
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                doctorTable = new DataTable();
+                doctorTable.Load(reader);
+            }
+
+            // Get Patient's Previous Appointments (Medical History)
+            DataTable previousAppointmentsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT TOP 5
+                a.AppointmentID,
+                a.AppointmentDate,
+                a.AppointmentStatus,
+                a.Description,
+                a.SpecialRemarks,
+                a.TotalConsultedAmount,
+                a.Created,
+                d.Name as DoctorName,
+                d.Specialization as DoctorSpecialization
+            FROM Appointments a
+            INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+            WHERE a.PatientID = @PatientID 
+            AND a.AppointmentID != @AppointmentID
+            AND a.AppointmentStatus IN ('Completed', 'Scheduled')
+            ORDER BY a.AppointmentDate DESC";
+
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = patientID;
+                command.Parameters.Add("@AppointmentID", SqlDbType.Int).Value = AppointmentID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                previousAppointmentsTable = new DataTable();
+                previousAppointmentsTable.Load(reader);
+            }
+
+            // Get Patient's Medical Records
+            DataTable medicalRecordsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT TOP 5
+                mr.RecordID,
+                mr.VisitDate,
+                mr.Diagnosis,
+                mr.Treatment,
+                mr.Created,
+                d.Name as DoctorName,
+                d.Specialization as DoctorSpecialization
+            FROM MedicalRecords mr
+            INNER JOIN Doctors d ON mr.DoctorID = d.DoctorID
+            WHERE mr.PatientID = @PatientID
+            ORDER BY mr.VisitDate DESC";
+
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = patientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                medicalRecordsTable = new DataTable();
+                medicalRecordsTable.Load(reader);
+            }
+
+            // Get Billing Information for this appointment
+            DataTable billingTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "SP_Billing_GetByAppointment";
+                command.Parameters.Add("@AppointmentID", SqlDbType.Int).Value = AppointmentID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                billingTable = new DataTable();
+                billingTable.Load(reader);
+            }
+
+            // Get Doctor's Department
+            DataTable doctorDepartmentTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT TOP 1
+                dep.DepartmentName,
+                dep.Description
+            FROM DoctorDepartments dd
+            INNER JOIN Departments dep ON dd.DepartmentID = dep.DepartmentID
+            WHERE dd.DoctorID = @DoctorID";
+
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                doctorDepartmentTable = new DataTable();
+                doctorDepartmentTable.Load(reader);
+            }
+
+            // Calculate patient age
+            DateTime birthDate = Convert.ToDateTime(patientTable.Rows[0]["DateOfBirth"]);
+            int age = DateTime.Now.Year - birthDate.Year;
+            if (DateTime.Now.DayOfYear < birthDate.DayOfYear)
+                age--;
+
+            // Pass data to view
+            ViewData["AppointmentID"] = AppointmentID;
+            ViewData["PatientTable"] = patientTable;
+            ViewData["DoctorTable"] = doctorTable;
+            ViewData["PreviousAppointmentsTable"] = previousAppointmentsTable;
+            ViewData["MedicalRecordsTable"] = medicalRecordsTable;
+            ViewData["BillingTable"] = billingTable;
+            ViewData["DoctorDepartmentTable"] = doctorDepartmentTable;
+            ViewData["PatientAge"] = age;
+
+            return View(appointmentTable);
         }
         public IActionResult AddEdit(int? PatientID = null)
         {

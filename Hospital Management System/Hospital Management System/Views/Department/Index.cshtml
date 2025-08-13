@@ -160,7 +160,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group" role="group">
-                                                    <a href="@Url.Action("Details", "Department", new { id = dataRow["DepartmentID"] })"
+                                                    <a asp-controller="Department" asp-action="Details" asp-route-DepartmentID="@dataRow["DepartmentID"]" 
                                                        class="btn btn-outline-info btn-sm" title="View Details">
                                                         <i class="bi bi-info-circle"></i>
                                                     </a>
@@ -373,6 +373,12 @@
 
     .btn-group .btn {
         border-radius: 0;
+    }
+
+    .table th {
+        background-color: #c0c0c0;
+        
+        font-size: 1.2rem;
     }
 
         .btn-group .btn:first-child {

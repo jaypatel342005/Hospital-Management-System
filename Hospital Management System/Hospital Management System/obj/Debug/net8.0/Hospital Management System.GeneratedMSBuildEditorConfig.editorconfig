@@ -48,6 +48,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsbGluZ1xEZXRhaWxzMS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/College programming/Hospital Management System (.NET)/Hospital Management System/Hospital Management System/Views/Billing/GetBillingByAppointment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsbGluZ1xHZXRCaWxsaW5nQnlBcHBvaW50bWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/College programming/Hospital Management System (.NET)/Hospital Management System/Hospital Management System/Views/Billing/GetBillingByPatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsbGluZ1xHZXRCaWxsaW5nQnlQYXRpZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/College programming/Hospital Management System (.NET)/Hospital Management System/Hospital Management System/Views/Billing/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmlsbGluZ1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

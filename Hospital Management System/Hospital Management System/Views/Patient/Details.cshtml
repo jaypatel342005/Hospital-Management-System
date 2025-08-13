@@ -1,6 +1,25 @@
+﻿@using System.Data
+@model DataTable
 @{
     ViewData["Title"] = "Patient Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Get patient data
+    var patientRow = Model.Rows[0];
+    var patientName = patientRow["Name"].ToString();
+    var patientID = patientRow["PatientID"].ToString();
+    var dateOfBirth = Convert.ToDateTime(patientRow["DateOfBirth"]);
+    var age = DateTime.Now.Year - dateOfBirth.Year;
+    if (DateTime.Now.DayOfYear < dateOfBirth.DayOfYear) age--;
+
+    // Get ViewData
+    var appointmentsTable = (DataTable)ViewData["AppointmentsTable"];
+    var billingTable = (DataTable)ViewData["BillingTable"];
+    var medicalRecordsTable = (DataTable)ViewData["MedicalRecordsTable"];
+    var totalBilled = (decimal)ViewData["TotalBilled"];
+    var totalPaid = (decimal)ViewData["TotalPaid"];
+    var totalPending = (decimal)ViewData["TotalPending"];
+    var totalOverdue = (decimal)ViewData["TotalOverdue"];
 }
 
 <div class="pagetitle">
@@ -23,30 +42,39 @@
                     <!-- Patient Avatar -->
                     <div class="avatar-lg mb-3">
                         <span class="avatar-title rounded-circle bg-primary text-white fs-2">
-                            JS
+                            @(patientName.Split(' ').Length > 1 ?
+                                                        patientName.Split(' ')[0][0].ToString() + patientName.Split(' ')[1][0].ToString() :
+                                                        patientName.Substring(0, Math.Min(2, patientName.Length)).ToUpper())
                         </span>
                     </div>
 
-                    <h2>John Smith</h2>
-                    <h6 class="text-muted">Patient ID: #P001</h6>
+                    <h2>@patientName</h2>
+                    <h6 class="text-muted">Patient ID: @patientID </h6>
 
                     <div class="row mt-3 w-100">
                         <div class="col-6 text-center">
                             <div class="info-item">
                                 <span class="info-label">Age</span>
-                                <span class="info-value">35 Years</span>
+                                <span class="info-value">@age Years</span>
                             </div>
                         </div>
                         <div class="col-6 text-center">
                             <div class="info-item">
                                 <span class="info-label">Gender</span>
-                                <span class="info-value">Male</span>
+                                <span class="info-value">@patientRow["Gender"]</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-3">
-                        <span class="badge bg-success">Active Patient</span>
+                        @if (Convert.ToBoolean(patientRow["IsActive"]))
+                        {
+                            <span class="badge bg-success">Active Patient</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive Patient</span>
+                        }
                     </div>
 
                     <div class="mt-3 w-100">
@@ -64,344 +92,394 @@
             </div>
         </div>
 
-        <!-- Patient Details Tabs -->
+        <!-- Patient Details Cards -->
         <div class="col-xl-8">
-            <div class="card">
-                <div class="card-body pt-3">
-                    <!-- Tab Navigation -->
-                    <ul class="nav nav-tabs nav-tabs-bordered">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">
-                                <i class="bi bi-person"></i> Overview
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#medical-history">
-                                <i class="bi bi-file-medical"></i> Medical History
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appointments">
-                                <i class="bi bi-calendar"></i> Appointments
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#billing">
-                                <i class="bi bi-receipt"></i> Billing
-                            </button>
-                        </li>
-                    </ul>
+            <!-- Personal Information Card -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-person"></i> Personal Information
+                    </h5>
 
-                    <!-- Tab Content -->
-                    <div class="tab-content pt-2">
-                        <!-- Overview Tab -->
-                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                            <h5 class="card-title">Personal Information</h5>
+                    <div class="profile-overview">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Full Name</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["Name"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Full Name</div>
-                                <div class="col-lg-9 col-md-8">John Smith</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Date of Birth</div>
+                            <div class="col-lg-9 col-md-8">@dateOfBirth.ToString("MMMM dd, yyyy")</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Date of Birth</div>
-                                <div class="col-lg-9 col-md-8">January 15, 1989</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Gender</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["Gender"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Gender</div>
-                                <div class="col-lg-9 col-md-8">Male</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Email</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["Email"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Email</div>
-                                <div class="col-lg-9 col-md-8">john.smith@email.com</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Phone</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["Phone"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Phone</div>
-                                <div class="col-lg-9 col-md-8">+1 234 567 8901</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Address</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["Address"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Address</div>
-                                <div class="col-lg-9 col-md-8">123 Main Street, Apartment 4B</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">City</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["City"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">City</div>
-                                <div class="col-lg-9 col-md-8">New York</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">State</div>
+                            <div class="col-lg-9 col-md-8">@patientRow["State"]</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">State</div>
-                                <div class="col-lg-9 col-md-8">NY</div>
-                            </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Registration Date</div>
+                            <div class="col-lg-9 col-md-8">@Convert.ToDateTime(patientRow["Created"]).ToString("MMMM dd, yyyy")</div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Registration Date</div>
-                                <div class="col-lg-9 col-md-8">January 15, 2024</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Status</div>
-                                <div class="col-lg-9 col-md-8">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 label">Status</div>
+                            <div class="col-lg-9 col-md-8">
+                                @if (Convert.ToBoolean(patientRow["IsActive"]))
+                                {
                                     <span class="badge bg-success">Active</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Medical History Tab -->
-                        <div class="tab-pane fade" id="medical-history">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title">Medical History</h5>
-                                <button class="btn btn-sm btn-primary" onclick="addMedicalRecord()">
-                                    <i class="bi bi-plus"></i> Add Record
-                                </button>
-                            </div>
-
-                            <!-- Medical Records Timeline (matches MedicalRecords table) -->
-                            <div class="medical-timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-marker bg-primary"></div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-header">
-                                            <h6>Visit Date: March 15, 2024</h6>
-                                            <small class="text-muted">Doctor: Dr. Sarah Johnson</small>
-                                        </div>
-                                        <div class="timeline-body">
-                                            <p><strong>Diagnosis:</strong> General health assessment - Normal</p>
-                                            <p><strong>Treatment:</strong> Recommended regular exercise and balanced diet</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-marker bg-warning"></div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-header">
-                                            <h6>Visit Date: February 10, 2024</h6>
-                                            <small class="text-muted">Doctor: Dr. Michael Brown</small>
-                                        </div>
-                                        <div class="timeline-body">
-                                            <p><strong>Diagnosis:</strong> Seasonal Influenza (H1N1)</p>
-                                            <p><strong>Treatment:</strong> Tamiflu 75mg (Twice daily for 5 days), Paracetamol 500mg (as needed for fever), rest, and fluids</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-marker bg-success"></div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-header">
-                                            <h6>Visit Date: January 15, 2024</h6>
-                                            <small class="text-muted">Doctor: Dr. Sarah Johnson</small>
-                                        </div>
-                                        <div class="timeline-body">
-                                            <p><strong>Diagnosis:</strong> Comprehensive health screening - Excellent</p>
-                                            <p><strong>Treatment:</strong> Continue current lifestyle habits</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Appointments Tab -->
-                        <div class="tab-pane fade" id="appointments">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title">Appointments</h5>
-                                <button class="btn btn-sm btn-primary" onclick="bookAppointment()">
-                                    <i class="bi bi-calendar-plus"></i> Book New
-                                </button>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Date & Time</th>
-                                            <th>Doctor</th>
-                                            <th>Status</th>
-                                            <th>Description</th>
-                                            <th>Amount</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="fw-bold">March 25, 2024</div>
-                                                <small class="text-muted">10:00 AM</small>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold">Dr. Sarah Johnson</div>
-                                                <small class="text-muted">Cardiologist</small>
-                                            </td>
-                                            <td><span class="badge bg-warning">Scheduled</span></td>
-                                            <td>Follow-up consultation</td>
-                                            <td>$150.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary" onclick="rescheduleAppointment(1)">
-                                                    <i class="bi bi-calendar"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(1)">
-                                                    <i class="bi bi-x"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="fw-bold">March 15, 2024</div>
-                                                <small class="text-muted">02:30 PM</small>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold">Dr. Sarah Johnson</div>
-                                                <small class="text-muted">Cardiologist</small>
-                                            </td>
-                                            <td><span class="badge bg-success">Completed</span></td>
-                                            <td>Routine checkup</td>
-                                            <td>$120.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(2)">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="fw-bold">February 10, 2024</div>
-                                                <small class="text-muted">11:15 AM</small>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold">Dr. Michael Brown</div>
-                                                <small class="text-muted">General Physician</small>
-                                            </td>
-                                            <td><span class="badge bg-success">Completed</span></td>
-                                            <td>Flu symptoms</td>
-                                            <td>$80.00</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(3)">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Billing Tab -->
-                        <div class="tab-pane fade" id="billing">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title">Billing Information</h5>
-                                <button class="btn btn-sm btn-primary" onclick="generateBill()">
-                                    <i class="bi bi-receipt"></i> Generate Bill
-                                </button>
-                            </div>
-
-                            <!-- Billing Summary Cards -->
-                            <div class="row mb-4">
-                                <div class="col-md-3">
-                                    <div class="card bg-primary text-white">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Total Billed</h5>
-                                            <h3>$1,250.00</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-success text-white">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Paid</h5>
-                                            <h3>$900.00</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-warning text-white">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Pending</h5>
-                                            <h3>$350.00</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-danger text-white">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Overdue</h5>
-                                            <h3>$0.00</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Billing History -->
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Bill ID</th>
-                                            <th>Date</th>
-                                            <th>Description</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#B001</td>
-                                            <td>March 15, 2024</td>
-                                            <td>Consultation + Lab Tests</td>
-                                            <td>$350.00</td>
-                                            <td><span class="badge bg-warning">Unpaid</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-success" onclick="payBill(1)">
-                                                    <i class="bi bi-credit-card"></i> Pay
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(1)">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#B002</td>
-                                            <td>February 10, 2024</td>
-                                            <td>Consultation + Medications</td>
-                                            <td>$150.00</td>
-                                            <td><span class="badge bg-success">Paid</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(2)">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-info" onclick="downloadReceipt(2)">
-                                                    <i class="bi bi-download"></i> Receipt
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#B003</td>
-                                            <td>January 15, 2024</td>
-                                            <td>Annual Physical Exam</td>
-                                            <td>$200.00</td>
-                                            <td><span class="badge bg-success">Paid</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(3)">
-                                                    <i class="bi bi-eye"></i> View
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-info" onclick="downloadReceipt(3)">
-                                                    <i class="bi bi-download"></i> Receipt
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactive</span>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+           
+        </div>
+
+    </div>
+
+    <!-- Medical History Card -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                    <i class="bi bi-file-medical"></i> Medical History
+                </h5>
+                <button class="btn btn-sm btn-primary" onclick="addMedicalRecord()">
+                    <i class="bi bi-plus"></i> Add Record
+                </button>
+            </div>
+
+            @if (medicalRecordsTable.Rows.Count > 0)
+            {
+                <div class="medical-timeline">
+                    @foreach (DataRow record in medicalRecordsTable.Rows)
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h6>Visit Date: @Convert.ToDateTime(record["VisitDate"]).ToString("MMMM dd, yyyy")</h6>
+                                    <small class="text-muted">Doctor: @record["DoctorName"] (@record["DoctorSpecialization"])</small>
+                                </div>
+                                <div class="timeline-body">
+                                    <p><strong>Diagnosis:</strong> @record["Diagnosis"]</p>
+                                    @if (!string.IsNullOrEmpty(record["Treatment"].ToString()))
+                                    {
+                                        <p><strong>Treatment:</strong> @record["Treatment"]</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-file-medical fs-1"></i>
+                    <p class="mt-2">No medical records found</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Appointments Card -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                    <i class="bi bi-calendar"></i> Appointments
+                </h5>
+                <button class="btn btn-sm btn-primary" onclick="bookAppointment()">
+                    <i class="bi bi-calendar-plus"></i> Book New
+                </button>
+            </div>
+
+            @if (appointmentsTable.Rows.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Doctor</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow appointment in appointmentsTable.Rows)
+                            {
+                                var appointmentDate = Convert.ToDateTime(appointment["AppointmentDate"]);
+                                var status = appointment["AppointmentStatus"].ToString();
+                                var badgeClass = status.ToLower() switch
+                                {
+                                    "scheduled" => "bg-warning",
+                                    "completed" => "bg-success",
+                                    "cancelled" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@appointmentDate.ToString("MMMM dd, yyyy")</div>
+                                        <small class="text-muted">@appointmentDate.ToString("hh:mm tt")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">@appointment["DoctorName"]</div>
+                                        <small class="text-muted">@appointment["DoctorSpecialization"]</small>
+                                    </td>
+                                    <td><span class="badge @badgeClass">@status</span></td>
+                                    <td>@appointment["Description"]</td>
+                                    <td>@(appointment["TotalConsultedAmount"] != DBNull.Value ? "₹" + Convert.ToDecimal(appointment["TotalConsultedAmount"]).ToString("F2") : "N/A")</td>
+                                    <td>
+
+
+                                        <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(@appointment["AppointmentID"])">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-calendar fs-1"></i>
+                    <p class="mt-2">No appointments found</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Billing Card -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                    <i class="bi bi-receipt"></i> Billing Information
+                </h5>
+                <button class="btn btn-sm btn-primary" onclick="generateBill()">
+                    <i class="bi bi-receipt"></i> Generate Bill
+                </button>
+            </div>
+
+            <!-- Billing Summary Cards -->
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Billed</h5>
+                            <h3>₹@totalBilled.ToString("F2")</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Paid</h5>
+                            <h3>₹@totalPaid.ToString("F2")</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending</h5>
+                            <h3>₹@totalPending.ToString("F2")</h3>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-md-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Overdue</h5>
+                            <h3>₹@totalOverdue.ToString("F2")</h3>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+
+            <!-- Billing History -->
+            @if (billingTable.Rows.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Bill ID</th>
+                                <th>Date</th>
+                                <th>Doctor</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Paid</th>
+                                <th>Pending</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow bill in billingTable.Rows)
+                            {
+                                var paymentStatus = bill["PaymentStatus"].ToString();
+                                var billAmount = Convert.ToDecimal(bill["BillAmount"]);
+                                var paidAmount = Convert.ToDecimal(bill["PaidAmount"]);
+                                var balanceAmount = billAmount - paidAmount;
+                                var badgeClass = paymentStatus.ToLower() switch
+                                {
+                                    "paid" => "bg-success",
+                                    "partial" => "bg-warning",
+                                    "unpaid" => "bg-danger",
+                                    _ => "bg-secondary"
+                                };
+
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">#@bill["BillID"]</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">@Convert.ToDateTime(bill["CreatedDate"]).ToString("MMM dd, yyyy")</div>
+                                        <small class="text-muted">@Convert.ToDateTime(bill["AppointmentDate"]).ToString("hh:mm tt")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">@bill["DoctorName"]</div>
+                                    </td>
+                                    <td>@bill["AppointmentDescription"]</td>
+                                    <td class="fw-semibold">₹@billAmount.ToString("F2")</td>
+                                    <td class="text-success fw-semibold">₹@paidAmount.ToString("F2")</td>
+                                    <td>
+                                        <span class="@(balanceAmount > 0 ? "text-danger fw-bold" : "text-success fw-bold")">
+                                            ₹@balanceAmount.ToString("F2")
+                                        </span>
+                                    </td>
+                                    <td><span class="badge @badgeClass">@paymentStatus</span></td>
+                                    <td>
+                                        @if (paymentStatus.ToLower() != "paid" && balanceAmount > 0)
+                                        {
+                                            <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill["BillID"], @balanceAmount)">
+                                                <i class="bi bi-credit-card"></i> Pay
+                                            </button>
+                                        }
+                                        <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(@bill["BillID"])">
+                                            <i class="bi bi-eye"></i> View
+                                        </button>
+                                      
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr class="fw-bold">
+                                <td colspan="4" class="text-end">Totals:</td>
+                                <td class="text-primary">₹@totalBilled.ToString("F2")</td>
+                                <td class="text-success">₹@totalPaid.ToString("F2")</td>
+                                <td class="text-danger">₹@totalPending.ToString("F2")</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-receipt fs-1"></i>
+                    <p class="mt-2">No billing records found</p>
+                </div>
+            }
         </div>
     </div>
 </section>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-credit-card me-2"></i>Record Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <input type="hidden" id="billId" name="billId">
+                    <div class="mb-3">
+                        <label for="paymentAmount" class="form-label fw-semibold">Payment Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="paymentAmount"
+                                   name="paymentAmount" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="form-text" id="balanceText">Outstanding balance will be shown here</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label fw-semibold">Payment Method</label>
+                        <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label fw-semibold">Remarks (Optional)</label>
+                        <textarea class="form-control" id="remarks" name="remarks" rows="2"
+                                  placeholder="Add any additional notes..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-success" onclick="processPayment()">
+                    <i class="bi bi-check-circle me-1"></i> Record Payment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- CSS Styles -->
 <style>
@@ -411,6 +489,11 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .table th {
+        background-color: #c0c0c0;
+        font-size: 1.2rem;
     }
 
     .avatar-title {
@@ -449,17 +532,6 @@
         font-weight: 600;
         color: #2c384e;
     }
-
-    .nav-tabs-bordered .nav-link {
-        border: 1px solid #dee2e6;
-        border-bottom-color: transparent;
-        margin-bottom: -1px;
-    }
-
-        .nav-tabs-bordered .nav-link.active {
-            background-color: #fff;
-            border-color: #dee2e6 #dee2e6 #fff;
-        }
 
     .medical-timeline {
         position: relative;
@@ -515,22 +587,6 @@
     .timeline-body ul {
         padding-left: 1rem;
     }
-
-    .card-title {
-        color: #2c384e;
-        font-weight: 600;
-    }
-
-    .table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        border-top: none;
-    }
-
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-    }
 </style>
 
 <!-- JavaScript -->
@@ -538,12 +594,12 @@
     // Patient action functions
     function editPatient() {
         console.log('Edit patient functionality');
-        // Implement edit patient modal or redirect
+        window.location.href = '@Url.Action("PatientEdit", "Patient", new { PatientID = ViewData["PatientID"] })';
     }
 
     function bookAppointment() {
         console.log('Book appointment functionality');
-        // Implement appointment booking modal
+        window.location.href = '@Url.Action("AddEdit", "Appointment", new { PatientID = ViewData["PatientID"] })';
     }
 
     function printPatientDetails() {
@@ -554,47 +610,54 @@
     // Medical history functions
     function addMedicalRecord() {
         console.log('Add medical record functionality');
-        // Implement add medical record modal
+        window.location.href = '@Url.Action("Create", "MedicalRecords", new { PatientID = ViewData["PatientID"] })';
     }
 
     // Appointment functions
-    function rescheduleAppointment(appointmentId) {
-        console.log('Reschedule appointment:', appointmentId);
-        // Implement reschedule functionality
+    function viewAppointmentDetails(appointmentId) {
+        console.log('View appointment details:', appointmentId);
+        window.location.href = '@Url.Action("Details", "Appointments")' + '?appointmentId=' + appointmentId;
     }
 
-    function cancelAppointment(appointmentId) {
-        if (confirm('Are you sure you want to cancel this appointment?')) {
-            console.log('Cancel appointment:', appointmentId);
-            // Implement cancel functionality
+    // Enhanced billing functions
+    function payBill(billId, balanceAmount) {
+        document.getElementById('billId').value = billId;
+        document.getElementById('paymentAmount').setAttribute('max', balanceAmount);
+        document.getElementById('paymentAmount').value = balanceAmount;
+        document.getElementById('balanceText').textContent = `Outstanding balance: ₹${balanceAmount.toFixed(2)}`;
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+    }
+
+    function processPayment() {
+        const form = document.getElementById('paymentForm');
+        const formData = new FormData(form);
+        if (form.checkValidity()) {
+            const billId = formData.get('billId');
+            const amount = formData.get('paymentAmount');
+            const method = formData.get('paymentMethod');
+            const remarks = formData.get('remarks');
+            console.log('Processing payment:', { billId, amount, method, remarks });
+
+            // Using Url.Action for type-safe URL generation
+            const baseUrl = '@Url.Action("RecordPayment", "Billing")';
+            const queryParams = `?BillID=${billId}&PaymentAmount=${amount}&PaymentMethod=${method}&Remarks=${encodeURIComponent(remarks)}`;
+            window.location.href = baseUrl + queryParams;
+        } else {
+            form.reportValidity();
         }
     }
 
-    function viewAppointmentDetails(appointmentId) {
-        console.log('View appointment details:', appointmentId);
-        // Implement view appointment details modal
-    }
-
-    // Billing functions
     function generateBill() {
         console.log('Generate bill functionality');
-        // Implement generate bill modal
-    }
-
-    function payBill(billId) {
-        console.log('Pay bill:', billId);
-        // Implement payment functionality
+        window.location.href = '@Url.Action("Create", "Billing", new { PatientID = ViewData["PatientID"] })';
     }
 
     function viewBillDetails(billId) {
         console.log('View bill details:', billId);
-        // Implement view bill details modal
+        window.location.href = '@Url.Action("Details", "Billing")' + '/' + billId;
     }
 
-    function downloadReceipt(billId) {
-        console.log('Download receipt:', billId);
-        // Implement download receipt functionality
-    }
 
     // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function() {

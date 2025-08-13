@@ -161,9 +161,135 @@ namespace Hospital_Management_System.Controllers
 
 
 
-        public IActionResult Details()
+        public IActionResult Details(int PatientID)
         {
-            return View();
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+
+            // Get Patient Details using stored procedure
+            DataTable patientTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Patients_SelectByPK";
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = PatientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                patientTable = new DataTable();
+                patientTable.Load(reader);
+            }
+
+            // Check if patient exists
+            if (patientTable.Rows.Count == 0)
+            {
+                return NotFound("Patient not found");
+            }
+
+            // Get Patient Appointments
+            DataTable appointmentsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT 
+                a.AppointmentID,
+                a.AppointmentDate,
+                a.AppointmentStatus,
+                a.Description,
+                a.SpecialRemarks,
+                a.TotalConsultedAmount,
+                a.Created,
+                d.Name as DoctorName,
+                d.Specialization as DoctorSpecialization
+            FROM Appointments a
+            INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+            WHERE a.PatientID = @PatientID
+            ORDER BY a.AppointmentDate DESC";
+
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = PatientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                appointmentsTable = new DataTable();
+                appointmentsTable.Load(reader);
+            }
+
+            // Get Patient Billing Information
+            DataTable billingTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "SP_Billing_GetByPatientID";
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = PatientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                billingTable = new DataTable();
+                billingTable.Load(reader);
+            }
+
+            // Get Medical Records
+            DataTable medicalRecordsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT 
+                mr.RecordID,
+                mr.VisitDate,
+                mr.Diagnosis,
+                mr.Treatment,
+                mr.Created,
+                d.Name as DoctorName,
+                d.Specialization as DoctorSpecialization
+            FROM MedicalRecords mr
+            INNER JOIN Doctors d ON mr.DoctorID = d.DoctorID
+            WHERE mr.PatientID = @PatientID
+            ORDER BY mr.VisitDate DESC";
+
+                command.Parameters.Add("@PatientID", SqlDbType.Int).Value = PatientID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                medicalRecordsTable = new DataTable();
+                medicalRecordsTable.Load(reader);
+            }
+
+            // Calculate billing summary
+            decimal totalBilled = 0;
+            decimal totalPaid = 0;
+            decimal totalPending = 0;
+            decimal totalOverdue = 0;
+
+            foreach (DataRow row in billingTable.Rows)
+            {
+                decimal billAmount = Convert.ToDecimal(row["BillAmount"]);
+                decimal paidAmount = Convert.ToDecimal(row["PaidAmount"]);
+                string paymentStatus = row["PaymentStatus"].ToString();
+
+                totalBilled += billAmount;
+                totalPaid += paidAmount;
+
+                if (paymentStatus == "Unpaid" || paymentStatus == "Partial")
+                {
+                    totalPending += (billAmount - paidAmount);
+                }
+
+                // You can add logic for overdue bills based on date
+                // For now, keeping it as 0 as per your original data
+            }
+
+            // Pass data to view
+            ViewData["PatientID"] = PatientID;
+            ViewData["AppointmentsTable"] = appointmentsTable;
+            ViewData["BillingTable"] = billingTable;
+            ViewData["MedicalRecordsTable"] = medicalRecordsTable;
+            ViewData["TotalBilled"] = totalBilled;
+            ViewData["TotalPaid"] = totalPaid;
+            ViewData["TotalPending"] = totalPending;
+            ViewData["TotalOverdue"] = totalOverdue;
+
+            return View(patientTable);
         }
         public IActionResult AddEdit()
         {

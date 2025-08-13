@@ -29,8 +29,8 @@
     
 }
 
-.pagetitle {
-    margin-bottom: 0px;
+/*.pagetitle {*/
+/*    margin-bottom: 0px;
 }
 
     .pagetitle h1 {
@@ -62,7 +62,7 @@
 
 .breadcrumb-item + .breadcrumb-item::before {
     color: var(--light-text);
-}
+}*/
 
 .table th {
     background-color: #c0c0c0;

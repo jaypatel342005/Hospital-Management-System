@@ -1152,110 +1152,251 @@ BEGIN
 END
 GO
 
--- =============================================
--- Procedure: PR_Billing_SelectAll
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_SelectAll]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- =====================================
+-- TRIGGER: Sync appointment amount to billing amount
+-- =====================================
+CREATE TRIGGER TR_SyncAppointmentToBilling
+ON Appointments
+AFTER INSERT, UPDATE
 AS
 BEGIN
-    SELECT
-        Billing.BillID,
-        Billing.PatientID,
-        Billing.Amount,
-        Billing.Details,
-        Billing.BillingDate,
-        Billing.Status,
-        Patients.Name AS PatientName 
-    FROM Billing
-        INNER JOIN Patients ON Billing.PatientID = Patients.PatientID
-    ORDER BY Billing.BillID;
-END
+    -- Update existing billing records when appointment amount changes
+    UPDATE B
+    SET BillAmount = I.TotalConsultedAmount
+    FROM Billing B
+    INNER JOIN inserted I ON B.AppointmentID = I.AppointmentID
+    WHERE I.TotalConsultedAmount IS NOT NULL;
+    
+    -- Create new billing record if appointment has amount but no billing exists
+    INSERT INTO Billing (AppointmentID, BillAmount)
+    SELECT I.AppointmentID, I.TotalConsultedAmount
+    FROM inserted I
+    WHERE I.TotalConsultedAmount IS NOT NULL
+    AND NOT EXISTS (SELECT 1 FROM Billing WHERE AppointmentID = I.AppointmentID);
+END;
+
+-- =====================================
+-- INDEXES
+-- =====================================
+CREATE INDEX IX_Billing_AppointmentID ON Billing(AppointmentID);
+CREATE INDEX IX_Billing_PaymentStatus ON Billing(PaymentStatus);
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- =====================================
+-- CORRECTED STORED PROCEDURES for BillingController
+-- =====================================
+
+-- Get all billing records with appointment and patient details
+DROP PROCEDURE IF EXISTS SP_Billing_GetAll;
+GO
+CREATE or ALTER PROCEDURE SP_Billing_GetAll
+AS
+BEGIN
+    SELECT 
+        b.BillID,
+        b.AppointmentID,
+        a.PatientID,
+        p.Name AS PatientName,
+        d.Name AS DoctorName,
+        a.AppointmentDate,
+        b.BillAmount,
+        b.PaidAmount,
+        (b.BillAmount - b.PaidAmount) AS BalanceAmount,
+        b.PaymentStatus,
+        b.CreatedDate
+    FROM Billing b
+    INNER JOIN Appointments a ON b.AppointmentID = a.AppointmentID
+    INNER JOIN Patients p ON a.PatientID = p.PatientID
+    INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+	GROUP BY a.PatientID, p.Name 
+    ORDER BY b.CreatedDate DESC;
+END;
 GO
 
--- =============================================
--- Procedure: PR_Billing_SelectByPK
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_SelectByPK]
+
+
+
+
+USE [hms_database]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_Billing_GetAll]    Script Date: 06-08-2025 07:41:47 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER   PROCEDURE [dbo].[SP_Billing_GetAll]
+AS
+BEGIN
+    SELECT 
+        b.BillID,
+        b.AppointmentID,
+        a.PatientID,
+        p.Name AS PatientName,
+        d.Name AS DoctorName,
+        a.AppointmentDate,
+        b.BillAmount,
+        b.PaidAmount,
+        (b.BillAmount - b.PaidAmount) AS BalanceAmount,
+        b.PaymentStatus,
+        b.CreatedDate
+    FROM Billing b
+    INNER JOIN Appointments a ON b.AppointmentID = a.AppointmentID
+    INNER JOIN Patients p ON a.PatientID = p.PatientID
+    INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+    ORDER BY b.CreatedDate DESC;
+END;
+
+
+
+-- Get billing record by BillID
+DROP PROCEDURE IF EXISTS SP_Billing_GetByID;
+GO
+CREATE PROCEDURE SP_Billing_GetByID
     @BillID INT
 AS
 BEGIN
-    SELECT
-        Billing.BillID,
-        Billing.PatientID,
-        Billing.Amount,
-        Billing.Details,
-        Billing.BillingDate,
-        Billing.Status,
-        Patients.Name AS PatientName
-    FROM Billing
-        INNER JOIN Patients ON Billing.PatientID = Patients.PatientID
-    WHERE Billing.BillID = @BillID;
-END
+    SELECT 
+        b.BillID,
+        b.AppointmentID,
+        a.PatientID,
+        p.Name AS PatientName,
+        d.Name AS DoctorName,
+        a.AppointmentDate,
+        b.BillAmount,
+        b.PaidAmount,
+        (b.BillAmount - b.PaidAmount) AS BalanceAmount,
+        b.PaymentStatus,
+        b.CreatedDate
+    FROM Billing b
+    INNER JOIN Appointments a ON b.AppointmentID = a.AppointmentID
+    INNER JOIN Patients p ON a.PatientID = p.PatientID
+    INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+    WHERE b.BillID = @BillID;
+END;
 GO
 
--- =============================================
--- Procedure: PR_Billing_Insert
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_Insert]
-    @PatientID INT,
-    @Amount DECIMAL(10,2),
-    @Details NVARCHAR(MAX),
-    @BillingDate DATETIME,
-    @Status NVARCHAR(MAX)
+-- Get billing record by AppointmentID
+DROP PROCEDURE IF EXISTS SP_Billing_GetByAppointment;
+GO
+CREATE PROCEDURE SP_Billing_GetByAppointment
+    @AppointmentID INT
 AS
 BEGIN
-    INSERT INTO Billing (PatientID, Amount, Details, BillingDate, Status)
-    VALUES (@PatientID, @Amount, @Details, @BillingDate, @Status);
-END
+    SELECT 
+        b.BillID,
+        b.AppointmentID,
+        a.PatientID,
+        p.Name AS PatientName,
+        b.BillAmount,
+        b.PaidAmount,
+        (b.BillAmount - b.PaidAmount) AS BalanceAmount,
+        b.PaymentStatus,
+        b.CreatedDate
+    FROM Billing b
+    INNER JOIN Appointments a ON b.AppointmentID = a.AppointmentID
+    INNER JOIN Patients p ON a.PatientID = p.PatientID
+    WHERE b.AppointmentID = @AppointmentID;
+END;
 GO
 
--- =============================================
--- Procedure: PR_Billing_UpdateByPK
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_UpdateByPK]
+-- Record payment for a bill
+DROP PROCEDURE IF EXISTS SP_Billing_RecordPayment;
+GO
+CREATE PROCEDURE SP_Billing_RecordPayment
     @BillID INT,
-    @PatientID INT,
-    @Amount DECIMAL(10,2),
-    @Details NVARCHAR(MAX),
-    @BillingDate DATETIME,
-    @Status NVARCHAR(MAX)
+    @PaymentAmount DECIMAL(10,2)
 AS
 BEGIN
-    UPDATE Billing
-    SET 
-        PatientID = @PatientID,
-        Amount = @Amount,
-        Details = @Details,
-        BillingDate = @BillingDate,
-        Status = @Status
+    DECLARE @CurrentPaid DECIMAL(10,2), @BillAmount DECIMAL(10,2);
+    
+    SELECT @CurrentPaid = PaidAmount, @BillAmount = BillAmount 
+    FROM Billing WHERE BillID = @BillID;
+    
+    -- Check if bill exists
+    IF @BillAmount IS NULL
+    BEGIN
+        SELECT 'Bill not found' AS Message, NULL AS NewPaidAmount, NULL AS RemainingBalance, NULL AS PaymentStatus;
+        RETURN;
+    END
+    
+    DECLARE @NewPaidAmount DECIMAL(10,2) = @CurrentPaid + @PaymentAmount;
+    DECLARE @NewStatus NVARCHAR(20);
+    
+    -- Determine new status
+    IF @NewPaidAmount >= @BillAmount
+    BEGIN
+        SET @NewStatus = 'Paid';
+        SET @NewPaidAmount = @BillAmount; -- Cap at bill amount
+    END
+    ELSE IF @NewPaidAmount > 0
+        SET @NewStatus = 'Partial';
+    ELSE
+        SET @NewStatus = 'Unpaid';
+    
+    -- Update the bill
+    UPDATE Billing 
+    SET PaidAmount = @NewPaidAmount,
+        PaymentStatus = @NewStatus
     WHERE BillID = @BillID;
-END
+    
+    SELECT 'Payment recorded successfully' AS Message,
+           @NewPaidAmount AS NewPaidAmount,
+           (@BillAmount - @NewPaidAmount) AS RemainingBalance,
+           @NewStatus AS PaymentStatus;
+END;
 GO
 
-
--- =============================================
--- Procedure: PR_Billing_StatusUpdateByPK
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].PR_Billing_StatusUpdateByPK
-    @BillID INT
-AS
-BEGIN
-    UPDATE Billing
-    SET 
-        Status = 'Paid'
-    WHERE BillID = @BillID;
-END
+-- Get outstanding bills (unpaid and partially paid)
+DROP PROCEDURE IF EXISTS SP_Billing_GetOutstanding;
 GO
-
-
--- =============================================
--- Procedure: PR_Billing_DeleteByPK
--- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[PR_Billing_DeleteByPK]
-    @BillID INT
+CREATE PROCEDURE SP_Billing_GetOutstanding
 AS
 BEGIN
-    DELETE FROM Billing
-    WHERE BillID = @BillID;
-END
+    SELECT 
+        b.BillID,
+        b.AppointmentID,
+        a.PatientID,
+        p.Name AS PatientName,
+        d.Name AS DoctorName,
+        a.AppointmentDate,
+        b.BillAmount,
+        b.PaidAmount,
+        (b.BillAmount - b.PaidAmount) AS BalanceAmount,
+        b.PaymentStatus,
+        b.CreatedDate
+    FROM Billing b
+    INNER JOIN Appointments a ON b.AppointmentID = a.AppointmentID
+    INNER JOIN Patients p ON a.PatientID = p.PatientID
+    INNER JOIN Doctors d ON a.DoctorID = d.DoctorID
+    WHERE b.PaymentStatus IN ('Unpaid', 'Partial')
+    ORDER BY b.CreatedDate DESC;
+END;
 GO

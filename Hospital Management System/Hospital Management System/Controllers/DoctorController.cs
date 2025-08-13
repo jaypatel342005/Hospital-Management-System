@@ -201,11 +201,107 @@ namespace Hospital_Management_System.Controllers
             return userList;
         }
 
-        public IActionResult Details()
+        public IActionResult Details(int DoctorID)
         {
-            return View();
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+
+            // Get Doctor Details using the stored procedure
+            DataTable doctorTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Doctors_SelectByPK";
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                doctorTable = new DataTable();
+                doctorTable.Load(reader);
+            }
+
+            // Get Doctor's Assigned Departments
+            DataTable departmentsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT 
+                d.DepartmentID,
+                d.DepartmentName,
+                d.Description,
+                dd.Created as AssignedDate,
+                u.UserName as AssignedBy
+            FROM Departments d
+            INNER JOIN DoctorDepartments dd ON d.DepartmentID = dd.DepartmentID
+            INNER JOIN Users u ON dd.UserID = u.UserID
+            WHERE dd.DoctorID = @DoctorID
+            AND d.IsActive = 1
+            ORDER BY dd.Created DESC";
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                departmentsTable = new DataTable();
+                departmentsTable.Load(reader);
+            }
+
+            // Get Recent Appointments for this Doctor
+            DataTable appointmentsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT TOP 20
+                a.AppointmentID,
+                a.AppointmentDate,
+                a.AppointmentStatus,
+                a.TotalConsultedAmount,
+                p.Name as PatientName,
+                p.Phone as PatientPhone,
+                a.Description,
+                a.SpecialRemarks
+            FROM Appointments a
+            INNER JOIN Patients p ON a.PatientID = p.PatientID
+            WHERE a.DoctorID = @DoctorID
+            ORDER BY a.AppointmentDate DESC";
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                appointmentsTable = new DataTable();
+                appointmentsTable.Load(reader);
+            }
+
+            // Get Doctor Statistics
+            DataTable statsTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT 
+                COUNT(*) as TotalAppointments,
+                COUNT(DISTINCT a.PatientID) as UniquePatients,
+                SUM(CASE WHEN CAST(a.AppointmentDate AS DATE) = CAST(GETDATE() AS DATE) THEN 1 ELSE 0 END) as TodaysAppointments,
+                (SELECT COUNT(DISTINCT dd.DepartmentID) FROM DoctorDepartments dd WHERE dd.DoctorID = @DoctorID) as TotalDepartments
+            FROM Appointments a
+            WHERE a.DoctorID = @DoctorID";
+                command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = DoctorID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                statsTable = new DataTable();
+                statsTable.Load(reader);
+            }
+
+            // Pass data to the view
+            ViewData["DoctorID"] = DoctorID;
+            ViewData["DepartmentsTable"] = departmentsTable;
+            ViewData["AppointmentsTable"] = appointmentsTable;
+            ViewData["StatsTable"] = statsTable;
+
+            return View(doctorTable);
         }
-        
+
         public IActionResult AddEdit()
         {
             ViewBag.UserList = GetUserList();

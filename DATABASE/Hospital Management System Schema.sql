@@ -86,6 +86,7 @@ CREATE TABLE Patients (
 -- =====================================
 -- APPOINTMENTS TABLE: Booking details for consultations
 -- =====================================
+
 CREATE TABLE Appointments (
     AppointmentID INT IDENTITY(1,1) PRIMARY KEY,
     DoctorID INT NOT NULL,
@@ -97,11 +98,12 @@ CREATE TABLE Appointments (
     SpecialRemarks NVARCHAR(100) NOT NULL,
     Created DATETIME NOT NULL DEFAULT GETDATE(),
     Modified DATETIME NOT NULL,
-    TotalConsultedAmount DECIMAL(5,2),
+    TotalConsultedAmount DECIMAL(10,2),
     FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID),
     FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
 
 -- =====================================
 -- MEDICAL RECORDS TABLE: History of diagnosis and treatments
@@ -166,15 +168,59 @@ CREATE TABLE Admissions (
     FOREIGN KEY (WardID) REFERENCES Wards(WardID)
 );
 
+
+
+
+
 -- =====================================
--- BILLING TABLE: Billing details for patients
+-- APPOINTMENTS TABLE: Booking details for consultations (UNCHANGED)
 -- =====================================
+DROP TABLE IF EXISTS Appointments;
+CREATE TABLE Appointments (
+    AppointmentID INT IDENTITY(1,1) PRIMARY KEY,
+    DoctorID INT NOT NULL,
+    PatientID INT NOT NULL,
+    UserID INT NOT NULL,
+    AppointmentDate DATETIME NOT NULL DEFAULT GETDATE(),
+    AppointmentStatus NVARCHAR(50) NOT NULL DEFAULT 'Scheduled',
+    Description NVARCHAR(250) NOT NULL,
+    SpecialRemarks NVARCHAR(100) NOT NULL,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Modified DATETIME NOT NULL,
+    TotalConsultedAmount DECIMAL(10,2),
+    FOREIGN KEY (DoctorID) REFERENCES Doctors(DoctorID),
+    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- =====================================
+-- BILLING TABLE: Minimal billing connected to appointment amount
+-- =====================================
+DROP TABLE IF EXISTS Billing;
 CREATE TABLE Billing (
     BillID INT IDENTITY(1,1) PRIMARY KEY,
-    PatientID INT NOT NULL,
-    Amount DECIMAL(10,2) NOT NULL,
-    Details TEXT,
-    BillingDate DATE DEFAULT GETDATE(),
-    Status NVARCHAR(20) DEFAULT 'Unpaid' CHECK (Status IN ('Paid', 'Unpaid', 'Partially Paid')),
-    FOREIGN KEY (PatientID) REFERENCES Patients(PatientID)
+    AppointmentID INT NOT NULL,
+    BillAmount DECIMAL(10,2) NOT NULL,
+    PaidAmount DECIMAL(10,2) NOT NULL DEFAULT 0,
+    PaymentStatus NVARCHAR(20) NOT NULL DEFAULT 'Unpaid',
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (AppointmentID) REFERENCES Appointments(AppointmentID),
+    CHECK (PaymentStatus IN ('Unpaid', 'Partial', 'Paid')),
+    CHECK (PaidAmount >= 0 AND PaidAmount <= BillAmount)
 );
+
+
+-- Dummy data for Billing table
+INSERT INTO Billing (AppointmentID, BillAmount, PaidAmount, PaymentStatus, CreatedDate) VALUES
+
+(5, 1800.00, 1200.00, 'Partial', '2025-07-05 13:20:00'),
+(6, 2200.00, 2200.00, 'Paid', '2025-07-06 16:10:00'),
+(7, 950.00, 0.00, 'Unpaid', '2025-07-07 08:25:00'),
+(8, 3000.00, 1500.00, 'Partial', '2025-07-08 12:00:00'),
+(9, 1750.00, 1750.00, 'Paid', '2025-07-09 10:40:00'),
+(10, 1200.00, 0.00, 'Unpaid', '2025-07-10 17:15:00'),
+(11, 2500.00, 1000.00, 'Partial', '2025-07-11 15:30:00'),
+(12, 1100.00, 1100.00, 'Paid', '2025-07-12 11:55:00');
+
+
+

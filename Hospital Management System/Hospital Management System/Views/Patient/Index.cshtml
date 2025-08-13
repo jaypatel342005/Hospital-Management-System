@@ -106,11 +106,15 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                         <h5 class="card-title mb-3 mb-md-0">Patient List</h5>
                         <div class="d-flex flex-column flex-sm-row gap-2">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPatientModal">
+                            <a class="btn btn-primary"
+                               
+                               href ="@Url.Action("AddEdit", "Patient")">
                                 <i class="bi bi-plus-circle"></i>
                                 <span class="d-none d-sm-inline">Add New Patient</span>
                                 <span class="d-inline d-sm-none">Add</span>
-                            </button>
+                            </a>
+
+
 
                             <button class="btn btn-success" onclick="exportPatients()">
                                 <i class="bi bi-download"></i>
@@ -206,9 +210,13 @@
                                                 <button class="btn btn-outline-primary btn-sm" onclick="editPatient(@dataRow["PatientID"])">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                @* <button class="btn btn-outline-success btn-sm" onclick="viewMedicalHistory(@dataRow["PatientID"])">
+                                                <button class="btn btn-outline-success btn-sm" href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })">
                                                     <i class="bi bi-file-medical"></i>
-                                                </button> *@
+                                                </button>
+                                                @* <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
+                                                   class="dropdown-item">
+                                                    <i class="bi bi-receipt"></i> Bills
+                                                </a> *@
                                                 <button class="btn btn-outline-warning btn-sm" onclick="bookAppointment(@dataRow["PatientID"])">
                                                     <i class="bi bi-calendar-plus"></i>
                                                 </button>
@@ -230,6 +238,7 @@
                                 <thead>
                                     <tr>
                                         <th class="">ID</th>
+                                        <th class="">Actions</th>
                                         <th class="">Patient Name</th>
                                         <th class="">Gender</th>
                                         <th class="">Age</th>
@@ -240,7 +249,7 @@
                                         <th class="">State</th>
                                         <th class="">Status</th>
                                         <th class="">Registered</th>
-                                        <th class="">Actions</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -250,6 +259,45 @@
                                         if (DateTime.Parse(dataRow["DateOfBirth"].ToString()).Date > DateTime.Today.AddYears(-age)) age--;
                                         <tr>
                                             <td><strong>@dataRow["PatientID"]</strong></td>
+                                            <td class="text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" onclick="viewPatient(@dataRow["PatientID"])">
+                                                                <i class="bi bi-eye"></i> View Details
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" onclick="editPatient(@dataRow["PatientID"])">
+                                                                <i class="bi bi-pencil"></i> Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
+                                                               class="dropdown-item">
+                                                                <i class="bi bi-receipt"></i> Bills
+                                                            </a>
+                                                            @* <a class="dropdown-item" href="#" onclick="viewMedicalHistory(@dataRow["PatientID"])">
+                                                                <i class="bi bi-file-medical"></i> Medical History
+                                                            </a> *@
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" onclick="bookAppointment(@dataRow["PatientID"])">
+                                                                <i class="bi bi-calendar-plus"></i> Book Appointment
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#" onclick="confirmDelete(@dataRow["PatientID"])">
+                                                                <i class="bi bi-trash"></i> Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar-sm bg-light rounded-circle me-2">
@@ -287,41 +335,7 @@
                                                     @DateTime.Parse(dataRow["Created"].ToString()).ToString("MMM dd, yyyy")
                                                 </small>
                                             </td>
-                                            <td class="text-center">
-                                                <div class="dropdown">
-                                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                        <i class="bi bi-three-dots-vertical"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="viewPatient(@dataRow["PatientID"])">
-                                                                <i class="bi bi-eye"></i> View Details
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="editPatient(@dataRow["PatientID"])">
-                                                                <i class="bi bi-pencil"></i> Edit
-                                                            </a>
-                                                        </li>
-                                                        @* <li>
-                                                            <a class="dropdown-item" href="#" onclick="viewMedicalHistory(@dataRow["PatientID"])">
-                                                                <i class="bi bi-file-medical"></i> Medical History
-                                                            </a>
-                                                        </li> *@
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="bookAppointment(@dataRow["PatientID"])">
-                                                                <i class="bi bi-calendar-plus"></i> Book Appointment
-                                                            </a>
-                                                        </li>
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li>
-                                                            <a class="dropdown-item text-danger" href="#" onclick="confirmDelete(@dataRow["PatientID"])">
-                                                                <i class="bi bi-trash"></i> Delete
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
+                                           
                                         </tr>
                                     }
                                 </tbody>
@@ -409,7 +423,7 @@
 
         // Other functions (implement as needed)
         function viewPatient(patientId) {
-            window.location.href = `/Patient/PatientDetails?PatientID=${patientId}`;
+            window.location.href = `/Patient/Details?PatientID=${patientId}`;
         }
 
         function editPatient(patientId) {

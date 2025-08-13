@@ -1,7 +1,43 @@
-@* @{
+﻿@using System.Data
+@model DataTable
+
+@{
     ViewData["Title"] = "Appointment Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
-} *@
+
+    var appointmentData = (DataTable)Model;
+    var appointmentRow = appointmentData.Rows[0];
+
+    var patientTable = (DataTable)ViewData["PatientTable"];
+    var patientRow = patientTable.Rows[0];
+
+    var doctorTable = (DataTable)ViewData["DoctorTable"];
+    var doctorRow = doctorTable.Rows[0];
+
+    var previousAppointmentsTable = (DataTable)ViewData["PreviousAppointmentsTable"];
+    var medicalRecordsTable = (DataTable)ViewData["MedicalRecordsTable"];
+    var billingTable = (DataTable)ViewData["BillingTable"];
+    var doctorDepartmentTable = (DataTable)ViewData["DoctorDepartmentTable"];
+
+    var patientAge = (int)ViewData["PatientAge"];
+    var appointmentID = (int)ViewData["AppointmentID"];
+
+    string patientInitials = patientRow["Name"].ToString().Split(' ')
+        .Select(n => n.Length > 0 ? n[0].ToString() : "")
+        .Aggregate((a, b) => a + b).ToUpper();
+
+    string doctorInitials = doctorRow["Name"].ToString()
+        .Replace("Dr. ", "", StringComparison.OrdinalIgnoreCase)
+        .Replace("Dr ", "", StringComparison.OrdinalIgnoreCase)
+        .Split(' ')
+        .Where(n => !string.IsNullOrWhiteSpace(n))
+        .Select(n => n[0].ToString())
+        .Aggregate((a, b) => a + b).ToUpper();
+
+    string departmentInfo = doctorDepartmentTable.Rows.Count > 0
+        ? doctorDepartmentTable.Rows[0]["DepartmentName"].ToString()
+        : "General";
+}
 
 <div class="pagetitle">
     <h1>Appointment Details</h1>
@@ -23,12 +59,15 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title">Appointment Information</h5>
                         <div class="d-flex gap-2">
-                            <a href="/Appointment/Edit/1" class="btn btn-primary btn-sm">
+                            <a href="/Appointment/Edit/@appointmentID" class="btn btn-primary btn-sm">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
-                            <button class="btn btn-danger btn-sm" onclick="cancelAppointment(1)">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </button>
+                            @if (appointmentRow["AppointmentStatus"].ToString() == "Scheduled")
+                            {
+                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(@appointmentID)">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </button>
+                            }
                         </div>
                     </div>
 
@@ -36,61 +75,159 @@
                         <div class="col-lg-6">
                             <div class="info-group mb-3">
                                 <label class="fw-bold">Appointment ID</label>
-                                <p>#A001</p>
+                                <p>@appointmentRow["AppointmentID"].ToString()</p>
                             </div>
                             <div class="info-group mb-3">
                                 <label class="fw-bold">Date & Time</label>
-                                <p>March 25, 2024 at 10:00 AM</p>
+                                <p>@Convert.ToDateTime(appointmentRow["AppointmentDate"]).ToString("MMMM dd, yyyy 'at' hh:mm tt")</p>
                             </div>
                             <div class="info-group mb-3">
-                                <label class="fw-bold">Type</label>
-                                <p>Follow-up Consultation</p>
+                                <label class="fw-bold">Description</label>
+                                <p>@appointmentRow["Description"]</p>
                             </div>
                             <div class="info-group mb-3">
                                 <label class="fw-bold">Status</label>
-                                <p><span class="badge bg-warning">Scheduled</span></p>
+                                <p>
+                                    @{
+                                        string status = appointmentRow["AppointmentStatus"].ToString();
+                                        string badgeClass = status switch
+                                        {
+                                            "Scheduled" => "bg-warning",
+                                            "Completed" => "bg-success",
+                                            "Cancelled" => "bg-danger",
+                                            "In Progress" => "bg-info",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@status</span>
+                                </p>
                             </div>
                         </div>
                         <div class="col-lg-6">
+                            @if (appointmentRow["TotalConsultedAmount"] != DBNull.Value)
+                            {
+                                <div class="info-group mb-3">
+                                    <label class="fw-bold">Consultation Amount</label>
+                                    <p>₹@Convert.ToDecimal(appointmentRow["TotalConsultedAmount"]).ToString("N2")</p>
+                                </div>
+                            }
                             <div class="info-group mb-3">
-                                <label class="fw-bold">Duration</label>
-                                <p>30 minutes</p>
-                            </div>
-                            <div class="info-group mb-3">
-                                <label class="fw-bold">Room</label>
-                                <p>Room 205 - Cardiology Department</p>
+                                <label class="fw-bold">Department</label>
+                                <p>@departmentInfo</p>
                             </div>
                             <div class="info-group mb-3">
                                 <label class="fw-bold">Created On</label>
-                                <p>March 15, 2024</p>
+                                <p>@Convert.ToDateTime(appointmentRow["Created"]).ToString("MMMM dd, yyyy")</p>
                             </div>
                             <div class="info-group mb-3">
                                 <label class="fw-bold">Last Updated</label>
-                                <p>March 15, 2024</p>
+                                <p>@Convert.ToDateTime(appointmentRow["Modified"]).ToString("MMMM dd, yyyy")</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-4">
-                        <label class="fw-bold">Notes</label>
-                        <p>Follow-up consultation for cardiac evaluation. Patient to bring previous test results.</p>
+                        <label class="fw-bold">Special Remarks</label>
+                        <p>@(string.IsNullOrEmpty(appointmentRow["SpecialRemarks"].ToString()) ? "No special remarks" : appointmentRow["SpecialRemarks"])</p>
                     </div>
                 </div>
             </div>
+
+
+            <!-- Billing Information Card -->
+            @if (billingTable.Rows.Count > 0)
+            {
+                var billingRow = billingTable.Rows[0];
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Billing Information</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="info-group mb-3">
+                                    <label class="fw-bold">Bill Amount</label>
+                                    <p class="text-primary">₹@Convert.ToDecimal(billingRow["BillAmount"]).ToString("N2")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-group mb-3">
+                                    <label class="fw-bold">Paid Amount</label>
+                                    <p class="text-success">₹@Convert.ToDecimal(billingRow["PaidAmount"]).ToString("N2")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-group mb-3">
+                                    <label class="fw-bold">Balance Amount</label>
+                                    <p class="text-danger">₹@Convert.ToDecimal(billingRow["BalanceAmount"]).ToString("N2")</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-group mb-3">
+                                    <label class="fw-bold">Payment Status</label>
+                                    <p>
+                                        @{
+                                            string paymentStatus = billingRow["PaymentStatus"].ToString();
+                                            string paymentBadgeClass = paymentStatus switch
+                                            {
+                                                "Paid" => "bg-success",
+                                                "Partial" => "bg-warning",
+                                                "Unpaid" => "bg-danger",
+                                                _ => "bg-secondary"
+                                            };
+                                        }
+                                        <span class="badge @paymentBadgeClass">@paymentStatus</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
 
             <!-- Medical History Card -->
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Related Medical History</h5>
                     <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-primary"></div>
-                            <div class="timeline-content">
-                                <h6>Previous Appointment</h6>
-                                <small class="text-muted">March 15, 2024 - Dr. Sarah Johnson</small>
-                                <p>Routine checkup - Normal cardiac function observed</p>
-                            </div>
-                        </div>
+                        @if (medicalRecordsTable.Rows.Count > 0)
+                        {
+                            @foreach (DataRow record in medicalRecordsTable.Rows)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-primary"></div>
+                                    <div class="timeline-content">
+                                        <h6>Medical Record - @record["DoctorName"]</h6>
+                                        <small class="text-muted">@Convert.ToDateTime(record["VisitDate"]).ToString("MMMM dd, yyyy") - @record["DoctorSpecialization"]</small>
+                                        <p><strong>Diagnosis:</strong> @record["Diagnosis"]</p>
+                                        @if (!string.IsNullOrEmpty(record["Treatment"].ToString()))
+                                        {
+                                            <p><strong>Treatment:</strong> @record["Treatment"]</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (previousAppointmentsTable.Rows.Count > 0)
+                        {
+                            @foreach (DataRow appointment in previousAppointmentsTable.Rows)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-info"></div>
+                                    <div class="timeline-content">
+                                        <h6>Previous Appointment - @appointment["DoctorName"]</h6>
+                                        <small class="text-muted">@Convert.ToDateTime(appointment["AppointmentDate"]).ToString("MMMM dd, yyyy") - @appointment["DoctorSpecialization"]</small>
+                                        <p>@appointment["Description"]</p>
+                                        @if (!string.IsNullOrEmpty(appointment["SpecialRemarks"].ToString()))
+                                        {
+                                            <p><strong>Remarks:</strong> @appointment["SpecialRemarks"]</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (medicalRecordsTable.Rows.Count == 0 && previousAppointmentsTable.Rows.Count == 0)
+                        {
+                            <p class="text-muted">No medical history available for this patient.</p>
+                        }
                     </div>
                 </div>
             </div>
@@ -104,30 +241,40 @@
                     <div class="d-flex flex-column align-items-center">
                         <div class="avatar-lg mb-3">
                             <span class="avatar-title rounded-circle bg-primary text-white fs-2">
-                                JS
+                                @patientInitials
                             </span>
                         </div>
-                        <h6 class="mb-0">John Smith</h6>
-                        <small class="text-muted mb-3">#P001</small>
-                        <a href="/Patient/Details/1" class="btn btn-outline-primary btn-sm">View Full Profile</a>
+                        <h6 class="mb-0">@patientRow["Name"]</h6>
+                        <small class="text-muted mb-3">@patientRow["PatientID"].ToString()</small>
+                        <a asp-controller="Patient"
+                           asp-action="Details"
+                           asp-route-PatientID="@patientRow["PatientID"]"
+                           class="btn btn-outline-primary btn-sm">
+                            View Full Profile
+                        </a>
+
                     </div>
                     <hr>
                     <div class="patient-details mt-3">
                         <div class="info-group mb-2">
                             <label class="fw-bold">Age</label>
-                            <p>35 Years</p>
+                            <p>@patientAge Years</p>
                         </div>
                         <div class="info-group mb-2">
                             <label class="fw-bold">Gender</label>
-                            <p>Male</p>
+                            <p>@patientRow["Gender"]</p>
                         </div>
                         <div class="info-group mb-2">
                             <label class="fw-bold">Phone</label>
-                            <p>+1 234 567 8901</p>
+                            <p>@patientRow["Phone"]</p>
                         </div>
                         <div class="info-group mb-2">
                             <label class="fw-bold">Email</label>
-                            <p>john.smith@email.com</p>
+                            <p>@patientRow["Email"]</p>
+                        </div>
+                        <div class="info-group mb-2">
+                            <label class="fw-bold">Address</label>
+                            <p>@patientRow["Address"], @patientRow["City"], @patientRow["State"]</p>
                         </div>
                     </div>
                 </div>
@@ -140,26 +287,42 @@
                     <div class="d-flex flex-column align-items-center">
                         <div class="avatar-lg mb-3">
                             <span class="avatar-title rounded-circle bg-info text-white fs-2">
-                                SJ
+                                @doctorInitials
                             </span>
                         </div>
-                        <h6 class="mb-0">Dr. Sarah Johnson</h6>
-                        <small class="text-muted mb-2">Cardiologist</small>
-                        <a href="/Doctor/Details/1" class="btn btn-outline-info btn-sm">View Profile</a>
+                        <h6 class="mb-0">@doctorRow["Name"]</h6>
+                        <small class="text-muted mb-2">@doctorRow["Specialization"]</small>
+
+                        <a asp-controller="Doctor"
+                           asp-action="Details"
+                           asp-route-DoctorID="@doctorRow["DoctorID"]"
+                           class="btn btn-outline-primary btn-sm">
+                            View Full Profile
+                        </a>
+
+                       
                     </div>
                     <hr>
                     <div class="doctor-details mt-3">
                         <div class="info-group mb-2">
                             <label class="fw-bold">Specialization</label>
-                            <p>Cardiology</p>
+                            <p>@doctorRow["Specialization"]</p>
                         </div>
                         <div class="info-group mb-2">
-                            <label class="fw-bold">Experience</label>
-                            <p>12 Years</p>
+                            <label class="fw-bold">Qualification</label>
+                            <p>@doctorRow["Qualification"]</p>
+                        </div>
+                        <div class="info-group mb-2">
+                            <label class="fw-bold">Department</label>
+                            <p>@departmentInfo</p>
                         </div>
                         <div class="info-group mb-2">
                             <label class="fw-bold">Contact</label>
-                            <p>+1 234 567 8902</p>
+                            <p>@doctorRow["Phone"]</p>
+                        </div>
+                        <div class="info-group mb-2">
+                            <label class="fw-bold">Email</label>
+                            <p>@doctorRow["Email"]</p>
                         </div>
                     </div>
                 </div>
@@ -189,10 +352,12 @@
         display: block;
         margin-bottom: 0.2rem;
         color: #6c757d;
+        font-size: 0.9rem;
     }
 
     .info-group p {
         margin-bottom: 0;
+        font-weight: 500;
     }
 
     .timeline {
@@ -200,15 +365,15 @@
         padding-left: 2rem;
     }
 
-    .timeline::before {
-        content: '';
-        position: absolute;
-        left: 0.75rem;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background-color: #dee2e6;
-    }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #dee2e6;
+        }
 
     .timeline-item {
         position: relative;
@@ -229,16 +394,48 @@
         background-color: #f8f9fa;
         padding: 1rem;
         border-radius: 0.375rem;
+        margin-left: 0.5rem;
     }
+
+        .timeline-content h6 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+
+        .timeline-content p {
+            margin-bottom: 0.5rem;
+        }
+
+            .timeline-content p:last-child {
+                margin-bottom: 0;
+            }
 </style>
 
-@* @section Scripts {
+@section Scripts {
     <script>
         function cancelAppointment(id) {
             if (confirm('Are you sure you want to cancel this appointment? This action cannot be undone.')) {
-                // TODO: Implement appointment cancellation
-                console.log('Cancelling appointment:', id);
+                // Send AJAX request to cancel appointment
+                fetch('/Appointment/Cancel/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Appointment cancelled successfully');
+                        location.reload();
+                    } else {
+                        alert('Failed to cancel appointment');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error occurred while cancelling appointment');
+                });
             }
         }
     </script>
-} *@
+}

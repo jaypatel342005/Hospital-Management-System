@@ -24,7 +24,7 @@
         padding-bottom: 1.5rem !important;
     }
 
-    .pagetitle {
+    /* .pagetitle {
         margin-bottom: 1rem;
     }
 
@@ -33,9 +33,9 @@
             font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
-        }
+        } */
 
-    .breadcrumb {
+    /* .breadcrumb {
         background: transparent;
         padding: 0;
         margin: 0;
@@ -53,7 +53,7 @@
 
     .breadcrumb-item.active {
         color: #6c757d;
-    }
+    } */
 
     .card {
         border: none;
@@ -330,7 +330,19 @@
 <div class="container-fluid py-4">
     <section class="section" id="doctors" data-aos="fade-up">
         @* Page Title & Breadcrumb *@
+
         <div class="pagetitle">
+            <h1>Doctor Management</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item active">Doctors</li>
+                </ol>
+            </nav>
+        </div>
+
+
+        @* <div class="pagetitle">
             <h1><i class="bi bi-people me-2"></i>Doctor Management</h1>
             <nav>
                 <ol class="breadcrumb">
@@ -342,7 +354,7 @@
                     <li class="breadcrumb-item active">Doctors</li>
                 </ol>
             </nav>
-        </div>
+        </div> *@
 
         @* Quick Stats *@
         <div class="row mb-4">
@@ -513,9 +525,14 @@
                                 </div>
 
                                 <div class="action-buttons">
-                                    <button class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
+                                    @* <button asp-controller="Doctor" asp-action="Details" asp-route-DepartmentID="@dataRow["DoctorID"]" class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
                                         <i class="bi bi-eye"></i>
-                                    </button>
+                                    </button> *@
+                                    <form asp-controller="Doctor" asp-action="Details" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
+                                        <button  class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </form>
                                     @* <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
                                         <i class="bi bi-pencil"></i>
                                     </button> *@

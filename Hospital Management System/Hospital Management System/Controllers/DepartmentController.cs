@@ -163,9 +163,59 @@ namespace Hospital_Management_System.Controllers
 
 
 
-        public IActionResult Details()
+        public IActionResult Details(int DepartmentID)
         {
-            return View();
+            string connectionString = this._configuration.GetConnectionString("ConnectionString");
+
+            // Get Department Details
+            DataTable departmentTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "PR_Departments_SelectByPK";
+                command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = DepartmentID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                departmentTable = new DataTable();
+                departmentTable.Load(reader);
+            }
+
+            // Get Department Staff (Doctors)
+            DataTable staffTable;
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"
+            SELECT 
+                d.DoctorID,
+                d.Name,
+                d.Phone,
+                d.Email,
+                d.Qualification,
+                d.Specialization,
+                d.IsActive,
+                d.Created,
+                u.UserName as CreatedBy
+            FROM Doctors d
+            INNER JOIN DoctorDepartments dd ON d.DoctorID = dd.DoctorID
+            INNER JOIN Users u ON d.UserID = u.UserID
+            WHERE dd.DepartmentID = @DepartmentID
+            AND d.IsActive = 1
+            ORDER BY d.Name";
+                command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = DepartmentID;
+                connection.Open();
+                using var reader = command.ExecuteReader();
+                staffTable = new DataTable();
+                staffTable.Load(reader);
+            }
+
+            // Pass data to the view
+            ViewData["DepartmentID"] = DepartmentID;
+            ViewData["StaffTable"] = staffTable;
+
+            return View(departmentTable);
         }
 
         public IActionResult AddEdit()

@@ -1,3 +1,14 @@
+@using System.Data
+@model DataTable
+@{
+    ViewData["Title"] = "Doctor Details";
+    var doctor = Model.Rows.Count > 0 ? Model.Rows[0] : null;
+    var departments = ViewData["DepartmentsTable"] as DataTable;
+    var appointments = ViewData["AppointmentsTable"] as DataTable;
+    var stats = ViewData["StatsTable"] as DataTable;
+    var doctorStats = stats?.Rows.Count > 0 ? stats.Rows[0] : null;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,11 +107,77 @@
             flex-grow: 1;
         }
 
+
+        .avatar1 {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            border: 3px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-title1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4154f1;
+        }
+
+        .doctor-card:hover .avatar1 {
+            border-color: #4154f1;
+            transform: scale(1.05);
+        }
+
+
         .profile-card img {
             width: 120px;
             height: 120px;
             object-fit: cover;
         }
+
+
+        .quick-stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .icon-blue {
+            background-color: #4e5eff;
+        }
+
+        .icon-green {
+            background-color: #2eca6a;
+        }
+
+        .icon-orange {
+            background-color: #ff771d;
+        }
+
+        .icon-red {
+            background-color: #bb0852;
+        }
+
+        .quick-stat h6 {
+            margin-bottom: 2px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .quick-stat small {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+
     </style>
 </head>
 <body>
@@ -110,397 +187,373 @@
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Doctors</a></li>
+                    <li class="breadcrumb-item"><a href="~/Doctor/Index">Doctors</a></li>
                     <li class="breadcrumb-item active">Details</li>
                 </ol>
             </nav>
         </div>
 
-        <section class="section profile">
-            <div class="row">
-                <!-- Doctor Profile Card -->
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                            <img src="https://via.placeholder.com/120x120?text=DR"
-                                 alt="Doctor Sarah Johnson"
-                                 class="rounded-circle">
-                            <h2 class="mt-3">Dr. Sarah Johnson</h2>
-                            <h3 class="text-muted">Cardiology Specialist</h3>
-                            <div class="social-links mt-3">
-                                <a href="mailto:sarah.johnson@hospital.com" class="email me-2" title="Email">
-                                    <i class="bi bi-envelope-fill"></i>
-                                </a>
-                                <a href="tel:+1234567890" class="phone me-2" title="Phone">
-                                    <i class="bi bi-telephone-fill"></i>
-                                </a>
-                                <a href="#" class="linkedin me-2" title="LinkedIn">
-                                    <i class="bi bi-linkedin"></i>
-                                </a>
+        @if (doctor != null)
+        {
+            var doctorName = doctor["Name"].ToString();
+            var cleanName = doctorName.Replace("Dr.", "").Replace("DR.", "").Replace("dr.", "").Trim();
+            var firstLetter = !string.IsNullOrEmpty(cleanName) ? cleanName.Substring(0, 1).ToUpper() : "D";
+            var isActive = doctor["IsActive"].ToString().ToLower() == "true";
+            <section class="section profile">
+                <div class="row">
+                    <!-- Doctor Profile Card -->
+                    <div class="col-xl-4">
+                        <div class="card">
+                            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                                <div class="avatar1 bg-light rounded-circle">
+                                    <span class="avatar-title1">@firstLetter</span>
+                                </div>
+                                <h2 class="mt-3">@doctor["Name"]</h2>
+                                <h3 class="text-muted">@doctor["Specialization"]</h3>
+                                
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Quick Stats Card -->
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Quick Stats</h5>
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #4154f1; color: white;">
+                        </div>
+
+                        <!-- Quick Stats Card -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Quick Stats</h5>
+                                <div class="row g-3">
+                                    <!-- Total Appointments -->
+                                    <div class="col-6 quick-stat d-flex align-items-center">
+                                        <div class="quick-stat-icon icon-blue me-3">
                                             <i class="bi bi-calendar-check"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0">245</h6>
-                                            <small class="text-muted">Total Appointments</small>
+                                            <h6>@(doctorStats?["TotalAppointments"] ?? 0)</h6>
+                                            <small>Total Appointments</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #2eca6a; color: white;">
+
+                                    <!-- Unique Patients -->
+                                    <div class="col-6 quick-stat d-flex align-items-center">
+                                        <div class="quick-stat-icon icon-green me-3">
                                             <i class="bi bi-people"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0">189</h6>
-                                            <small class="text-muted">Unique Patients</small>
+                                            <h6>@(doctorStats?["UniquePatients"] ?? 0)</h6>
+                                            <small>Unique Patients</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #ff771d; color: white;">
+
+                                    <!-- Today's Appointments -->
+                                    <div class="col-6 quick-stat d-flex align-items-center">
+                                        <div class="quick-stat-icon icon-orange me-3">
                                             <i class="bi bi-calendar-event"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0">8</h6>
-                                            <small class="text-muted">Today's Appointments</small>
+                                            <h6>@(doctorStats?["TodaysAppointments"] ?? 0)</h6>
+                                            <small>Today's Appointments</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; background-color: #bb0852; color: white;">
+
+                                    <!-- Departments -->
+                                    <div class="col-6 quick-stat d-flex align-items-center">
+                                        <div class="quick-stat-icon icon-red me-3">
                                             <i class="bi bi-diagram-3"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0">3</h6>
-                                            <small class="text-muted">Departments</small>
+                                            <h6>@(doctorStats?["TotalDepartments"] ?? 0)</h6>
+                                            <small>Departments</small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <!-- Action Buttons -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Actions</h5>
+                                <div class="d-grid gap-2">
+                                    <a asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i> Edit Doctor
+                                    </a>
+                                    <a href="~/Appointment/Index" class="btn btn-info">
+                                        <i class="bi bi-calendar-event"></i> View Appointments
+                                    </a>
 
-                    <!-- Action Buttons -->
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Actions</h5>
-                            <div class="d-grid gap-2">
-                                <a href="#" class="btn btn-primary">
-                                    <i class="bi bi-pencil-square"></i> Edit Doctor
-                                </a>
-                                <a href="#" class="btn btn-info">
-                                    <i class="bi bi-calendar-event"></i> View Appointments
-                                </a>
-                                <a href="#" class="btn btn-success">
-                                    <i class="bi bi-file-medical"></i> Medical Records
-                                </a>
-                                <a href="#" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this doctor?')">
-                                    <i class="bi bi-pause-circle"></i> Deactivate
-                                </a>
-                                <a href="#" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left"></i> Back to List
-                                </a>
+                                    <a asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this doctor?')">
+                                        <i class="bi bi-@(isActive ? "eye-slash" : "eye")"></i> @(isActive ? "Deactivate" : "Activate")
+                                    </a>
+                                    <a href="@Url.Action("index")" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left"></i> Back to List
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Main Content -->
-                <div class="col-xl-8">
-                    <div class="card">
-                        <div class="card-body pt-3">
-                            <!-- Tab Navigation -->
-                            <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-                                        <i class="bi bi-person-circle me-1"></i> Overview
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#departments" type="button" role="tab">
-                                        <i class="bi bi-diagram-3 me-1"></i> Departments
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
-                                        <i class="bi bi-calendar-event me-1"></i> Recent Appointments
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
-                                        <i class="bi bi-activity me-1"></i> Activity Log
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <!-- Tab Content -->
-                            <div class="tab-content pt-3">
-                                <!-- Overview Tab -->
-                                <div class="tab-pane fade show active profile-overview" id="overview" role="tabpanel">
-                                    <h5 class="card-title">Profile Details</h5>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Doctor ID</div>
-                                        <div class="col-lg-9 col-md-8">
-                                            <span class="badge bg-light text-dark">DOC-001</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Full Name</div>
-                                        <div class="col-lg-9 col-md-8">Dr. Sarah Johnson</div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Specialization</div>
-                                        <div class="col-lg-9 col-md-8">
-                                            <span class="badge bg-primary">Cardiology</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Qualification</div>
-                                        <div class="col-lg-9 col-md-8">MD, FACC, Board Certified Cardiologist</div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Email</div>
-                                        <div class="col-lg-9 col-md-8">
-                                            <i class="bi bi-envelope me-2"></i>
-                                            <a href="mailto:sarah.johnson@hospital.com">sarah.johnson@hospital.com</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Phone</div>
-                                        <div class="col-lg-9 col-md-8">
-                                            <i class="bi bi-telephone me-2"></i>
-                                            <a href="tel:+1234567890">+1 (234) 567-8900</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Status</div>
-                                        <div class="col-lg-9 col-md-8">
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle me-1"></i> Active
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Created Date</div>
-                                        <div class="col-lg-9 col-md-8">Jan 15, 2023</div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Last Modified</div>
-                                        <div class="col-lg-9 col-md-8">Dec 20, 2024 02:30 PM</div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-lg-3 col-md-4 label fw-bold">Created By</div>
-                                        <div class="col-lg-9 col-md-8">Admin User</div>
-                                    </div>
-                                </div>
-
-                                <!-- Departments Tab -->
-                                <div class="tab-pane fade pt-3" id="departments" role="tabpanel">
-                                    <h5 class="card-title">Assigned Departments</h5>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card border-primary">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        <i class="bi bi-building text-primary me-2"></i>
-                                                        Cardiology
-                                                    </h6>
-                                                    <p class="card-text small text-muted">Heart and cardiovascular system care</p>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="badge bg-primary">Active</span>
-                                                        <small class="text-muted">Since: Jan 2023</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card border-primary">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        <i class="bi bi-building text-primary me-2"></i>
-                                                        Emergency Medicine
-                                                    </h6>
-                                                    <p class="card-text small text-muted">Emergency and critical care services</p>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="badge bg-primary">Active</span>
-                                                        <small class="text-muted">Since: Mar 2023</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card border-primary">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        <i class="bi bi-building text-primary me-2"></i>
-                                                        Internal Medicine
-                                                    </h6>
-                                                    <p class="card-text small text-muted">General internal medicine and consultation</p>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="badge bg-primary">Active</span>
-                                                        <small class="text-muted">Since: Jun 2023</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-3">
-                                        <a href="#" class="btn btn-warning me-2">
-                                            <i class="bi bi-diagram-3"></i> Manage Departments
-                                        </a>
-                                        <button type="button" class="btn btn-primary" onclick="assignDepartment()">
-                                            <i class="bi bi-plus-circle"></i> Assign New Department
+                    <!-- Main Content -->
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-body pt-3">
+                                <!-- Tab Navigation -->
+                                <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                                            <i class="bi bi-person-circle me-1"></i> Overview
                                         </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#departments" type="button" role="tab">
+                                            <i class="bi bi-diagram-3 me-1"></i> Departments
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
+                                            <i class="bi bi-calendar-event me-1"></i> Recent Appointments
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
+                                            <i class="bi bi-activity me-1"></i> Activity Log
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <!-- Tab Content -->
+                                <div class="tab-content pt-3">
+                                    <!-- Overview Tab -->
+                                    <div class="tab-pane fade show active profile-overview" id="overview" role="tabpanel">
+                                        <h5 class="card-title">Profile Details</h5>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Doctor ID</div>
+                                            <div class="col-lg-9 col-md-8">
+                                                <span class="badge bg-light text-dark">DOC-@doctor["DoctorID"]</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Full Name</div>
+                                            <div class="col-lg-9 col-md-8">@doctor["Name"]</div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Specialization</div>
+                                            <div class="col-lg-9 col-md-8">
+                                                <span class="badge bg-primary">@doctor["Specialization"]</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Qualification</div>
+                                            <div class="col-lg-9 col-md-8">@doctor["Qualification"]</div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Email</div>
+                                            <div class="col-lg-9 col-md-8">
+                                                <i class="bi bi-envelope me-2"></i>
+                                                <a href="mailto:@doctor["Email"]">@doctor["Email"]</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Phone</div>
+                                            <div class="col-lg-9 col-md-8">
+                                                <i class="bi bi-telephone me-2"></i>
+                                                <a href="tel:@doctor["Phone"]">@doctor["Phone"]</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Status</div>
+                                            <div class="col-lg-9 col-md-8">
+                                                @if (Convert.ToBoolean(doctor["IsActive"]))
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle me-1"></i> Active
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="bi bi-x-circle me-1"></i> Inactive
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Created Date</div>
+                                            <div class="col-lg-9 col-md-8">@Convert.ToDateTime(doctor["Created"]).ToString("MMM dd, yyyy")</div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Last Modified</div>
+                                            <div class="col-lg-9 col-md-8">@Convert.ToDateTime(doctor["Modified"]).ToString("MMM dd, yyyy hh:mm tt")</div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-lg-3 col-md-4 label fw-bold">Created By</div>
+                                            <div class="col-lg-9 col-md-8">@doctor["UserName"]</div>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Recent Appointments Tab -->
-                                <div class="tab-pane fade pt-3" id="appointments" role="tabpanel">
-                                    <h5 class="card-title">Recent Appointments</h5>
+                                    <!-- Departments Tab -->
+                                    <div class="tab-pane fade pt-3" id="departments" role="tabpanel">
+                                        <h5 class="card-title">Assigned Departments</h5>
 
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Patient</th>
-                                                    <th>Status</th>
-                                                    <th>Amount</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Dec 20, 2024 10:00 AM</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="avatar avatar-sm me-2">
-                                                                <span class="avatar-text">J</span>
+                                        <div class="row">
+                                            @if (departments != null && departments.Rows.Count > 0)
+                                            {
+                                                foreach (DataRow dept in departments.Rows)
+                                                {
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="card border-primary">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title">
+                                                                    <i class="bi bi-building text-primary me-2"></i>
+                                                                    @dept["DepartmentName"]
+                                                                </h6>
+                                                                <p class="card-text small text-muted">@dept["Description"]</p>
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <span class="badge bg-primary">Active</span>
+                                                                    <small class="text-muted">Since: @Convert.ToDateTime(dept["AssignedDate"]).ToString("MMM yyyy")</small>
+                                                                </div>
                                                             </div>
-                                                            John Smith
                                                         </div>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge bg-success">Completed</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="text-success fw-bold">$150.00</span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Dec 19, 2024 02:30 PM</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="avatar avatar-sm me-2">
-                                                                <span class="avatar-text">M</span>
-                                                            </div>
-                                                            Mary Johnson
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge bg-warning">Scheduled</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="text-muted">-</span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Dec 18, 2024 11:15 AM</td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="avatar avatar-sm me-2">
-                                                                <span class="avatar-text">R</span>
-                                                            </div>
-                                                            Robert Davis
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge bg-danger">Cancelled</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="text-muted">-</span>
-                                                    </td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="col-12">
+                                                    <div class="alert alert-info">
+                                                        <i class="bi bi-info-circle me-2"></i>
+                                                        No departments assigned to this doctor.
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <a href="~/DoctorDepartment/Index" class="btn btn-warning me-2">
+                                                <i class="bi bi-diagram-3"></i> Manage Departments
+                                            </a>
+                                            
+                                            @* <button type="button" class="btn btn-primary" onclick="assignDepartment()">
+                                                <i class="bi bi-plus-circle"></i> Assign New Department
+                                            </button> *@
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Activity Log Tab -->
-                                <div class="tab-pane fade pt-3" id="activity" role="tabpanel">
-                                    <h5 class="card-title">Recent Activity</h5>
+                                    <!-- Recent Appointments Tab -->
+                                    <div class="tab-pane fade pt-3" id="appointments" role="tabpanel">
+                                        <h5 class="card-title">Recent Appointments</h5>
 
-                                    <div class="activity">
-                                        <div class="activity-item d-flex">
-                                            <div class="activite-label">Dec 20</div>
-                                            <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
-                                            <div class="activity-content">
-                                                Doctor profile updated by <strong>Admin User</strong>
-                                            </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Date</th>
+                                                        <th>Patient</th>
+                                                        <th>Status</th>
+                                                        <th>Amount</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (appointments != null && appointments.Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow appt in appointments.Rows)
+                                                        {
+                                                            <tr>
+                                                                <td>@Convert.ToDateTime(appt["AppointmentDate"]).ToString("MMM dd, yyyy hh:mm tt")</td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <div class="avatar avatar-sm me-2">
+                                                                            <span class="avatar-text">@(appt["PatientName"].ToString().Substring(0, 1).ToUpper())</span>
+                                                                        </div>
+                                                                        @appt["PatientName"]
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    @{
+                                                                        var status = appt["AppointmentStatus"].ToString();
+                                                                        var badgeClass = status.ToLower() switch
+                                                                        {
+                                                                            "completed" => "bg-success",
+                                                                            "scheduled" => "bg-warning",
+                                                                            "cancelled" => "bg-danger",
+                                                                            _ => "bg-secondary"
+                                                                        };
+                                                                    }
+                                                                    <span class="badge @badgeClass">@status</span>
+                                                                </td>
+                                                                <td>
+                                                                    @if (appt["TotalConsultedAmount"] != DBNull.Value && Convert.ToDecimal(appt["TotalConsultedAmount"]) > 0)
+                                                                    {
+                                                                        <span class="text-success fw-bold"><i class="bi bi-currency-rupee"></i>@Convert.ToDecimal(appt["TotalConsultedAmount"]).ToString("F2")</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="text-muted">-</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <a asp-controller="Appointment" asp-action="Details" asp-route-AppointmentID="@appt["AppointmentID"]" class="btn btn-sm btn-outline-primary">
+                                                                        <i class="bi bi-eye"></i>
+
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="5" class="text-center text-muted">
+                                                                <i class="bi bi-calendar-x me-2"></i>
+                                                                No appointments found for this doctor.
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
                                         </div>
+                                    </div>
 
-                                        <div class="activity-item d-flex">
-                                            <div class="activite-label">Jun 15</div>
-                                            <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
-                                            <div class="activity-content">
-                                                Assigned to <strong>Internal Medicine</strong> department
+                                    <!-- Activity Log Tab -->
+                                    <div class="tab-pane fade pt-3" id="activity" role="tabpanel">
+                                        <h5 class="card-title">Recent Activity</h5>
+
+                                        <div class="activity">
+                                            <div class="activity-item d-flex">
+                                                <div class="activite-label">@Convert.ToDateTime(doctor["Modified"]).ToString("MMM dd")</div>
+                                                <i class="bi bi-circle-fill activity-badge text-primary align-self-start"></i>
+                                                <div class="activity-content">
+                                                    Doctor profile updated by <strong>@doctor["UserName"]</strong>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="activity-item d-flex">
-                                            <div class="activite-label">Mar 10</div>
-                                            <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
-                                            <div class="activity-content">
-                                                Assigned to <strong>Emergency Medicine</strong> department
-                                            </div>
-                                        </div>
+                                            @if (departments != null && departments.Rows.Count > 0)
+                                            {
+                                                foreach (DataRow dept in departments.Rows)
+                                                {
+                                                    <div class="activity-item d-flex">
+                                                        <div class="activite-label">@Convert.ToDateTime(dept["AssignedDate"]).ToString("MMM dd")</div>
+                                                        <i class="bi bi-circle-fill activity-badge text-info align-self-start"></i>
+                                                        <div class="activity-content">
+                                                            Assigned to <strong>@dept["DepartmentName"]</strong> department
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
 
-                                        <div class="activity-item d-flex">
-                                            <div class="activite-label">Jan 15</div>
-                                            <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
-                                            <div class="activity-content">
-                                                Doctor profile created by <strong>Admin User</strong>
+                                            <div class="activity-item d-flex">
+                                                <div class="activite-label">@Convert.ToDateTime(doctor["Created"]).ToString("MMM dd")</div>
+                                                <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                                                <div class="activity-content">
+                                                    Doctor profile created by <strong>@doctor["UserName"]</strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -509,8 +562,21 @@
                         </div>
                     </div>
                 </div>
+            </section>
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Doctor Not Found!</h4>
+                <p>The requested doctor could not be found in the system.</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="@Url.Action("DoctorList")" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Doctor List
+                    </a>
+                </p>
             </div>
-        </section>
+        }
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

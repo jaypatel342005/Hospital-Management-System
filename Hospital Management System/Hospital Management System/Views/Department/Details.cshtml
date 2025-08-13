@@ -1,8 +1,11 @@
-@* @{
+@using System.Data
+@model DataTable
+@{
     ViewData["Title"] = "Department Details";
-} *@
+    var department = Model.Rows.Count > 0 ? Model.Rows[0] : null;
+}
 
-@* <div class="pagetitle">
+<div class="pagetitle">
     <h1>Department Details</h1>
     <nav>
         <ol class="breadcrumb">
@@ -11,25 +14,11 @@
             <li class="breadcrumb-item active">Details</li>
         </ol>
     </nav>
-</div> *@
+</div>
 
 <section class="section profile">
     <div class="row">
-        <div class="col-xl-4">
-            <div class="card">
-                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                    <img src="~/img/departments/default-department.jpg" alt="Department" class="rounded-circle">
-                    <h2>Cardiology Department</h2>
-                    <h3>Dr. John Smith</h3>
-                    <div class="social-links mt-2">
-                        <a href="#" class="twitter"><i class="bi bi-envelope"></i></a>
-                        <a href="#" class="facebook"><i class="bi bi-telephone"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-8">
+        <div class="col-xl-12">
             <div class="card">
                 <div class="card-body pt-3">
                     <ul class="nav nav-tabs nav-tabs-bordered">
@@ -39,110 +28,185 @@
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#staff">Staff</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#facilities">Facilities</button>
-                        </li>
+                        
                     </ul>
 
                     <div class="tab-content pt-2">
                         <div class="tab-pane fade show active profile-overview" id="overview">
                             <h5 class="card-title">Department Details</h5>
 
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Department Name</div>
-                                <div class="col-lg-9 col-md-8">Cardiology</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Head of Department</div>
-                                <div class="col-lg-9 col-md-8">Dr. John Smith</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Location</div>
-                                <div class="col-lg-9 col-md-8">Building A, 3rd Floor</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Contact Number</div>
-                                <div class="col-lg-9 col-md-8">+1 (123) 456-7890</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Email</div>
-                                <div class="col-lg-9 col-md-8">cardiology@hospital.com</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3 col-md-4 label">Status</div>
-                                <div class="col-lg-9 col-md-8">
-                                    <span class="badge bg-success">Active</span>
+                            @if (department != null)
+                            {
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Department Name</div>
+                                    <div class="col-lg-9 col-md-8">@department["DepartmentName"]</div>
                                 </div>
-                            </div>
 
-                            <h5 class="card-title">Description</h5>
-                            <p class="small fst-italic">
-                                The Cardiology Department specializes in diagnosing and treating heart diseases and related conditions.
-                                Our team of experienced cardiologists provides comprehensive care using state-of-the-art technology.
-                            </p>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Department ID</div>
+                                    <div class="col-lg-9 col-md-8">@department["DepartmentID"]</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Created By</div>
+                                    <div class="col-lg-9 col-md-8">@department["UserName"]</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Created Date</div>
+                                    <div class="col-lg-9 col-md-8">@Convert.ToDateTime(department["Created"]).ToString("dd/MM/yyyy hh:mm tt")</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Last Modified</div>
+                                    <div class="col-lg-9 col-md-8">@Convert.ToDateTime(department["Modified"]).ToString("dd/MM/yyyy hh:mm tt")</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Status</div>
+                                    <div class="col-lg-9 col-md-8">
+                                        @if (Convert.ToBoolean(department["IsActive"]))
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <h5 class="card-title">Description</h5>
+                                <p class="small fst-italic">
+                                    @if (!string.IsNullOrEmpty(department["Description"]?.ToString()))
+                                    {
+                                        @department["Description"]
+                                    }
+                                    else
+                                    {
+                                        <em>No description available.</em>
+                                    }
+                                </p>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Department not found or no data available.
+                                </div>
+                            }
                         </div>
 
                         <div class="tab-pane fade profile-edit pt-3" id="staff">
-                            <h5 class="card-title">Staff Members</h5>
+                            <h5 class="card-title">Staff Members (Doctors)</h5>
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Position</th>
+                                            <th>Specialization</th>
+                                            <th>Qualification</th>
                                             <th>Contact</th>
+                                            <th>Email</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @* Will be populated from controller *@
+                                        @{
+                                            DataTable staffTable = ViewData["StaffTable"] as DataTable;
+                                        }
+                                        @if (staffTable != null && staffTable.Rows.Count > 0)
+                                        {
+                                            @foreach (DataRow staff in staffTable.Rows)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <strong>@staff["Name"]</strong>
+                                                        <br>
+                                                        <small class="text-muted">ID: @staff["DoctorID"]</small>
+                                                    </td>
+                                                    <td>@staff["Specialization"]</td>
+                                                    <td>@staff["Qualification"]</td>
+                                                    <td>@staff["Phone"]</td>
+                                                    <td>@staff["Email"]</td>
+                                                    <td>
+                                                        @if (Convert.ToBoolean(staff["IsActive"]))
+                                                        {
+                                                            <span class="badge bg-success">Active</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-danger">Inactive</span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">
+                                                    <i class="bi bi-people"></i>
+                                                    <br>
+                                                    <em>No doctors are currently assigned to this department.</em>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            @if (staffTable != null && staffTable.Rows.Count > 0)
+                            {
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle"></i>
+                                        Total doctors in this department: <strong>@staffTable.Rows.Count</strong>
+                                    </small>
+                                </div>
+                            }
                         </div>
 
-                        <div class="tab-pane fade pt-3" id="facilities">
-                            <h5 class="card-title">Department Facilities</h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Operating Rooms</h5>
-                                            <p class="card-text">3 fully equipped operating rooms</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                @* More facilities will be populated from controller *@
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
 
-            @* <div class="card">
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Actions</h5>
-                    <a href="@Url.Action("Manage", "Department", new { id = ViewData["DepartmentId"] })" class="btn btn-primary">
+                    <a  asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID=@ViewData["DepartmentID"] class="btn btn-primary">
                         <i class="bi bi-pencil"></i> Edit Department
                     </a>
                     <a href="@Url.Action("Index", "Department")" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to List
                     </a>
                 </div>
-            </div> *@
+            </div>
         </div>
     </div>
 </section>
 
-@* @section Scripts {
+
+    <style>
+         .table th {
+        background-color: #c0c0c0;
+        font-size: 1.2rem;
+    }
+    </style>
+
+@section Scripts {
     <script>
         $(document).ready(function() {
-            // Any additional JavaScript for the details page
+            // Initialize Bootstrap tabs if needed
+            var triggerTabList = [].slice.call(document.querySelectorAll('#myTab button'))
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl)
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    tabTrigger.show()
+                })
+            })
         });
     </script>
-} *@
+}

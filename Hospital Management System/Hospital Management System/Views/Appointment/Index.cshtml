@@ -34,8 +34,18 @@
             </nav>
         </div> *@
 
-
         <div class="pagetitle">
+    <h1>Appointments</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item active">Appointments</li>
+        </ol>
+    </nav>
+</div>
+
+
+@*         <div class="pagetitle">
 <h1><i class="bi bi-calendar-event"></i> Appointments Management</h1>
             <nav>
                 <ol class="breadcrumb">
@@ -47,7 +57,7 @@
                     <li class="breadcrumb-item active">Appointments</li>
                 </ol>
             </nav>
-        </div>
+        </div> *@
 
         <!-- Stats Cards -->
         <div class="row stats-cards">
@@ -328,10 +338,14 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm">
-                                <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" 
+                                <a href="@Url.Action("Details", "Appointment", new { AppointmentID = row["AppointmentID"] })" 
                                    class="btn btn-outline-primary" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                <a href="@Url.Action("GetBillingByAppointment", "Billing", new { AppointmentID = row["AppointmentID"] })" 
+           class="btn btn-outline-success" title="View Bills">
+            <i class="bi bi-receipt"></i>
+        </a>
                                 @* <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" 
                                    class="btn btn-outline-warning" title="Edit">
                                     <i class="bi bi-pencil"></i>
@@ -455,9 +469,13 @@
                                         </div>
                                     </div>
                                     <div class="appointment-card-actions">
-                                        <a href="@Url.Action("Details", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-primary">
+                                        <a href="@Url.Action("Details", "Appointment", new { AppointmentID = row["AppointmentID"] })" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i> View
                                         </a>
+                                        <a href="@Url.Action("GetBillingByAppointment", "Billing", new { AppointmentID = row["AppointmentID"] })" 
+       class="btn btn-sm btn-outline-success">
+        <i class="bi bi-receipt"></i> Bills
+    </a>
                                         @* <a href="@Url.Action("AddEdit", "Appointment", new { id = row["AppointmentID"] })" class="btn btn-sm btn-outline-warning">
                                             <i class="bi bi-pencil"></i> Edit
                                         </a> *@
