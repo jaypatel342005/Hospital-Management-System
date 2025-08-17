@@ -170,12 +170,14 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a href="/Billing/Details/@bill.BillID"
+                                                    <a asp-controller="Billing" 
+                                                       asp-action="Details" 
+                                                       asp-route-BillID="@bill.BillID"
                                                        class="btn btn-outline-primary"
                                                        data-bs-toggle="tooltip"
                                                        data-bs-placement="top"
                                                        title="View Details">
-                                                        <i class="bi bi-eye"></i>
+                                                            <i class="bi bi-eye"></i>
                                                     </a>
                                                     @if (bill.BalanceAmount > 0)
                                                     {
