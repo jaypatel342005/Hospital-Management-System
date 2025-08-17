@@ -701,8 +701,38 @@ CREATE OR ALTER PROCEDURE [dbo].[PR_Appointments_DeleteByPK]
     @AppointmentID INT
 AS
 BEGIN
-    DELETE FROM Appointments
-    WHERE AppointmentID = @AppointmentID;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        
+        -- First delete all billing records associated with this appointment
+        DELETE FROM Billing
+        WHERE AppointmentID = @AppointmentID;
+        
+        -- Then delete the appointment
+        DELETE FROM Appointments
+        WHERE AppointmentID = @AppointmentID;
+        
+        COMMIT TRANSACTION;
+        
+        -- Return success message
+        SELECT 'Appointment and related billing records deleted successfully' as Message;
+        
+    END TRY
+    BEGIN CATCH
+        -- Rollback transaction if any error occurs
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        
+        -- Return error information
+        SELECT 
+            ERROR_MESSAGE() as ErrorMessage,
+            ERROR_NUMBER() as ErrorNumber,
+            ERROR_SEVERITY() as ErrorSeverity,
+            ERROR_STATE() as ErrorState;
+        
+        -- Re-throw the error
+        THROW;
+    END CATCH
 END
 GO
 

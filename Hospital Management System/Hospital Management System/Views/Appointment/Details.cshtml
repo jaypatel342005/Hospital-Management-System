@@ -59,12 +59,16 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title">Appointment Information</h5>
                         <div class="d-flex gap-2">
-                            <a href="/Appointment/Edit/@appointmentID" class="btn btn-primary btn-sm">
+                            <a asp-controller="Appointment"
+                               asp-action="AppointmentEdit"
+                               asp-route-appointmentID="@appointmentID"
+                               class="btn btn-primary btn-sm">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
+
                             @if (appointmentRow["AppointmentStatus"].ToString() == "Scheduled")
                             {
-                                <button class="btn btn-danger btn-sm" onclick="cancelAppointment(@appointmentID)">
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(@appointmentRow["AppointmentID"])">
                                     <i class="bi bi-x-circle"></i> Cancel
                                 </button>
                             }
@@ -412,30 +416,50 @@
 </style>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        function cancelAppointment(id) {
-            if (confirm('Are you sure you want to cancel this appointment? This action cannot be undone.')) {
-                // Send AJAX request to cancel appointment
-                fetch('/Appointment/Cancel/' + id, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Appointment cancelled successfully');
-                        location.reload();
-                    } else {
-                        alert('Failed to cancel appointment');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error occurred while cancelling appointment');
-                });
+        window.onload = function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '@TempData["SuccessMessage"]'
+                    });
+                    </text>
             }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '@TempData["ErrorMessage"]'
+                    });
+                    </text>
+            }
+        };
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to cancel this appointment?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Updated URL for appointment cancellation
+                    window.location.href = `/Appointment/AppointmentDelete?AppointmentID=${id}`;
+                }
+            });
         }
     </script>
+}
 }

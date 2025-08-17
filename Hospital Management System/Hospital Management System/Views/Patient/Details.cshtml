@@ -20,6 +20,7 @@
     var totalPaid = (decimal)ViewData["TotalPaid"];
     var totalPending = (decimal)ViewData["TotalPending"];
     var totalOverdue = (decimal)ViewData["TotalOverdue"];
+
 }
 
 <div class="pagetitle">
@@ -399,9 +400,11 @@
                                                 <i class="bi bi-credit-card"></i> Pay
                                             </button>
                                         }
-                                        <button class="btn btn-sm btn-outline-primary" onclick="viewBillDetails(@bill["BillID"])">
+                                        <a asp-controller="Billing" asp-action="Details" asp-route-BillID="@bill["BillID"]"
+                                           class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i> View
-                                        </button>
+                                        </a>
+
                                       
                                     </td>
                                 </tr>
@@ -616,7 +619,7 @@
     // Appointment functions
     function viewAppointmentDetails(appointmentId) {
         console.log('View appointment details:', appointmentId);
-        window.location.href = '@Url.Action("Details", "Appointments")' + '?appointmentId=' + appointmentId;
+        window.location.href = '@Url.Action("Details", "Appointment")' + '?appointmentId=' + appointmentId;
     }
 
     // Enhanced billing functions
@@ -653,10 +656,7 @@
         window.location.href = '@Url.Action("Create", "Billing", new { PatientID = ViewData["PatientID"] })';
     }
 
-    function viewBillDetails(billId) {
-        console.log('View bill details:', billId);
-        window.location.href = '@Url.Action("Details", "Billing")' + '/' + billId;
-    }
+  
 
 
     // Initialize tooltips
