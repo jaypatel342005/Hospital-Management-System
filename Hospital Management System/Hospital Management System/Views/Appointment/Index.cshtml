@@ -234,9 +234,16 @@
                         <a href="@Url.Action("AddEdit", "Appointment")" class="btn btn-primary">
                             <i class="bi bi-plus"></i> <span class="d-none d-sm-inline">New Appointment</span>
                         </a>
-                        <button class="btn btn-outline-secondary" onclick="exportData()">
-                            <i class="bi bi-download"></i> <span class="d-none d-sm-inline">Export</span>
-                        </button>
+                       <a class="btn btn-outline-secondary"
+                              asp-controller="Appointment"
+                              asp-action="ExportAppointmentsToExcel"
+                              
+                       >
+
+                              <i class="bi bi-download"></i>
+                              <span class="d-none d-sm-inline">Export</span>
+                       </a>
+
                     </div>
                 </div>
             </div>
@@ -893,22 +900,6 @@
             }
         }
 
-        function exportData() {
-            const table = document.getElementById('appointmentsTable');
-            const rows = Array.from(table.querySelectorAll('tr:not(#loadMoreRow)'));
-            const csvContent = rows.map(row => {
-                const cells = Array.from(row.querySelectorAll('th, td'));
-                return cells.slice(0, -1).map(cell => `"${cell.textContent.trim()}"`).join(',');
-            }).join('\n');
-
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'appointments_' + new Date().toISOString().split('T')[0] + '.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
     </script>
 
 

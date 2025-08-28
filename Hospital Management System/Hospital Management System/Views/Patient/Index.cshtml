@@ -116,10 +116,14 @@
 
 
 
-                            <button class="btn btn-success" onclick="exportPatients()">
+                            <a class="btn btn-success"
+                               asp-area="Patient"
+                               asp-controller="Patient"
+                               asp-action="ExportToExcel">
                                 <i class="bi bi-download"></i>
                                 <span class="d-none d-sm-inline">Export</span>
-                            </button>
+                            </a>
+
                             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection">
                                 <i class="bi bi-funnel"></i>
                                 <span class="d-none d-sm-inline">Filter</span>
@@ -210,9 +214,11 @@
                                                 <button class="btn btn-outline-primary btn-sm" onclick="editPatient(@dataRow["PatientID"])">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-outline-success btn-sm" href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })">
+                                                <a class="btn btn-outline-success btn-sm"
+                                                   href='@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })'>
                                                     <i class="bi bi-file-medical"></i>
-                                                </button>
+                                                </a>
+
                                                 @* <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
                                                    class="dropdown-item">
                                                     <i class="bi bi-receipt"></i> Bills
@@ -439,77 +445,6 @@
         }
 
 
-
-
-function exportPatients() {
-    const table = document.getElementById('patientsTable');
-    if (!table) {
-        
-        const cards = document.querySelectorAll('.patient-card');
-        if (cards.length === 0) {
-            alert('No patients to export');
-            return;
-        }
-        exportFromCards(cards);
-        return;
-    }
-    
-    let csv = '';
-    const rows = table.querySelectorAll('tr');
-    
-    rows.forEach((row, index) => {
-        const cols = row.querySelectorAll(index === 0 ? 'th' : 'td');
-        const rowData = [];
-        
-        cols.forEach((col, colIndex) => {
-            if (colIndex === cols.length - 1) return; 
-            let text = col.textContent.trim();
-            text = text.replace(/"/g, '""'); 
-            rowData.push(`"${text}"`);
-        });
-        
-        csv += rowData.join(',') + '\n';
-    });
-    
-    downloadCSV(csv, 'patients.csv');
-}
-
-
-function exportFromCards(cards) {
-    let csv = 'ID,Name,Gender,Age,Email,Phone,City,Address,State,Status,Registered\n';
-    
-    cards.forEach(card => {
-        const name = card.querySelector('.card-title').textContent.trim();
-        const cardText = card.querySelector('.card-text').textContent;
-        const id = cardText.match(/ID:\s*(\d+)/)?.[1] || '';
-        const age = cardText.match(/Age:\s*(\d+)/)?.[1] || '';
-        const gender = card.querySelector('.badge.bg-primary').textContent.trim();
-        const status = card.querySelector('.badge.bg-success, .badge.bg-danger').textContent.trim();
-        
-        const contactInfo = card.querySelectorAll('.text-muted.small .col-12');
-        const email = contactInfo[0]?.textContent.replace('✉', '').trim() || '';
-        const phone = contactInfo[1]?.textContent.replace('📞', '').trim() || '';
-        const address = contactInfo[2]?.textContent.replace('🏠', '').trim() || '';
-        const location = contactInfo[3]?.textContent.replace('📍', '').trim() || '';
-        const [city, state] = location.split(',').map(s => s.trim());
-        const registered = contactInfo[4]?.textContent.replace('📅', '').trim() || '';
-        
-        csv += `"${id}","${name}","${gender}","${age}","${email}","${phone}","${city || ''}","${address}","${state || ''}","${status}","${registered}"\n`;
-    });
-    
-    downloadCSV(csv, 'patients.csv');
-}
-
-function downloadCSV(csv, filename) {
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 
 function applyFilters() {

@@ -3,13 +3,16 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using IronPdf;
 
 namespace Hospital_Management_System.Controllers
 {
     public class BillingController : Controller
     {
         private IConfiguration _configuration;
+    
         public BillingController(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -467,5 +470,13 @@ namespace Hospital_Management_System.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+
+       
+
+
+
     }
+
+    
 }
