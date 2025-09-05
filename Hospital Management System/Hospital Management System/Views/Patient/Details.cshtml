@@ -27,7 +27,7 @@
     <h1>Patient Details</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
             <li class="breadcrumb-item"><a href="/Patients">Patient Management</a></li>
             <li class="breadcrumb-item active">Patient Details</li>
         </ol>
@@ -79,12 +79,19 @@
                     </div>
 
                     <div class="mt-3 w-100">
-                        <button class="btn btn-primary w-100 mb-2" onclick="editPatient()">
+
+                        @Html.EncodedActionLink("Edit Patient", "PatientEdit", "Patient", new { PatientID = ViewData["PatientID"] }, new { @class = "btn btn-primary w-100 mb-2" }, "bi bi-pencil")
+
+                       <!-- <button class="btn btn-primary w-100 mb-2" onclick="editPatient()">
                             <i class="bi bi-pencil"></i> Edit Patient
-                        </button>
-                        <button class="btn btn-outline-success w-100 mb-2" onclick="bookAppointment()">
+                        </button> -->
+
+                        @Html.EncodedActionLink("Book Appointment", "AddEdit", "Appointment", new { PatientID = ViewData["PatientID"] }, new { @class = "btn btn-outline-success w-100 mb-2" }, "bi bi-calendar-plus")
+
+
+                        <!-- <button class="btn btn-outline-success w-100 mb-2" onclick="bookAppointment()">
                             <i class="bi bi-calendar-plus"></i> Book Appointment
-                        </button>
+                        </button> -->
                         <button class="btn btn-outline-info w-100" onclick="printPatientDetails()">
                             <i class="bi bi-printer"></i> Print Details
                         </button>
@@ -221,9 +228,8 @@
                 <h5 class="card-title">
                     <i class="bi bi-calendar"></i> Appointments
                 </h5>
-                <button class="btn btn-sm btn-primary" onclick="bookAppointment()">
-                    <i class="bi bi-calendar-plus"></i> Book New
-                </button>
+                @Html.EncodedActionLink("Book New", "AddEdit", "Appointment", new { PatientID = ViewData["PatientID"] }, new { @class = "btn btn-sm btn-primary" }, "bi bi-calendar-plus")
+
             </div>
 
             @if (appointmentsTable.Rows.Count > 0)
@@ -267,11 +273,12 @@
                                     <td>@(appointment["TotalConsultedAmount"] != DBNull.Value ? "₹" + Convert.ToDecimal(appointment["TotalConsultedAmount"]).ToString("F2") : "N/A")</td>
                                     <td>
 
+                                        @Html.EncodedActionLink("", "Details", "Appointment", new { AppointmentID = appointment["AppointmentID"] }, new { @class = "btn btn-sm btn-outline-info" }, "bi bi-eye")
 
-                                        <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(@appointment["AppointmentID"])">
+                                     <!--   <button class="btn btn-sm btn-outline-info" onclick="viewAppointmentDetails(@appointment["AppointmentID"])">
                                             <i class="bi bi-eye"></i>
                                         </button>
-
+                                           -->
                                         
                                     </td>
                                 </tr>
@@ -396,10 +403,13 @@
                                                 <i class="bi bi-credit-card"></i> Pay
                                             </button>
                                         }
-                                        <a asp-controller="Billing" asp-action="Details" asp-route-BillID="@bill["BillID"]"
+
+                                        @Html.EncodedActionLink("View", "Details", "Billing", new { BillID = bill["BillID"] }, new { @class = "btn btn-sm btn-outline-primary" }, "bi bi-eye")
+
+                                      <!--  <a asp-controller="Billing" asp-action="Details" asp-route-BillID="@bill["BillID"]"
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye"></i> View
-                                        </a>
+                                          </a>  -->
 
                                       
                                     </td>

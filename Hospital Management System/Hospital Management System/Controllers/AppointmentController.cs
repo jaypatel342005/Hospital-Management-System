@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
+    [CheckAccess]
     public class AppointmentController : Controller
     {
 
@@ -34,7 +35,7 @@ namespace Hospital_Management_System.Controllers
         }
 
 
-
+        [EncryptedActionParameter]
         public IActionResult AppointmentDelete(int AppointmentID)
         {
             try
@@ -62,6 +63,7 @@ namespace Hospital_Management_System.Controllers
         }
 
 
+        [EncryptedActionParameter]
         public IActionResult AppointmentSave(AppointmentModel appointmentModel)
         {
             try
@@ -115,6 +117,8 @@ namespace Hospital_Management_System.Controllers
             return View("AddEdit", appointmentModel);
         }
 
+
+        [EncryptedActionParameter]
         public IActionResult AppointmentEdit(int AppointmentID)
         {
             // Load dropdown lists for the form
@@ -172,6 +176,7 @@ namespace Hospital_Management_System.Controllers
                 }
             }
         }
+
 
         private List<SelectListItem> GetUserList()
         {
@@ -280,7 +285,7 @@ namespace Hospital_Management_System.Controllers
         //}
 
 
-
+        [EncryptedActionParameter]
         public IActionResult Details(int AppointmentID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -449,6 +454,8 @@ namespace Hospital_Management_System.Controllers
 
             return View(appointmentTable);
         }
+
+        [EncryptedActionParameter]
         public IActionResult AddEdit(int? PatientID = null)
         {
             ViewBag.StatusList = GetAppointmentStatusList();

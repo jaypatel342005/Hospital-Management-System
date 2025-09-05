@@ -7,7 +7,7 @@
     <h1>@ViewData["Title"]</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
             <li class="breadcrumb-item"><a href="@Url.Action("Index", "DoctorDepartment")">Doctor Departments</a></li>
             <li class="breadcrumb-item active">@(Model?.DoctorDepartmentID == null || Model.DoctorDepartmentID <= 0 ? "Add" : "Edit")</li>
         </ol>

@@ -186,7 +186,7 @@
             <h1>Doctor Details</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                     <li class="breadcrumb-item"><a href="~/Doctor/Index">Doctors</a></li>
                     <li class="breadcrumb-item active">Details</li>
                 </ol>
@@ -271,16 +271,17 @@
                             <div class="card-body">
                                 <h5 class="card-title">Actions</h5>
                                 <div class="d-grid gap-2">
-                                    <a asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-primary">
+                                    @Html.EncodedActionLink("Edit Doctor", "DoctorEdit", "Doctor", new { DoctorID = doctor["DoctorID"] }, new { @class = "btn btn-primary" }, "bi bi-pencil-square")
+                                    @* <a asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-primary">
                                         <i class="bi bi-pencil-square"></i> Edit Doctor
-                                    </a>
+                                    </a> *@
                                     <a href="~/Appointment/Index" class="btn btn-info">
                                         <i class="bi bi-calendar-event"></i> View Appointments
                                     </a>
-
-                                    <a asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this doctor?')">
+                                    @Html.EncodedActionLink(isActive ? "Deactivate" : "Activate", "DoctorStatusUpdate", "Doctor", new { DoctorID = doctor["DoctorID"] }, new { @class = "btn btn-warning", onclick = "return confirm('Are you sure you want to " + (isActive ? "deactivate" : "activate") + " this doctor?')" }, "bi bi-" + (isActive ? "eye-slash" : "eye"))
+                                    @* <a asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@doctor["DoctorID"]" class="btn btn-warning" onclick="return confirm('Are you sure you want to deactivate this doctor?')">
                                         <i class="bi bi-@(isActive ? "eye-slash" : "eye")"></i> @(isActive ? "Deactivate" : "Activate")
-                                    </a>
+                                    </a> *@
                                     <a href="@Url.Action("index")" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Back to List
                                     </a>
@@ -499,10 +500,11 @@
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    <a asp-controller="Appointment" asp-action="Details" asp-route-AppointmentID="@appt["AppointmentID"]" class="btn btn-sm btn-outline-primary">
+                                                                    @Html.EncodedActionLink("", "Details", "Appointment", new { AppointmentID = appt["AppointmentID"] }, new { @class = "btn btn-sm btn-outline-primary" }, "bi bi-eye")
+                                                                    @* <a asp-controller="Appointment" asp-action="Details" asp-route-AppointmentID="@appt["AppointmentID"]" class="btn btn-sm btn-outline-primary">
                                                                         <i class="bi bi-eye"></i>
 
-                                                                    </a>
+                                                                    </a> *@
                                                                 </td>
                                                             </tr>
                                                         }

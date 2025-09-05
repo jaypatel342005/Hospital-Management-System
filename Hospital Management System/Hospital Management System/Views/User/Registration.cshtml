@@ -1,0 +1,109 @@
+﻿@model UserRegistrationModel
+@{
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+}
+
+<main>
+    <div class="container">
+        <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+                        <div class="d-flex justify-content-center py-4">
+                            <a href="@Url.Action("Index", "Home")" class="logo d-flex align-items-center w-auto">
+                                <img src="~/assets/img/logo.png" alt="">
+                                <span class="d-none d-lg-block">NiceAdmin</span>
+                            </a>
+                        </div><!-- End Logo -->
+
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="pt-4 pb-2">
+                                    <h5 class="card-title text-center pb-0 fs-4">Create an Account</h5>
+                                    <p class="text-center small">Enter your personal details to create account</p>
+                                </div>
+
+                                <!-- Display Success/Error Messages -->
+                                @if (TempData["SuccessMessage"] != null)
+                                {
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        @TempData["SuccessMessage"]
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                }
+
+                                @if (TempData["ErrorMessage"] != null)
+                                {
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        @TempData["ErrorMessage"]
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                }
+
+                                <!-- Registration Form -->
+                                @using (Html.BeginForm("Registration", "User", FormMethod.Post, new { @class = "row g-3" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                                    {
+                                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                                    }
+
+                                    <!-- Username Field -->
+                                    <div class="col-12">
+                                        @Html.LabelFor(m => m.UserName, new { @class = "form-label" })
+                                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" + (Html.ViewData.ModelState["UserName"] != null && Html.ViewData.ModelState["UserName"].Errors.Count > 0 ? " is-invalid" : "") })
+                                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "invalid-feedback" })
+                                    </div>
+
+                                    <!-- Email Field -->
+                                    <div class="col-12">
+                                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" + (Html.ViewData.ModelState["Email"] != null && Html.ViewData.ModelState["Email"].Errors.Count > 0 ? " is-invalid" : ""), type = "email" })
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "invalid-feedback" })
+                                    </div>
+
+                                    <!-- Mobile Number Field -->
+                                    <div class="col-12">
+                                        @Html.LabelFor(m => m.MobileNo, new { @class = "form-label" })
+                                        @Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control" + (Html.ViewData.ModelState["MobileNo"] != null && Html.ViewData.ModelState["MobileNo"].Errors.Count > 0 ? " is-invalid" : ""), type = "tel", placeholder = "Enter your mobile number" })
+                                        @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class = "invalid-feedback" })
+                                    </div>
+
+                                    <!-- Password Field -->
+                                    <div class="col-12">
+                                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" + (Html.ViewData.ModelState["Password"] != null && Html.ViewData.ModelState["Password"].Errors.Count > 0 ? " is-invalid" : "") })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "invalid-feedback" })
+                                    </div>
+
+                                    <!-- Confirm Password Field -->
+                                    <div class="col-12">
+                                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" + (Html.ViewData.ModelState["ConfirmPassword"] != null && Html.ViewData.ModelState["ConfirmPassword"].Errors.Count > 0 ? " is-invalid" : "") })
+                                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "invalid-feedback" })
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100" type="submit">Create Account</button>
+                                    </div>
+
+                                    <!-- Login Link -->
+                                    <div class="col-12">
+                                        <p class="small mb-0">Already have an account? 
+                                            <a href="@Url.Action("Login", "User")">Log in</a>
+                                        </p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main><!-- End #main -->

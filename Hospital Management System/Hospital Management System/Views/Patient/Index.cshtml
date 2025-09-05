@@ -10,7 +10,7 @@
     <h1>Patient Management</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
             <li class="breadcrumb-item active">Patients</li>
         </ol>
     </nav>
@@ -208,24 +208,24 @@
                                                 </div>
                                             </div>
                                             <div class="d-flex gap-1 flex-wrap">
-                                                <button class="btn btn-outline-info btn-sm" onclick="viewPatient(@dataRow["PatientID"])">
+                                                @Html.EncodedActionLink("", "Details", "Patient", new { PatientID = dataRow["PatientID"] }, new { @class = "btn btn-outline-info btn-sm" }, "bi bi-eye")
+                                                @* <button class="btn btn-outline-info btn-sm" onclick="viewPatient(@dataRow["PatientID"])">
                                                     <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button class="btn btn-outline-primary btn-sm" onclick="editPatient(@dataRow["PatientID"])">
+                                                </button> *@
+                                                @Html.EncodedActionLink("", "PatientEdit", "Patient", new { PatientID = dataRow["PatientID"] }, new { @class = "btn btn-outline-primary btn-sm" }, "bi bi-pencil")
+                                                @* <button class="btn btn-outline-primary btn-sm" onclick="editPatient(@dataRow["PatientID"])">
                                                     <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <a class="btn btn-outline-success btn-sm"
+                                                </button> *@
+                                                @Html.EncodedActionLink("", "GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] }, new { @class = "btn btn-outline-success btn-sm" }, "bi bi-file-medical")
+                                                @* <a class="btn btn-outline-success btn-sm"
                                                    href='@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })'>
                                                     <i class="bi bi-file-medical"></i>
-                                                </a>
-
-                                                @* <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
-                                                   class="dropdown-item">
-                                                    <i class="bi bi-receipt"></i> Bills
                                                 </a> *@
-                                                <button class="btn btn-outline-warning btn-sm" onclick="bookAppointment(@dataRow["PatientID"])">
+
+                                                @Html.EncodedActionLink("", "AddEdit", "Appointment", new { PatientID = dataRow["PatientID"] }, new { @class = "btn btn-outline-warning btn-sm" }, "bi bi-calendar-plus")
+                                                @* <button class="btn btn-outline-warning btn-sm" onclick="bookAppointment(@dataRow["PatientID"])">
                                                     <i class="bi bi-calendar-plus"></i>
-                                                </button>
+                                                </button> *@
                                                 <button class="btn btn-outline-danger btn-sm" onclick="confirmDelete(@dataRow["PatientID"])">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -272,28 +272,30 @@
                                                     </button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" href="#" onclick="viewPatient(@dataRow["PatientID"])">
+                                                            @Html.EncodedActionLink("View Details", "Details", "Patient", new { PatientID = dataRow["PatientID"] }, new { @class = "dropdown-item" }, "bi bi-eye")
+                                                            @* <a class="dropdown-item" href="#" onclick="viewPatient(@dataRow["PatientID"])">
                                                                 <i class="bi bi-eye"></i> View Details
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="editPatient(@dataRow["PatientID"])">
-                                                                <i class="bi bi-pencil"></i> Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
-                                                               class="dropdown-item">
-                                                                <i class="bi bi-receipt"></i> Bills
-                                                            </a>
-                                                            @* <a class="dropdown-item" href="#" onclick="viewMedicalHistory(@dataRow["PatientID"])">
-                                                                <i class="bi bi-file-medical"></i> Medical History
                                                             </a> *@
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item" href="#" onclick="bookAppointment(@dataRow["PatientID"])">
+                                                            @Html.EncodedActionLink("Edit", "PatientEdit", "Patient", new { PatientID = dataRow["PatientID"] }, new { @class = "dropdown-item" }, "bi bi-pencil")
+                                                            @* <a class="dropdown-item" href="#" onclick="editPatient(@dataRow["PatientID"])">
+                                                                <i class="bi bi-pencil"></i> Edit
+                                                            </a> *@
+                                                        </li>
+                                                        <li>
+                                                            @Html.EncodedActionLink("Bills", "GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] }, new { @class = "dropdown-item" }, "bi bi-receipt")
+                                                            @* <a href="@Url.Action("GetBillingByPatient", "Billing", new { PatientID = dataRow["PatientID"] })"
+                                                               class="dropdown-item">
+                                                                <i class="bi bi-receipt"></i> Bills
+                                                            </a> *@
+                                                           
+                                                        </li>
+                                                        <li>
+                                                            @Html.EncodedActionLink("Book Appointment", "AddEdit", "Appointment", new { PatientID = dataRow["PatientID"] }, new { @class = "dropdown-item" }, "bi bi-calendar-plus")
+                                                            @* <a class="dropdown-item" href="#" onclick="bookAppointment(@dataRow["PatientID"])">
                                                                 <i class="bi bi-calendar-plus"></i> Book Appointment
-                                                            </a>
+                                                            </a> *@
                                                         </li>
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>

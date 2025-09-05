@@ -1,0 +1,521 @@
+﻿@model Hospital_Management_System.Models.UsersModel
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .profile-img-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+    }
+
+    .profile-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+    }
+
+    .profile-initial {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-radius: 50%;
+    }
+
+    .edit-profile-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .edit-profile-initial {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-radius: 50%;
+    }
+
+    .upload-preview-container {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 20px;
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+        .upload-preview-container:hover {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+        }
+
+    .upload-preview-img {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .upload-placeholder {
+        text-align: center;
+        color: #6c757d;
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+    .file-input-label {
+        cursor: pointer;
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+        .file-input-label:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<main>
+    <div class="pagetitle">
+        <h1>Profile</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
+                <li class="breadcrumb-item">Users</li>
+                <li class="breadcrumb-item active">Profile</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <section class="section profile">
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="card">
+                    <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                        <div class="profile-img-container">
+                            <img src="~/Profile/profile.jpg"
+                                 alt="Profile"
+                                 class="rounded-circle profile-img"
+                                 id="profileImage"
+                                 onerror="this.style.display='none'; document.getElementById('profileInitial').style.display='flex';">
+                            <div class="profile-initial"
+                                 id="profileInitial"
+                                 style="display: none;">
+                                @(!string.IsNullOrEmpty(Model.UserName) ? Model.UserName.Substring(0, 1) : "U")
+                            </div>
+                        </div>
+                        <h2>@Model.UserName</h2>
+                        <h3>Hospital User</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <!-- Bordered Tabs -->
+                        <ul class="nav nav-tabs nav-tabs-bordered">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-upload-image">Upload Image</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content pt-2">
+                            <!-- Overview Tab -->
+                            <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                                <h5 class="card-title">About</h5>
+                                <p class="small fst-italic">Hospital Management System User Profile</p>
+
+                                <h5 class="card-title">Profile Details</h5>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">User ID</div>
+                                    <div class="col-lg-9 col-md-8">@Model.UserID</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                                    <div class="col-lg-9 col-md-8">@Model.UserName</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Email</div>
+                                    <div class="col-lg-9 col-md-8">@Model.Email</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Mobile Number</div>
+                                    <div class="col-lg-9 col-md-8">@Model.MobileNo</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Status</div>
+                                    <div class="col-lg-9 col-md-8">
+                                        @if (Model.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Created</div>
+                                    <div class="col-lg-9 col-md-8">@Model.Created?.ToString("dd/MM/yyyy hh:mm tt")</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 label">Last Modified</div>
+                                    <div class="col-lg-9 col-md-8">@Model.Modified?.ToString("dd/MM/yyyy hh:mm tt")</div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Profile Tab -->
+                            <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                                <!-- Profile Edit Form -->
+                                <form asp-action="UpdateProfile" method="post">
+                                    @Html.HiddenFor(m => m.UserID)
+                                    @Html.HiddenFor(m => m.Created)
+                                    @Html.HiddenFor(m => m.Modified)
+
+                                    <div class="row mb-3">
+                                        <label asp-for="UserName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input asp-for="UserName" type="text" class="form-control" onkeyup="updateInitials(this.value)">
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label asp-for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input asp-for="Email" type="email" class="form-control">
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label asp-for="MobileNo" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input asp-for="MobileNo" type="text" class="form-control">
+                                            <span asp-validation-for="MobileNo" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label asp-for="IsActive" class="col-md-4 col-lg-3 col-form-label">Status</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <div class="form-check form-switch">
+                                                <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                                <label asp-for="IsActive" class="form-check-label">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form><!-- End Profile Edit Form -->
+                            </div>
+
+                            <!-- Upload Image Tab -->
+                            <div class="tab-pane fade pt-3" id="profile-upload-image">
+                                <h5 class="card-title">Upload Profile Image</h5>
+                                <p class="small fst-italic">Upload a new profile picture for your account</p>
+
+                                <!-- Image Upload Form -->
+                                <form enctype="multipart/form-data" method="post" asp-action="Save" asp-controller="User">
+                                    @Html.HiddenFor(m => m.UserID)
+                                    @Html.HiddenFor(m => m.UserName)
+                                    @Html.HiddenFor(m => m.Email)
+                                    @Html.HiddenFor(m => m.MobileNo)
+                                    @Html.HiddenFor(m => m.Password)
+                                    @Html.HiddenFor(m => m.IsActive)
+                                    @Html.HiddenFor(m => m.Created)
+                                    @Html.HiddenFor(m => m.Modified)
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <div class="upload-preview-container" id="uploadPreviewContainer">
+                                                <div class="upload-placeholder" id="uploadPlaceholder">
+                                                    <i class="bi bi-camera" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                                                    <div>Click to upload image</div>
+                                                    <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
+                                                </div>
+                                                <img id="uploadPreviewImg" class="upload-preview-img" style="display: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label class="col-md-4 col-lg-3 col-form-label">Select Image</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <div class="file-input-wrapper">
+                                                <input type="file"
+                                                       name="profileImg"
+                                                       id="profileImgInput"
+                                                       accept="image/*"
+                                                       onchange="previewImage(this)"
+                                                       required>
+                                                <label for="profileImgInput" class="file-input-label">
+                                                    <i class="bi bi-upload"></i> Choose File
+                                                </label>
+                                            </div>
+                                            <div class="form-text">
+                                                Supported formats: JPG, PNG, GIF. Maximum file size: 5MB
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-8 col-lg-9 offset-md-4 offset-lg-3">
+                                            <div class="alert alert-warning">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                <small>Note: Uploading a new image will replace your current profile picture.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
+                                            <i class="bi bi-upload"></i> Upload Image
+                                        </button>
+                                        <button type="button" class="btn btn-secondary ms-2" onclick="clearPreview()">
+                                            <i class="bi bi-x-circle"></i> Clear
+                                        </button>
+                                    </div>
+                                </form><!-- End Image Upload Form -->
+                                <!-- Current Image Section -->
+                                <div class="mt-4">
+                                    <h6 class="card-title">Current Profile Image</h6>
+                                    <div class="text-center">
+                                        <img src="~/Profile/profile.jpg"
+                                             alt="Current Profile"
+                                             class="rounded-circle"
+                                             style="width: 100px; height: 100px; object-fit: cover;"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <div style="display: none; margin-top: 10px;">
+                                            <span class="badge bg-secondary">No image uploaded yet</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Change Password Tab -->
+                            <div class="tab-pane fade pt-3" id="profile-change-password">
+                                <!-- Change Password Form -->
+                                <form asp-action="ChangePassword" method="post">
+                                    <div class="row mb-3">
+                                        <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="currentPassword" type="password" class="form-control" id="currentPassword" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="newPassword" type="password" class="form-control" id="newPassword" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="confirmPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </div>
+                                </form><!-- End Change Password Form -->
+                            </div>
+
+                        </div><!-- End Bordered Tabs -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+
+<script>
+    function updateInitials(name) {
+        const initial = name && name.length > 0 ? name.charAt(0).toUpperCase() : 'U';
+        const profileInitial = document.getElementById('profileInitial');
+        const editProfileInitial = document.getElementById('editProfileInitial');
+
+        if (profileInitial) {
+            profileInitial.textContent = initial;
+        }
+        if (editProfileInitial) {
+            editProfileInitial.textContent = initial;
+        }
+    }
+
+    function previewImage(input) {
+        const file = input.files[0];
+        const previewContainer = document.getElementById('uploadPreviewContainer');
+        const previewImg = document.getElementById('uploadPreviewImg');
+        const placeholder = document.getElementById('uploadPlaceholder');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        if (file) {
+            // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                clearPreview();
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPG, PNG, GIF)');
+                clearPreview();
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                placeholder.style.display = 'none';
+                uploadBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            clearPreview();
+        }
+    }
+
+    function clearPreview() {
+        const previewImg = document.getElementById('uploadPreviewImg');
+        const placeholder = document.getElementById('uploadPlaceholder');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('profileImgInput');
+
+        previewImg.style.display = 'none';
+        placeholder.style.display = 'block';
+        uploadBtn.disabled = true;
+        fileInput.value = '';
+    }
+
+    // Make upload container clickable
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadContainer = document.getElementById('uploadPreviewContainer');
+        const fileInput = document.getElementById('profileImgInput');
+
+        if (uploadContainer && fileInput) {
+            uploadContainer.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+
+        // Check if images exist on page load
+        const profileImg = document.getElementById('profileImage');
+
+        function checkImage(img, initialElement) {
+            if (img) {
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    if (initialElement) {
+                        initialElement.style.display = 'flex';
+                    }
+                };
+
+                if (img.complete && img.naturalWidth === 0) {
+                    img.style.display = 'none';
+                    if (initialElement) {
+                        initialElement.style.display = 'flex';
+                    }
+                }
+            }
+        }
+
+        checkImage(profileImg, document.getElementById('profileInitial'));
+
+        // Force reload profile image to show latest uploaded image
+        if (profileImg) {
+            profileImg.src = profileImg.src + '?t=' + new Date().getTime();
+        }
+    });
+
+    // Function to refresh profile image after upload
+    function refreshProfileImage() {
+        const profileImg = document.getElementById('profileImage');
+        if (profileImg) {
+            profileImg.src = '~/Profile/profile.jpg?t=' + new Date().getTime();
+            profileImg.style.display = 'block';
+            document.getElementById('profileInitial').style.display = 'none';
+        }
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

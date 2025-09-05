@@ -1,5 +1,1230 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model Hospital_Management_System.Models.DashboardModel
 @{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<!-- NiceAdmin Chart.js -->
+<script src="~/vendor/chart.js/chart.js"></script>
+
+<div class="pagetitle">
+    <h1>Hospital Management Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+    <div class="row">
+        <div class="col-12">
+
+            <!-- Improved KPI Cards Row (Better Responsive Layout) -->
+            <div class="row g-3 mb-4">
+                <div class="col-xl col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="card info-card sales-card h-100 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title mb-3 text-truncate" style="font-size: 13px; font-weight: 600;">Total Patients</h5>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 48px; height: 48px; background: rgba(13, 110, 253, 0.1);">
+                                    <i class="bi bi-people text-primary" style="font-size: 22px;"></i>
+                                </div>
+                                <div class="text-end flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="font-size: 26px; font-weight: 700; line-height: 1;">
+                                        @Model.KPIData.TotalPatients
+                                    </h6>
+                                    <span class="text-success small fw-semibold">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Active
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="card info-card revenue-card h-100 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title mb-3 text-truncate" style="font-size: 13px; font-weight: 600;">Total Doctors</h5>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 48px; height: 48px; background: rgba(25, 135, 84, 0.1);">
+                                    <i class="bi bi-person-badge text-success" style="font-size: 22px;"></i>
+                                </div>
+                                <div class="text-end flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="font-size: 26px; font-weight: 700; line-height: 1;">
+                                        @Model.KPIData.TotalDoctors
+                                    </h6>
+                                    <span class="text-success small fw-semibold">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Active
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="card info-card customers-card h-100 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title mb-3 text-truncate" style="font-size: 13px; font-weight: 600;">Today's Appointments</h5>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 48px; height: 48px; background: rgba(13, 202, 240, 0.1);">
+                                    <i class="bi bi-calendar-check text-info" style="font-size: 22px;"></i>
+                                </div>
+                                <div class="text-end flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="font-size: 26px; font-weight: 700; line-height: 1;">
+                                        @Model.KPIData.TodaysAppointments
+                                    </h6>
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="bi bi-calendar-event me-1"></i>Scheduled
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="card info-card sales-card h-100 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title mb-3 text-truncate" style="font-size: 13px; font-weight: 600;">Monthly Revenue</h5>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 48px; height: 48px; background: rgba(255, 193, 7, 0.1);">
+                                    <i class="bi bi-currency-rupee text-warning" style="font-size: 22px;"></i>
+                                </div>
+                                <div class="text-end flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="font-size: 22px; font-weight: 700; line-height: 1;">
+                                        ₹@Model.KPIData.MonthlyRevenue.ToString("N0")
+                                    </h6>
+                                    <span class="text-success small fw-semibold">
+                                        <i class="bi bi-arrow-up me-1"></i>Collected
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="card info-card revenue-card h-100 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title mb-3 text-truncate" style="font-size: 13px; font-weight: 600;">Active Departments</h5>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width: 48px; height: 48px; background: rgba(111, 66, 193, 0.1);">
+                                    <i class="bi bi-building text-purple" style="font-size: 20px; color: #6f42c1 !important;"></i>
+                                </div>
+                                <div class="text-end flex-grow-1 ms-3">
+                                    <h6 class="mb-1" style="font-size: 26px; font-weight: 700; line-height: 1;">
+                                        @Model.KPIData.ActiveDepartments
+                                    </h6>
+                                    <span class="text-muted small fw-semibold">
+                                        <i class="bi bi-gear me-1"></i>Enabled
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- KPI Cards -->
+            <!-- Primary Charts -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Appointments Trend <span class="text-muted small">/Last 30 Days</span></h5>
+                            <div class="chart-container" style="position:relative;height:350px;">
+                                <canvas id="appointmentsTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Monthly Revenue & Collections</h5>
+                            <div class="chart-container" style="position:relative;height:350px;">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Charts -->
+            <div class="row mb-4">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Patient Age Distribution</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="ageDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Appointment Status</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="appointmentStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Patients by Gender</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="genderChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Analytics -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Department Revenue Performance</h5>
+                            <div class="chart-container" style="position:relative;height:350px;">
+                                <canvas id="departmentRevenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Doctors by Department</h5>
+                            <div class="chart-container" style="position:relative;height:350px;">
+                                <canvas id="departmentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly & Workload -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Weekly Appointment Pattern</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="weeklyPatternChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Doctor Workload (This Month)</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="doctorWorkloadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration & Top Doctors -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Monthly Patient Registration Trend</h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="registrationTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FIXED: Top Performing Doctors Chart -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Top Performing Doctors <span class="text-muted small">(Revenue & Appointments)</span></h5>
+                            <div class="chart-container" style="position:relative;height:300px;">
+                                <canvas id="topDoctorsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previously Right Column Content -->
+            <div class="row mb-4">
+                <div class="col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Hospital Highlights</h5>
+                            <div id="hospitalCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#hospitalCarousel" data-bs-slide-to="0" class="active"></button>
+                                    <button type="button" data-bs-target="#hospitalCarousel" data-bs-slide-to="1"></button>
+                                    <button type="button" data-bs-target="#hospitalCarousel" data-bs-slide-to="2"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="text-center py-4">
+                                            <i class="bi bi-star-fill text-warning" style="font-size:3rem;"></i>
+                                            <h5 class="mt-3">Doctor of the Month</h5>
+                                            <h6 class="text-primary">@Model.DoctorOfTheMonth.Name</h6>
+                                            <p class="text-muted mb-1">@Model.DoctorOfTheMonth.Specialization</p>
+                                            <small class="text-success">@Model.DoctorOfTheMonth.PatientCount patients served</small>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="py-4">
+                                            <div class="text-center mb-3">
+                                                <i class="bi bi-person-plus-fill text-success" style="font-size:3rem;"></i>
+                                                <h5 class="mt-3">Recent Registrations</h5>
+                                            </div>
+                                            @foreach (var patient in Model.RecentRegistrations.Take(3))
+                                            {
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div>
+                                                        <strong>@patient.Name</strong><br />
+                                                        <small class="text-muted">@patient.City</small>
+                                                    </div>
+                                                    <small class="text-muted">@patient.JoinDate.ToString("MMM dd")</small>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="text-center py-4">
+                                            <i class="bi bi-megaphone-fill text-info" style="font-size:3rem;"></i>
+                                            <h5 class="mt-3">Hospital Notice</h5>
+                                            <p class="text-muted">Regular health checkups are now available with 20% discount for senior citizens.</p>
+                                            <small class="text-info">Contact reception for more details</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#hospitalCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#hospitalCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Actions</h5>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-sm" onclick="location.href='/Patient/AddEdit'">
+                                    <i class="bi bi-person-plus me-1"></i> Add Patient
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="location.href='/Appointment/AddEdit'">
+                                    <i class="bi bi-calendar-plus me-1"></i> Add Appointment
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="location.href='/Billing/AddEdit'">
+                                    <i class="bi bi-receipt me-1"></i> Add Billing
+                                </button>
+                                <button class="btn btn-warning btn-sm" onclick="location.href='/Doctor/AddEdit'">
+                                    <i class="bi bi-person-badge me-1"></i> Add Doctor
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Today's Schedule</h5>
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-1"></i>
+                                <strong>@Model.KPIData.TodaysAppointments</strong> appointments scheduled for today
+                            </div>
+                            <div class="billing-summary">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-success">Paid Bills:</span>
+                                    <strong>₹@Model.KPIData.PaidBills.ToString("N0")</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-warning">Partial Bills:</span>
+                                    <strong>₹@Model.KPIData.PartialBills.ToString("N0")</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-danger">Unpaid Bills:</span>
+                                    <strong>₹@Model.KPIData.UnpaidBills.ToString("N0")</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables (same as before) -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body pt-3">
+                            <ul class="nav nav-tabs nav-tabs-bordered" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
+                                        <i class="bi bi-calendar-check me-1"></i>Upcoming Appointments
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab">
+                                        <i class="bi bi-receipt me-1"></i>Pending Bills
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#patients" type="button" role="tab">
+                                        <i class="bi bi-people me-1"></i>Recent Patients
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#doctors" type="button" role="tab">
+                                        <i class="bi bi-person-badge me-1"></i>Active Doctors
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content pt-3">
+                                <div class="tab-pane fade show active" id="appointments" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Doctor</th>
+                                                    <th>Patient</th>
+                                                    <th>Date & Time</th>
+                                                    <th>Status</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.UpcomingAppointments.Rows.Count > 0)
+                                                {
+                                                    foreach (System.Data.DataRow row in Model.UpcomingAppointments.Rows)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-semibold">@row["DoctorName"]</td>
+                                                            <td>@row["PatientName"]</td>
+                                                            <td>
+                                                                @Convert.ToDateTime(row["AppointmentDate"]).ToString("MMM dd, yyyy")
+                                                                <br /><small class="text-muted">@Convert.ToDateTime(row["AppointmentDate"]).ToString("HH:mm")</small>
+                                                            </td>
+                                                            <td><span class="badge bg-primary rounded-pill">@row["AppointmentStatus"]</span></td>
+                                                            <td><small>@row["Description"]</small></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr><td colspan="5" class="text-center text-muted py-4">No upcoming appointments found</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="billing" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Patient</th>
+                                                    <th>Bill Amount</th>
+                                                    <th>Paid</th>
+                                                    <th>Pending</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.PendingBills.Rows.Count > 0)
+                                                {
+                                                    foreach (System.Data.DataRow row in Model.PendingBills.Rows)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-semibold">@row["PatientName"]</td>
+                                                            <td class="fw-bold">₹@Convert.ToDecimal(row["BillAmount"]).ToString("N2")</td>
+                                                            <td class="text-success">₹@Convert.ToDecimal(row["PaidAmount"]).ToString("N2")</td>
+                                                            <td class="text-danger fw-bold">₹@Convert.ToDecimal(row["PendingAmount"]).ToString("N2")</td>
+                                                            <td>
+                                                                <span class="badge @(row["PaymentStatus"].ToString() == "Unpaid" ? "bg-danger" : "bg-warning") rounded-pill">
+                                                                    @row["PaymentStatus"]
+                                                                </span>
+                                                            </td>
+                                                            <td>@Convert.ToDateTime(row["CreatedDate"]).ToString("MMM dd, yyyy")</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr><td colspan="6" class="text-center text-muted py-4">No pending bills found</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="patients" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Phone</th>
+                                                    <th>City</th>
+                                                    <th>Registered</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.RecentPatients.Rows.Count > 0)
+                                                {
+                                                    foreach (System.Data.DataRow row in Model.RecentPatients.Rows)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-semibold">@row["Name"]</td>
+                                                            <td><small>@row["Email"]</small></td>
+                                                            <td>@row["Phone"]</td>
+                                                            <td>@row["City"]</td>
+                                                            <td>@Convert.ToDateTime(row["Created"]).ToString("MMM dd, yyyy")</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr><td colspan="5" class="text-center text-muted py-4">No recent patients found</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="doctors" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Specialization</th>
+                                                    <th>Department</th>
+                                                    <th>Email</th>
+                                                    <th>Phone</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.ActiveDoctors.Rows.Count > 0)
+                                                {
+                                                    foreach (System.Data.DataRow row in Model.ActiveDoctors.Rows)
+                                                    {
+                                                        <tr>
+                                                            <td class="fw-semibold">@row["Name"]</td>
+                                                            <td><span class="badge bg-success rounded-pill">@row["Specialization"]</span></td>
+                                                            <td>@row["DepartmentName"]</td>
+                                                            <td><small>@row["Email"]</small></td>
+                                                            <td>@row["Phone"]</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr><td colspan="5" class="text-center text-muted py-4">No active doctors found</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Fixed Chart.js Script with Working Top Doctors Chart -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const colors = {
+            primary: '#007bff',
+            success: '#28a745',
+            danger: '#dc3545',
+            warning: '#ffc107',
+            info: '#17a2b8',
+            purple: '#6f42c1',
+            orange: '#fd7e14',
+            teal: '#20c997',
+            pink: '#e83e8c'
+        };
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { font: { size: 12 }, padding: 16, usePointStyle: true }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.85)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    cornerRadius: 8,
+                    displayColors: true
+                }
+            }
+        };
+
+        // Parse data
+        const appointmentsTrend = @Html.Raw(Model.AppointmentsTrendJson ?? "{}");
+        const revenueData = @Html.Raw(Model.MonthlyRevenueJson ?? "{}");
+        const statusData = @Html.Raw(Model.AppointmentStatusJson ?? "{}");
+        const genderData = @Html.Raw(Model.PatientsByGenderJson ?? "{}");
+        const deptData = @Html.Raw(Model.DoctorsByDepartmentJson ?? "{}");
+        const ageData = @Html.Raw(Model.PatientAgeDistributionJson ?? "{}");
+        const deptRevData = @Html.Raw(Model.DepartmentRevenueJson ?? "{}");
+        const weeklyData = @Html.Raw(Model.WeeklyAppointmentPatternJson ?? "{}");
+        const workloadData = @Html.Raw(Model.DoctorWorkloadJson ?? "{}");
+        const regData = @Html.Raw(Model.MonthlyRegistrationTrendJson ?? "{}");
+        const topDoctorsData = @Html.Raw(Model.TopPerformingDoctorsJson ?? "{}");
+
+        // 1. Appointments Trend
+        if (appointmentsTrend?.labels) {
+            const ctx = document.getElementById('appointmentsTrendChart');
+            const gr = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+            gr.addColorStop(0, 'rgba(54, 162, 235, 0.25)');
+            gr.addColorStop(1, 'rgba(54, 162, 235, 0.04)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: appointmentsTrend.labels,
+                    datasets: [{
+                        label: 'Daily Appointments',
+                        data: appointmentsTrend.data,
+                        backgroundColor: gr,
+                        borderColor: colors.primary,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.primary,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#666' } },
+                        x: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 2. Revenue Chart
+        if (revenueData?.labels) {
+            new Chart(document.getElementById('revenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: revenueData.labels,
+                    datasets: [{
+                        label: 'Revenue Generated',
+                        data: revenueData.revenueData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: colors.danger,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }, {
+                        label: 'Amount Collected',
+                        data: revenueData.collectedData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderColor: colors.success,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    plugins: {
+                        ...commonOptions.plugins,
+                        tooltip: {
+                            ...commonOptions.plugins.tooltip,
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ₹${ctx.parsed.y.toLocaleString('en-IN')}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            ticks: { color: '#666', callback: (v) => '₹' + Number(v).toLocaleString('en-IN') }
+                        },
+                        x: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 3. Age Distribution
+        if (ageData?.labels) {
+            new Chart(document.getElementById('ageDistributionChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: ageData.labels,
+                    datasets: [{
+                        data: ageData.data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 205, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: '#fff', borderWidth: 2
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    plugins: { ...commonOptions.plugins, legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // 4. Appointment Status
+        if (statusData?.labels) {
+            new Chart(document.getElementById('appointmentStatusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: statusData.labels,
+                    datasets: [{
+                        data: statusData.data,
+                        backgroundColor: [colors.success, colors.warning, colors.danger, colors.info],
+                        borderColor: '#fff', borderWidth: 3, hoverOffset: 12
+                    }]
+                },
+                options: { ...commonOptions, cutout: '60%', plugins: { ...commonOptions.plugins, legend: { position: 'bottom' } } }
+            });
+        }
+
+        // 5. Gender Chart
+        if (genderData?.labels) {
+            new Chart(document.getElementById('genderChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: genderData.labels,
+                    datasets: [{
+                        data: genderData.data,
+                        backgroundColor: [colors.primary, colors.pink, colors.warning],
+                        borderColor: '#fff', borderWidth: 3, hoverOffset: 12
+                    }]
+                },
+                options: { ...commonOptions, cutout: '60%', plugins: { ...commonOptions.plugins, legend: { position: 'bottom' } } }
+            });
+        }
+
+        // 6. Department Revenue
+        if (deptRevData?.labels) {
+            new Chart(document.getElementById('departmentRevenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: deptRevData.labels,
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: deptRevData.data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.75)',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    ...commonOptions,
+                    plugins: {
+                        ...commonOptions.plugins,
+                        legend: { display: false },
+                        tooltip: {
+                            ...commonOptions.plugins.tooltip,
+                            callbacks: { label: (ctx) => `Revenue: ₹${ctx.parsed.x.toLocaleString('en-IN')}` }
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666', callback: (v) => '₹' + Number(v).toLocaleString('en-IN') } },
+                        y: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 7. Doctors by Department
+        if (deptData?.labels) {
+            new Chart(document.getElementById('departmentChart'), {
+                type: 'bar',
+                data: {
+                    labels: deptData.labels,
+                    datasets: [{
+                        label: 'Doctors',
+                        data: deptData.data,
+                        backgroundColor: 'rgba(153, 102, 255, 0.75)',
+                        borderColor: colors.purple,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    ...commonOptions,
+                    plugins: { ...commonOptions.plugins, legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } },
+                        y: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 8. Weekly Pattern
+        if (weeklyData?.labels) {
+            new Chart(document.getElementById('weeklyPatternChart'), {
+                type: 'radar',
+                data: {
+                    labels: weeklyData.labels,
+                    datasets: [{
+                        label: 'Appointments',
+                        data: weeklyData.data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: colors.primary,
+                        borderWidth: 2,
+                        pointBackgroundColor: colors.primary,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: { r: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, angleLines: { color: 'rgba(0,0,0,0.1)' }, pointLabels: { color: '#666' } } }
+                }
+            });
+        }
+
+        // 9. Doctor Workload
+        if (workloadData?.labels) {
+            new Chart(document.getElementById('doctorWorkloadChart'), {
+                type: 'bar',
+                data: {
+                    labels: workloadData.labels,
+                    datasets: [{
+                        label: 'Appointments',
+                        data: workloadData.data,
+                        backgroundColor: 'rgba(255, 159, 64, 0.75)',
+                        borderColor: colors.orange,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    ...commonOptions,
+                    plugins: { ...commonOptions.plugins, legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } },
+                        y: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 10. Registration Trend
+        if (regData?.labels) {
+            const ctx = document.getElementById('registrationTrendChart');
+            const gr = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+            gr.addColorStop(0, 'rgba(32, 201, 151, 0.35)');
+            gr.addColorStop(1, 'rgba(32, 201, 151, 0.05)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: regData.labels,
+                    datasets: [{
+                        label: 'New Registrations',
+                        data: regData.data,
+                        backgroundColor: gr,
+                        borderColor: colors.teal,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.teal,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    plugins: { ...commonOptions.plugins, legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#666' } },
+                        x: { grid: { color: 'rgba(0,0,0,0.08)' }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
+
+        // 11. FIXED: Top Performing Doctors (Mixed Bar + Line Chart)
+        if (topDoctorsData?.labels && topDoctorsData.labels.length > 0) {
+            new Chart(document.getElementById('topDoctorsChart'), {
+                type: 'bar', // Main chart type
+                data: {
+                    labels: topDoctorsData.labels,
+                    datasets: [{
+                        type: 'bar',
+                        label: 'Appointments',
+                        data: topDoctorsData.appointmentData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        yAxisID: 'y'
+                    }, {
+                        type: 'line',
+                        label: 'Revenue (₹)',
+                        data: topDoctorsData.revenueData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        borderColor: colors.danger,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointBackgroundColor: colors.danger,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        fill: false,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 12 },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.85)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.dataset.label === 'Revenue (₹)') {
+                                        return 'Revenue: ₹' + context.parsed.y.toLocaleString('en-IN');
+                                    }
+                                    return context.dataset.label + ': ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(0,0,0,0.08)' },
+                            ticks: {
+                                color: '#666',
+                                maxRotation: 45
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            ticks: { color: '#666' },
+                            title: {
+                                display: true,
+                                text: 'Appointments',
+                                color: colors.primary
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            beginAtZero: true,
+                            grid: { drawOnChartArea: false },
+                            ticks: {
+                                color: '#666',
+                                callback: function(value) {
+                                    return '₹' + Number(value).toLocaleString('en-IN');
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹)',
+                                color: colors.danger
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    /* Enhanced CSS for Better KPI Cards and Layout */
+    .chart-container {
+        position: relative;
+        margin: 10px 0;
+    }
+
+        .chart-container canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+
+    /* Improved KPI Cards */
+    .info-card {
+        border: none;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+        .info-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+            transform: translateY(-2px);
+        }
+
+        .info-card .card-body {
+            padding: 1rem !important;
+            position: relative;
+        }
+
+        .info-card .card-icon {
+            flex-shrink: 0;
+        }
+
+        .info-card h6 {
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .info-card .card-title {
+            color: #6c757d;
+            font-weight: 600;
+            margin: 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+    /* Responsive Improvements */
+    @@media (max-width: 1200px) {
+        .info-card .card-body
+
+    {
+        padding: 0.75rem !important;
+    }
+
+    .info-card h6 {
+        font-size: 22px !important;
+    }
+
+    .info-card .card-title {
+        font-size: 12px !important;
+    }
+
+    }
+
+    @@media (max-width: 992px) {
+        .chart-container
+
+    {
+        height: 280px !important;
+    }
+
+    .info-card h6 {
+        font-size: 20px !important;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .chart-container
+
+    {
+        height: 250px !important;
+    }
+
+    .info-card .card-body {
+        padding: 0.5rem !important;
+    }
+
+    .info-card h6 {
+        font-size: 18px !important;
+    }
+
+    .info-card .card-title {
+        font-size: 11px !important;
+    }
+
+    .info-card .card-icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+        .info-card .card-icon i {
+            font-size: 18px !important;
+        }
+
+    }
+
+    @@media (max-width: 576px) {
+        .chart-container
+
+    {
+        height: 200px !important;
+    }
+
+    .info-card h6 {
+        font-size: 16px !important;
+    }
+
+    }
+
+    /* Table Enhancements */
+    .table-responsive {
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid #dee2e6;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > td {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.08);
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+        margin-right: 0.25rem;
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+
+    /* Carousel & Cards */
+    .carousel-item {
+        min-height: 200px;
+    }
+
+    .billing-summary {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        border-left: 4px solid #007bff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert-info {
+        border-left: 4px solid #17a2b8;
+        border-radius: 0.5rem;
+    }
+
+    /* Card Hover Effects */
+    .card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+        .card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+    /* Scrollbar Styling */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border-radius: 10px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+        }
+
+    /* Bootstrap Grid Gap Fix */
+    .row.g-3 {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+</style>

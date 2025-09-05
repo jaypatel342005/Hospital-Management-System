@@ -9,7 +9,7 @@
     <h1>Doctor Departments</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
             <li class="breadcrumb-item active">Doctor Departments</li>
         </ol>
     </nav>
@@ -29,15 +29,12 @@
                                 <span class="d-none d-sm-inline">Add New Association</span>
                                 <span class="d-inline d-sm-none">Add</span>
                             </a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterSection">
-                                <i class="bi bi-funnel"></i>
-                                <span class="d-none d-sm-inline">Filter</span>
-                            </button>
+                            
                         </div>
                     </div>
 
                     <!-- Filter Section (Collapsible) -->
-                    <div class="collapse" id="filterSection">
+                    @* <div class="collapse" id="filterSection">
                         <div class="card card-body bg-light mb-3">
                             <div class="row g-3">
                                 <div class="col-md-4">
@@ -78,7 +75,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> *@
+
+
 
                     <!-- Mobile Cards View (Hidden on larger screens) -->
                     <div class="d-block d-lg-none">
@@ -246,43 +245,6 @@
             });
         }
 
-        function applyFilters() {
-            const doctorFilter = document.getElementById('doctorFilter').value;
-            const departmentFilter = document.getElementById('departmentFilter').value;
-
-            // Filter table rows
-            const tableRows = document.querySelectorAll('#doctorDepartmentsTable tbody tr');
-            const mobileCards = document.querySelectorAll('#mobileCards .col-12');
-
-            // Filter desktop table
-            tableRows.forEach(row => {
-                const doctorName = row.cells[1].textContent.trim();
-                const departmentName = row.cells[2].textContent.trim();
-
-                const doctorMatch = !doctorFilter || doctorName === doctorFilter;
-                const departmentMatch = !departmentFilter || departmentName === departmentFilter;
-
-                row.style.display = doctorMatch && departmentMatch ? '' : 'none';
-            });
-
-            // Filter mobile cards
-            mobileCards.forEach(card => {
-                const doctorName = card.querySelector('.card-title').textContent.trim();
-                const departmentText = card.querySelector('p:nth-of-type(1)').textContent;
-                const departmentName = departmentText.replace('Department: ', '').trim();
-
-                const doctorMatch = !doctorFilter || doctorName === doctorFilter;
-                const departmentMatch = !departmentFilter || departmentName === departmentFilter;
-
-                card.style.display = doctorMatch && departmentMatch ? '' : 'none';
-            });
-        }
-
-        function clearFilters() {
-            document.getElementById('doctorFilter').value = '';
-            document.getElementById('departmentFilter').value = '';
-            applyFilters();
-        }
 
         // Initialize DataTable for desktop view
         document.addEventListener('DOMContentLoaded', function() {

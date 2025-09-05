@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
+    [CheckAccess]
     public class DoctorDepartmentController : Controller
     {
         private IConfiguration _configuration;

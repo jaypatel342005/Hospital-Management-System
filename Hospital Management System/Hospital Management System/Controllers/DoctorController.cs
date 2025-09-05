@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
+    [CheckAccess]
     public class DoctorController : Controller
     {
         private IConfiguration _configuration;
@@ -14,26 +15,62 @@ namespace Hospital_Management_System.Controllers
         {
             _configuration = configuration;
         }
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+
+
+        //        string connectionString = this._configuration.GetConnectionString("ConnectionString");
+        //        using var connection = new SqlConnection(connectionString);
+        //        using var command = connection.CreateCommand();
+        //        command.CommandType = CommandType.StoredProcedure;
+        //        command.CommandText = "PR_Doctors_SelectAll";
+
+        //        connection.Open();
+        //        using var reader = command.ExecuteReader();
+        //        var table = new DataTable();
+        //        table.Load(reader);
+        //        return View(table);
+
+
+        //}
+
+        public IActionResult Index(string Name = "", string Specialization = "", bool? IsActive = null)
         {
-            
+            DataTable dt = new DataTable();
 
-                string connectionString = this._configuration.GetConnectionString("ConnectionString");
-                using var connection = new SqlConnection(connectionString);
-                using var command = connection.CreateCommand();
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "PR_Doctors_SelectAll";
+            try
+            {
+                SqlConnection objConn = new SqlConnection(this._configuration.GetConnectionString("ConnectionString"));
+                objConn.Open();
 
-                connection.Open();
-                using var reader = command.ExecuteReader();
-                var table = new DataTable();
-                table.Load(reader);
-                return View(table);
-            
-            
+                SqlCommand objCmd = objConn.CreateCommand();
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_Doctors_SelectAll";
+
+                objCmd.Parameters.Add("@Name", SqlDbType.VarChar).Value = Name ?? "";
+                objCmd.Parameters.Add("@Specialization", SqlDbType.VarChar).Value = Specialization ?? "";
+                objCmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = (object)IsActive ?? DBNull.Value;
+
+                SqlDataAdapter objAdapter = new SqlDataAdapter(objCmd);
+                objAdapter.Fill(dt);
+
+                objConn.Close();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            ViewBag.Name = Name;
+            ViewBag.Specialization = Specialization;
+            ViewBag.IsActive = IsActive;
+            ViewBag.SpecializationList = GetSpecializationList();
+
+            return View(dt);
         }
 
 
+        [EncryptedActionParameter]
         public IActionResult DoctorDelete(int DoctorID)
         {
             try
@@ -62,7 +99,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DoctorSave(DoctorModel doctorModel)
         {
             try
@@ -114,7 +151,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DoctorEdit(int DoctorID)
         {
             ViewBag.UserList = GetUserList();
@@ -150,7 +187,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DoctorStatusUpdate(int DoctorID)
         {
             try
@@ -201,6 +238,29 @@ namespace Hospital_Management_System.Controllers
             return userList;
         }
 
+        private List<SelectListItem> GetSpecializationList()
+        {
+            List<SelectListItem> specializationList = new List<SelectListItem>();
+            string connectionString = _configuration.GetConnectionString("ConnectionString");
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using SqlCommand cmd = new SqlCommand("SELECT DISTINCT Specialization FROM [Doctors] WHERE IsActive = 1 AND Specialization IS NOT NULL ORDER BY Specialization", conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    specializationList.Add(new SelectListItem
+                    {
+                        Value = reader["Specialization"].ToString(),
+                        Text = reader["Specialization"].ToString()
+                    });
+                }
+            }
+            return specializationList;
+        }
+
+
+        [EncryptedActionParameter]
         public IActionResult Details(int DoctorID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -302,6 +362,8 @@ namespace Hospital_Management_System.Controllers
             return View(doctorTable);
         }
 
+
+        [EncryptedActionParameter]
         public IActionResult AddEdit()
         {
             ViewBag.UserList = GetUserList();

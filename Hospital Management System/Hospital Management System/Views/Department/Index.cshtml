@@ -1,5 +1,7 @@
 ﻿@model System.Data.DataTable
 @using System.Data
+@using System.Web.Mvc;
+@using System.Web.Routing;
 @{
     ViewData["Title"] = "Departments";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +11,7 @@
     <h1>Departments</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
             <li class="breadcrumb-item active">Departments</li>
         </ol>
     </nav>
@@ -37,7 +39,7 @@
                     </div>
 
                     <!-- Filter Section (Collapsible) -->
-                    <div class="collapse" id="filterSection">
+                    @* <div class="collapse" id="filterSection">
                         <div class="card card-body bg-light mb-3">
                             <div class="row g-3">
                                 <div class="col-md-4">
@@ -57,6 +59,45 @@
                                     <button class="btn btn-outline-secondary" onclick="clearFilters()">Clear</button>
                                 </div>
                             </div>
+                        </div>
+                    </div> *@
+
+                    <div class="collapse" id="filterSection">
+                        <div class="card card-body bg-light mb-3">
+                            <form method="post" asp-action="Index">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="searchInput" class="form-label">Search Department</label>
+                                        <input type="text" name="DepartmentName" class="form-control" id="searchInput" placeholder="Search departments..." value="@ViewBag.DepartmentName" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="statusFilter" class="form-label">Status Filter</label>
+                                        <select class="form-select" id="statusFilter" name="IsActive">
+                                            <option value="">All Status</option>
+                                            @if (ViewBag.IsActive != null && ViewBag.IsActive == true)
+                                            {
+                                                <option value="true" selected>Active</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="true">Active</option>
+                                            }
+                                            @if (ViewBag.IsActive != null && ViewBag.IsActive == false)
+                                            {
+                                                <option value="false" selected>Inactive</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="false">Inactive</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-outline-primary me-2">Apply</button>
+                                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">Clear</a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
@@ -87,17 +128,21 @@
                                                 </div>
                                             </div>
                                             <div class="d-flex gap-2">
-                                                <a asp-controller="Department" asp-action="Details" asp-route-DepartmentID="@dataRow["DepartmentID"]""
+
+                                                @Html.EncodedActionLink("Details","Details","Department",new { DepartmentID = dataRow["DepartmentID"] },new { @class = "btn btn-outline-info btn-sm flex-fill" },"bi bi-info-circle")
+                                                                                        
+
+                                                @* <a asp-controller="Department" asp-action="Details" asp-route-DepartmentID="@dataRow["DepartmentID"]""
                                                    class="btn btn-outline-info btn-sm flex-fill">
                                                     <i class="bi bi-info-circle"></i> Details
-                                                </a>
-                                                @* <a href="@Url.Action("Manage", "Department", new { id = dataRow["DepartmentID"] })"
-                                                   class="btn btn-outline-primary btn-sm flex-fill">
-                                                    <i class="bi bi-pencil"></i> Edit
                                                 </a> *@
-                                                <a class="btn btn-outline-primary btn-sm flex-fill" asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID="@dataRow["DepartmentID"]">
+
+                                                @Html.EncodedActionLink("Edit", "DepartmentEdit", "Department", new { DepartmentID = dataRow["DepartmentID"] }, new { @class = "btn btn-outline-primary btn-sm flex-fill" }, "bi bi-pencil")
+                                          
+                                                @* <a class="btn btn-outline-primary btn-sm flex-fill" asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID="@dataRow["DepartmentID"]">
                                                     <i class="bi bi-pencil"></i>Edit
-                                                </a>
+                                                </a> *@
+
                                                 <button class="btn btn-outline-danger btn-sm"
                                                         onclick="confirmDelete(@dataRow["DepartmentID"])" title="Delete">
                                                     <i class="bi bi-trash"></i>
@@ -160,17 +205,15 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group" role="group">
-                                                    <a asp-controller="Department" asp-action="Details" asp-route-DepartmentID="@dataRow["DepartmentID"]" 
+
+                                                    @Html.EncodedActionLink("", "Details", "Department", new { DepartmentID = dataRow["DepartmentID"] }, new { @class = "btn btn-outline-info btn-sm", title = "View Details" }, "bi bi-info-circle")                                                    @* <a asp-controller="Department" asp-action="Details" asp-route-DepartmentID="@dataRow["DepartmentID"]" 
                                                        class="btn btn-outline-info btn-sm" title="View Details">
                                                         <i class="bi bi-info-circle"></i>
-                                                    </a>
-                                                    @* <a href="@Url.Action("Manage", "Department", new { id = dataRow["DepartmentID"] })"
-                                                       class="btn btn-outline-primary btn-sm" title="Edit">
+                                                    </a> *@
+                                                    @Html.EncodedActionLink("", "DepartmentEdit", "Department", new { DepartmentID = dataRow["DepartmentID"] }, new { @class = "btn btn-outline-primary btn-sm", title = "Edit" }, "bi bi-pencil")
+                                                    @* <a class="btn btn-outline-primary btn-sm" title="Edit" asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID="@dataRow["DepartmentID"]">
                                                         <i class="bi bi-pencil"></i>
                                                     </a> *@
-                                                    <a class="btn btn-outline-primary btn-sm" title="Edit" asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID="@dataRow["DepartmentID"]">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
                                                     <button class="btn btn-outline-danger btn-sm"
                                                             onclick="confirmDelete(@dataRow["DepartmentID"])" title="Delete">
                                                         <i class="bi bi-trash"></i>
@@ -216,24 +259,7 @@
     </div>
 </section>
 
-@* <!-- Old Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this department? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-            </div>
-        </div>
-    </div>
-</div> *@
+
 
 
 @section Scripts {
@@ -291,20 +317,6 @@
 
 
 
-
-    // let departmentToDelete = null;
-
-    //  function confirmDelete(departmentId) {
-    //     departmentToDelete = departmentId;
-    //     new bootstrap.Modal(document.getElementById('deleteModal')).show();
-    // }
-
-    // document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-    //     if (departmentToDelete) {
-    //         Add your delete logic here
-    //             window.location.href = `/Department/DepartmentDelete?DepartmentID=${departmentToDelete}`;
-    //         }
-    // });
 
 
 

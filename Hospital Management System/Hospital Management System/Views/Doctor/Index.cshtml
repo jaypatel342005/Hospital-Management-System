@@ -335,26 +335,14 @@
             <h1>Doctor Management</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
                     <li class="breadcrumb-item active">Doctors</li>
                 </ol>
             </nav>
         </div>
 
 
-        @* <div class="pagetitle">
-            <h1><i class="bi bi-people me-2"></i>Doctor Management</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="@Url.Action("Index", "Home")">
-                            <i class="bi bi-house me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active">Doctors</li>
-                </ol>
-            </nav>
-        </div> *@
+       
 
         @* Quick Stats *@
         <div class="row mb-4">
@@ -434,49 +422,74 @@
         </div>
 
         @* Filters & Add Button *@
-        <div class="search-filter-section">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="bi bi-search"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0" placeholder="Search doctors by name..." id="searchInput">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="specializationFilter">
-                                <option value="">All Specializations</option>
-                                <option value="cardiology">Cardiology</option>
-                                <option value="neurology">Neurology</option>
-                                <option value="pediatrics">Pediatrics</option>
-                                <option value="orthopedics">Orthopedics</option>
-                                <option value="dermatology">Dermatology</option>
-                                <option value="general medicine">General Medicine</option>
-                                <option value="surgery">Surgery</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="statusFilter">
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+<div class="search-filter-section">
+    <form method="post" asp-action="Index">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="Name" class="form-control border-start-0" placeholder="Search doctors by name..." id="searchInput" value="@ViewBag.Name">
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="specializationFilter" name="Specialization">
+                            <option value="">All Specializations</option>
+                            @foreach (var item in ViewBag.SpecializationList)
+                            {
+                                @if (ViewBag.Specialization != null && ViewBag.Specialization.ToString() == item.Value)
+                                {
+                                    <option value="@item.Value" selected>@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="statusFilter" name="IsActive">
+                            <option value="">All Status</option>
+                            @if (ViewBag.IsActive != null && ViewBag.IsActive == true)
+                            {
+                                <option value="true" selected>Active</option>
+                            }
+                            else
+                            {
+                                <option value="true">Active</option>
+                            }
+                            @if (ViewBag.IsActive != null && ViewBag.IsActive == false)
+                            {
+                                <option value="false" selected>Inactive</option>
+                            }
+                            else
+                            {
+                                <option value="false">Inactive</option>
+                            }
+                        </select>
+                    </div>
                 </div>
-                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <button class="btn btn-outline-secondary me-2" id="clearFilters">
-                        <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <div class="d-flex justify-content-end flex-wrap gap-2">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-1"></i>Search
                     </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary" id="clearFilters">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+                    </a>
                     <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
                         <i class="bi bi-person-plus me-2"></i>Add New Doctor
                     </a>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
         @* Doctors Grid *@
         <div class="row" id="doctorsGrid">
@@ -525,22 +538,18 @@
                                 </div>
 
                                 <div class="action-buttons">
-                                    @* <button asp-controller="Doctor" asp-action="Details" asp-route-DepartmentID="@dataRow["DoctorID"]" class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
-                                        <i class="bi bi-eye"></i>
-                                    </button> *@
-                                    <form asp-controller="Doctor" asp-action="Details" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
+                                    @Html.EncodedActionLink("", "Details", "Doctor", new { DoctorID = dataRow["DoctorID"] }, new { @class = "btn btn-action btn-view", data_bs_toggle = "tooltip", title = "View Details" }, "bi bi-eye")
+                                    @* <form asp-controller="Doctor" asp-action="Details" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
                                         <button  class="btn btn-action btn-view" data-bs-toggle="tooltip" title="View Details">
                                             <i class="bi bi-eye"></i>
                                         </button>
-                                    </form>
-                                    @* <button class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
-                                        <i class="bi bi-pencil"></i>
-                                    </button> *@
-                                    <form asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
+                                    </form> *@
+                                    @Html.EncodedActionLink("", "DoctorEdit", "Doctor", new { DoctorID = dataRow["DoctorID"] }, new { @class = "btn btn-action btn-edit", data_bs_toggle = "tooltip", title = "Edit Doctor" }, "bi bi-pencil")
+                                    @* <form asp-controller="Doctor" asp-action="DoctorEdit" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
                                         <button type="submit" class="btn btn-action btn-edit" data-bs-toggle="tooltip" title="Edit Doctor">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                    </form>
+                                    </form> *@
                                     <form asp-controller="Doctor" asp-action="DoctorStatusUpdate" asp-route-DoctorID="@dataRow["DoctorID"]" method="post">
                                         <button type="submit" class="btn btn-action btn-toggle" data-bs-toggle="tooltip" title="@(isActive ? "Deactivate" : "Activate") Doctor">
                                             <i class="bi bi-@(isActive ? "eye-slash" : "eye")"></i>
@@ -595,45 +604,7 @@
             const doctorsGrid = document.getElementById('doctorsGrid');
             const noResults = document.getElementById('noResults');
 
-            function filterDoctors() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                const selectedSpecialization = specializationFilter.value.toLowerCase().trim();
-                const selectedStatus = statusFilter.value.toLowerCase().trim();
 
-                const doctorCards = document.querySelectorAll('.doctor-card');
-                let visibleCount = 0;
-
-                doctorCards.forEach(card => {
-                    const name = card.getAttribute('data-name') || '';
-                    const specialization = card.getAttribute('data-specialization') || '';
-                    const status = card.getAttribute('data-status') || '';
-
-                    const matchesSearch = !searchTerm || name.includes(searchTerm);
-                    const matchesSpecialization = !selectedSpecialization || specialization.includes(selectedSpecialization);
-                    const matchesStatus = !selectedStatus || status === selectedStatus;
-
-                    if (matchesSearch && matchesSpecialization && matchesStatus) {
-                        card.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                // Show/hide no results message
-                if (visibleCount === 0 && doctorCards.length > 0) {
-                    noResults.style.display = 'block';
-                } else {
-                    noResults.style.display = 'none';
-                }
-            }
-
-            function clearFilters() {
-                searchInput.value = '';
-                specializationFilter.value = '';
-                statusFilter.value = '';
-                filterDoctors();
-            }
 
             // Add event listeners
             if (searchInput) {

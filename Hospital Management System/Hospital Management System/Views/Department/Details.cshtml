@@ -9,7 +9,7 @@
     <h1>Department Details</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
             <li class="breadcrumb-item"><a href="@Url.Action("Index", "Department")">Departments</a></li>
             <li class="breadcrumb-item active">Details</li>
         </ol>
@@ -175,9 +175,10 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Actions</h5>
-                    <a  asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID=@ViewData["DepartmentID"] class="btn btn-primary">
+                    @Html.EncodedActionLink("Edit Department", "DepartmentEdit", "Department", new { DepartmentID = ViewData["DepartmentID"] }, new { @class = "btn btn-primary" }, "bi bi-pencil")
+                    @* <a  asp-controller="Department" asp-action="DepartmentEdit" asp-route-DepartmentID=@ViewData["DepartmentID"] class="btn btn-primary">
                         <i class="bi bi-pencil"></i> Edit Department
-                    </a>
+                    </a> *@
                     <a href="@Url.Action("Index", "Department")" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to List
                     </a>

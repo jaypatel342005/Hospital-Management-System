@@ -6,6 +6,8 @@ using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
+    [CheckAccess]
+ 
     public class DepartmentController : Controller
     {
         private IConfiguration _configuration;
@@ -14,24 +16,55 @@ namespace Hospital_Management_System.Controllers
         {
             _configuration = configuration;
         }
-        
-        public IActionResult Index()
-        {
-           
-                string connectionString = this._configuration.GetConnectionString("ConnectionString");
-                using var connection = new SqlConnection(connectionString);
-                using var command = connection.CreateCommand();
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = "PR_Departments_SelectAll";
-                
-                connection.Open();
-                using var reader = command.ExecuteReader();
-                var table = new DataTable();
-                table.Load(reader);
-                return View(table);
-           
-        }
 
+        //public IActionResult Index()
+        //{
+
+        //        string connectionString = this._configuration.GetConnectionString("ConnectionString");
+        //        using var connection = new SqlConnection(connectionString);
+        //        using var command = connection.CreateCommand();
+        //        command.CommandType = CommandType.StoredProcedure;
+        //        command.CommandText = "PR_Departments_SelectAll";
+
+        //        connection.Open();
+        //        using var reader = command.ExecuteReader();
+        //        var table = new DataTable();
+        //        table.Load(reader);
+        //        return View(table);
+
+        //}
+
+        public IActionResult Index(string DepartmentName = "", bool? IsActive = null)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                SqlConnection objConn = new SqlConnection(this._configuration.GetConnectionString("ConnectionString"));
+                objConn.Open();
+
+                SqlCommand objCmd = objConn.CreateCommand();
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_Departments_SelectAll";
+
+                objCmd.Parameters.Add("@DepartmentName", SqlDbType.VarChar).Value = DepartmentName ?? "";
+                objCmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = (object)IsActive ?? DBNull.Value;
+
+                SqlDataAdapter objAdapter = new SqlDataAdapter(objCmd);
+                objAdapter.Fill(dt);
+
+                objConn.Close();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            ViewBag.DepartmentName = DepartmentName;
+            ViewBag.IsActive = IsActive;
+
+            return View(dt);
+        }
 
         private List<SelectListItem> GetUserList()
         {
@@ -58,7 +91,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DepartmentDelete(int DepartmentID)
         {
             try
@@ -87,7 +120,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DepartmentSave(DepartmentsModel departmentsModel)
         {
             try
@@ -133,7 +166,7 @@ namespace Hospital_Management_System.Controllers
         }
 
 
-
+        [EncryptedActionParameter]
         public IActionResult DepartmentEdit(int DepartmentID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -162,7 +195,7 @@ namespace Hospital_Management_System.Controllers
 
 
 
-
+        [EncryptedActionParameter]
         public IActionResult Details(int DepartmentID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -218,6 +251,8 @@ namespace Hospital_Management_System.Controllers
             return View(departmentTable);
         }
 
+
+        [EncryptedActionParameter]
         public IActionResult AddEdit()
         {
             ViewBag.UserList = GetUserList();

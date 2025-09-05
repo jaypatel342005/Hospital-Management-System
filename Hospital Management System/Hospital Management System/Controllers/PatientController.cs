@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
-
+    [CheckAccess]
     public class PatientController : Controller
     {
 
@@ -34,6 +34,7 @@ namespace Hospital_Management_System.Controllers
             connection.Close();
         }
 
+        [EncryptedActionParameter]
         public IActionResult PatientDelete(int PatientID)
         {
             try
@@ -58,6 +59,7 @@ namespace Hospital_Management_System.Controllers
             return RedirectToAction("Index");
         }
 
+        [EncryptedActionParameter]
         public IActionResult PatientSave(PatientModel patientModel)
         {
             try
@@ -107,7 +109,7 @@ namespace Hospital_Management_System.Controllers
             return View("AddEdit", patientModel);
         }
 
-
+        [EncryptedActionParameter]
         public IActionResult PatientEdit(int PatientID)
         {
             ViewBag.UserList = GetUserList();
@@ -161,7 +163,7 @@ namespace Hospital_Management_System.Controllers
         }
 
 
-
+        [EncryptedActionParameter]
         public IActionResult Details(int PatientID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -292,6 +294,8 @@ namespace Hospital_Management_System.Controllers
 
             return View(patientTable);
         }
+
+        [EncryptedActionParameter]
         public IActionResult AddEdit()
         {
             ViewBag.UserList = GetUserList();

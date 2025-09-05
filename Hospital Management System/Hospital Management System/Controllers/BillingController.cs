@@ -9,6 +9,7 @@ using IronPdf;
 
 namespace Hospital_Management_System.Controllers
 {
+    [CheckAccess]
     public class BillingController : Controller
     {
         private IConfiguration _configuration;
@@ -32,6 +33,7 @@ namespace Hospital_Management_System.Controllers
             return View(table);
         }
 
+        [EncryptedActionParameter]
         public IActionResult RecordPayment(int BillID, decimal PaymentAmount)
         {
             try
@@ -57,6 +59,7 @@ namespace Hospital_Management_System.Controllers
             return RedirectToAction("Index");
         }
 
+        [EncryptedActionParameter]
         public IActionResult GetBillingByAppointment(int AppointmentID)
         {
             var billingList = new List<BillingModel>();
@@ -88,6 +91,7 @@ namespace Hospital_Management_System.Controllers
 
 
         // NEW: Get billing records by Patient ID
+        [EncryptedActionParameter]
         public IActionResult GetBillingByPatient(int PatientID)
         {
             var billingList = new List<EnhancedBillingModel>();
@@ -141,6 +145,7 @@ namespace Hospital_Management_System.Controllers
             return View(table);
         }
 
+        [EncryptedActionParameter]
         public IActionResult Details(int BillID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
