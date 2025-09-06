@@ -85,13 +85,7 @@
                             <span asp-validation-for="TotalConsultedAmount" class="text-danger"></span>
                         </div>
 
-                        <div class="col-md-6">
-                            <label asp-for="UserID" class="form-label">Created By (User)</label>
-                            <select asp-for="UserID" asp-items="ViewBag.UserList" class="form-select">
-                                <option value="">-- Select User --</option>
-                            </select>
-                            <span asp-validation-for="UserID" class="text-danger"></span>
-                        </div>
+                        <input asp-for="UserID" type="hidden" />
 
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">

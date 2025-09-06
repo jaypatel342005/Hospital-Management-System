@@ -33,7 +33,7 @@ namespace Hospital_Management_System.Models
 
         public DateTime? Modified { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid user")]
+    
         public int UserID { get; set; }
 
         // Navigation property (assumes User model exists)

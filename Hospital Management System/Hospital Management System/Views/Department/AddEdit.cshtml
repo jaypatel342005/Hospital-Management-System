@@ -31,13 +31,8 @@
                             </select>
                             <span asp-validation-for="IsActive" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="UserID" class="form-label fw-bold">Created By (User)</label>
-                            <select asp-for="UserID" class="form-select" asp-items="ViewBag.UserList">
-                                <option value="">-- Select User --</option>
-                            </select>
-                            <span asp-validation-for="UserID" class="text-danger"></span>
-                        </div>
+                        <input asp-for="UserID" type="hidden"  />
+                       
                         <button type="submit" class="btn btn-primary">Save</button>
                         <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
                     </form>

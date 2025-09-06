@@ -90,7 +90,7 @@ namespace Hospital_Management_System.Controllers
                             }
                             command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = appointmentModel.DoctorID;
                             command.Parameters.Add("@PatientID", SqlDbType.Int).Value = appointmentModel.PatientID;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = appointmentModel.UserID;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = CommonVariable.UserID();
                             command.Parameters.Add("@AppointmentDate", SqlDbType.DateTime).Value = appointmentModel.AppointmentDate;
                             command.Parameters.Add("@AppointmentStatus", SqlDbType.VarChar).Value = appointmentModel.AppointmentStatus;
                             command.Parameters.Add("@Description", SqlDbType.VarChar).Value = appointmentModel.Description ?? (object)DBNull.Value;

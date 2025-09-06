@@ -148,7 +148,7 @@ namespace Hospital_Management_System.Controllers
                             command.Parameters.Add("@DepartmentName", SqlDbType.VarChar).Value = departmentsModel.DepartmentName;
                             command.Parameters.Add("@Description", SqlDbType.VarChar).Value = departmentsModel.Description ?? (object)DBNull.Value;
                             command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = departmentsModel.IsActive;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = departmentsModel.UserID;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = CommonVariable.UserID();
                             command.ExecuteNonQuery();
                         }
                     }

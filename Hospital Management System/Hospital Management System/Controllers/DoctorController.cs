@@ -132,7 +132,7 @@ namespace Hospital_Management_System.Controllers
                             command.Parameters.Add("@Qualification", SqlDbType.VarChar).Value = doctorModel.Qualification;
                             command.Parameters.Add("@Specialization", SqlDbType.VarChar).Value = doctorModel.Specialization;
                             command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = doctorModel.IsActive;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = doctorModel.UserID;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = CommonVariable.UserID();
                             command.ExecuteNonQuery();
                         }
                     }

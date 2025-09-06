@@ -25,35 +25,35 @@
     }
 
     /* .pagetitle {
-        margin-bottom: 1rem;
-    }
-
-        .pagetitle h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        } */
-
-    /* .breadcrumb {
-        background: transparent;
-        padding: 0;
-        margin: 0;
-    }
-
-    .breadcrumb-item a {
-        color: var(--primary-color);
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-        .breadcrumb-item a:hover {
-            color: var(--secondary-color);
+            margin-bottom: 1rem;
         }
 
-    .breadcrumb-item.active {
-        color: #6c757d;
-    } */
+            .pagetitle h1 {
+                font-size: 1.6rem;
+                font-weight: 600;
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+            } */
+
+    /* .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .breadcrumb-item a:hover {
+                color: var(--secondary-color);
+            }
+
+        .breadcrumb-item.active {
+            color: #6c757d;
+        } */
 
     .card {
         border: none;
@@ -342,7 +342,7 @@
         </div>
 
 
-       
+
 
         @* Quick Stats *@
         <div class="row mb-4">
@@ -422,74 +422,74 @@
         </div>
 
         @* Filters & Add Button *@
-<div class="search-filter-section">
-    <form method="post" asp-action="Index">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" name="Name" class="form-control border-start-0" placeholder="Search doctors by name..." id="searchInput" value="@ViewBag.Name">
+        <div class="search-filter-section">
+            <form method="post" asp-action="Index">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" name="Name" class="form-control border-start-0" placeholder="Search doctors by name..." id="searchInput" value="@ViewBag.Name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="specializationFilter" name="Specialization">
+                                    <option value="">All Specializations</option>
+                                    @foreach (var item in ViewBag.SpecializationList)
+                                    {
+                                        @if (ViewBag.Specialization != null && ViewBag.Specialization.ToString() == item.Value)
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="statusFilter" name="IsActive">
+                                    <option value="">All Status</option>
+                                    @if (ViewBag.IsActive != null && ViewBag.IsActive == true)
+                                    {
+                                        <option value="true" selected>Active</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="true">Active</option>
+                                    }
+                                    @if (ViewBag.IsActive != null && ViewBag.IsActive == false)
+                                    {
+                                        <option value="false" selected>Inactive</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="false">Inactive</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <select class="form-select" id="specializationFilter" name="Specialization">
-                            <option value="">All Specializations</option>
-                            @foreach (var item in ViewBag.SpecializationList)
-                            {
-                                @if (ViewBag.Specialization != null && ViewBag.Specialization.ToString() == item.Value)
-                                {
-                                    <option value="@item.Value" selected>@item.Text</option>
-                                }
-                                else
-                                {
-                                    <option value="@item.Value">@item.Text</option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <select class="form-select" id="statusFilter" name="IsActive">
-                            <option value="">All Status</option>
-                            @if (ViewBag.IsActive != null && ViewBag.IsActive == true)
-                            {
-                                <option value="true" selected>Active</option>
-                            }
-                            else
-                            {
-                                <option value="true">Active</option>
-                            }
-                            @if (ViewBag.IsActive != null && ViewBag.IsActive == false)
-                            {
-                                <option value="false" selected>Inactive</option>
-                            }
-                            else
-                            {
-                                <option value="false">Inactive</option>
-                            }
-                        </select>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <div class="d-flex justify-content-end flex-wrap gap-2">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="bi bi-search me-1"></i>Search
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary" id="clearFilters">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+                            </a>
+                            <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
+                                <i class="bi bi-person-plus me-2"></i>Add New Doctor
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <div class="d-flex justify-content-end flex-wrap gap-2">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search me-1"></i>Search
-                    </button>
-                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary" id="clearFilters">
-                        <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
-                    </a>
-                    <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
-                        <i class="bi bi-person-plus me-2"></i>Add New Doctor
-                    </a>
-                </div>
-            </div>
+            </form>
         </div>
-    </form>
-</div>
 
         @* Doctors Grid *@
         <div class="row" id="doctorsGrid">
@@ -604,8 +604,6 @@
             const doctorsGrid = document.getElementById('doctorsGrid');
             const noResults = document.getElementById('noResults');
 
-
-
             // Add event listeners
             if (searchInput) {
                 searchInput.addEventListener('input', filterDoctors);
@@ -620,29 +618,81 @@
                 clearFiltersBtn.addEventListener('click', clearFilters);
             }
 
-            // Success/Error messages
+            // Success/Error messages - FIXED VERSION
             @if (TempData["SuccessMessage"] != null)
             {
-                            <text>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: '@TempData["SuccessMessage"]'
-                            });
-                            </text>
+                    <text>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: '@Html.Raw(TempData["SuccessMessage"].ToString().Replace("'", "\\'"))',
+                        timer: 3000,
+                        showConfirmButton: true
+                    });
+                    </text>
             }
 
             @if (TempData["ErrorMessage"] != null)
             {
-                            <text>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: '@TempData["ErrorMessage"]'
-                            });
-                            </text>
+                    <text>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '@Html.Raw(TempData["ErrorMessage"].ToString().Replace("'", "\\'"))',
+                        timer: 5000,
+                        showConfirmButton: true
+                    });
+                    </text>
             }
         });
+
+        // Filter doctors function (if needed)
+        // function filterDoctors() {
+        //     const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        //     const specializationValue = document.getElementById('specializationFilter').value.toLowerCase();
+        //     const statusValue = document.getElementById('statusFilter').value.toLowerCase();
+
+        //     const doctorCards = document.querySelectorAll('.doctor-card');
+        //     let visibleCount = 0;
+
+        //     doctorCards.forEach(card => {
+        //         const name = card.getAttribute('data-name') || '';
+        //         const specialization = card.getAttribute('data-specialization') || '';
+        //         const status = card.getAttribute('data-status') || '';
+
+        //         const matchesSearch = searchValue === '' || name.includes(searchValue);
+        //         const matchesSpecialization = specializationValue === '' || specialization.includes(specializationValue);
+        //         const matchesStatus = statusValue === '' || status === statusValue;
+
+        //         if (matchesSearch && matchesSpecialization && matchesStatus) {
+        //             card.style.display = 'block';
+        //             visibleCount++;
+        //         } else {
+        //             card.style.display = 'none';
+        //         }
+        //     });
+
+        //     Show/hide no results message
+        //     const noResults = document.getElementById('noResults');
+        //     const doctorsGrid = document.getElementById('doctorsGrid');
+
+        //     if (visibleCount === 0) {
+        //         doctorsGrid.style.display = 'none';
+        //         noResults.style.display = 'block';
+        //     } else {
+        //         doctorsGrid.style.display = 'flex';
+        //         noResults.style.display = 'none';
+        //     }
+        // }
+
+        // Clear filters function
+        // function clearFilters(e) {
+        //     e.preventDefault();
+        //     document.getElementById('searchInput').value = '';
+        //     document.getElementById('specializationFilter').value = '';
+        //     document.getElementById('statusFilter').value = '';
+        //     filterDoctors();
+        // }
 
         function confirmDelete(id) {
             Swal.fire({

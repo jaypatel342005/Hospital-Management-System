@@ -15,8 +15,7 @@ namespace Hospital_Management_System.Models
         [Range(1, int.MaxValue, ErrorMessage = "Please select a valid patient")]
         public int PatientID { get; set; }
 
-        [Required(ErrorMessage = "User is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Please select a valid user")]
+      
         public int UserID { get; set; }
 
         [Required(ErrorMessage = "Appointment date is required")]

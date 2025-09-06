@@ -152,7 +152,7 @@ namespace Hospital_Management_System.Controllers
                             }
                             command.Parameters.Add("@DoctorID", SqlDbType.Int).Value = doctorDepartmentsModel.DoctorID;
                             command.Parameters.Add("@DepartmentID", SqlDbType.Int).Value = doctorDepartmentsModel.DepartmentID;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = doctorDepartmentsModel.UserID;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = CommonVariable.UserID();
                             command.ExecuteNonQuery();
                         }
                     }

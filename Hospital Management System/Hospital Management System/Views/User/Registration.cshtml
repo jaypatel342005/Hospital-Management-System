@@ -4,106 +4,662 @@
 }
 
 <main>
-    <div class="container">
-        <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    <div class="container-fluid registration-container">
+        <div class="row min-vh-100">
+            <!-- Left Side - Registration Form -->
+            <div class="col-lg-7 col-12 d-flex align-items-center justify-content-center registration-form-section">
+                <div class="registration-form-container">
+                    <!-- Mobile Logo -->
+                    <div class="d-lg-none text-center mb-3">
+                        <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
+                            <img src="~/image/Logo.png" alt="MediSoft Logo" class="mobile-logo">
+                            <h4 class="brand-title-mobile mt-2">MediSoft</h4>
+                        </a>
+                    </div>
 
-                        <div class="d-flex justify-content-center py-4">
-                            <a href="@Url.Action("Index", "Home")" class="logo d-flex align-items-center w-auto">
-                                <img src="~/assets/img/logo.png" alt="">
-                                <span class="d-none d-lg-block">NiceAdmin</span>
-                            </a>
-                        </div><!-- End Logo -->
+                    <!-- Success/Error Messages -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show custom-alert success-alert" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
 
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <div class="pt-4 pb-2">
-                                    <h5 class="card-title text-center pb-0 fs-4">Create an Account</h5>
-                                    <p class="text-center small">Enter your personal details to create account</p>
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <!-- Registration Card -->
+                    <div class="card registration-card shadow-lg border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center mb-3">
+                                <h4 class="card-title fw-bold mb-1">Create Account</h4>
+                                <p class="text-muted small">Join us today and start your journey</p>
+                            </div>
+
+                            @using (Html.BeginForm("Registration", "User", FormMethod.Post, new { @class = "registration-form row g-3 needs-validation", novalidate = "novalidate" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                                {
+                                    <div class="col-12">
+                                        <div class="alert alert-danger custom-alert" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            <strong>Please correct the following errors:</strong>
+                                            @Html.ValidationSummary(true, "", new { @class = "mb-0 mt-1" })
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Username Field -->
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.UserName, new { @class = "form-label fw-semibold small" })
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text border-end-0 bg-transparent">
+                                            <i class="bi bi-person-fill text-muted"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.UserName, new { 
+                                            @class = "form-control border-start-0 ps-0" + (Html.ViewData.ModelState["UserName"] != null && Html.ViewData.ModelState["UserName"].Errors.Count > 0 ? " is-invalid" : ""), 
+                                            placeholder = "Enter username",
+                                            autocomplete = "username"
+                                        })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "invalid-feedback d-block small" })
                                 </div>
 
-                                <!-- Display Success/Error Messages -->
-                                @if (TempData["SuccessMessage"] != null)
-                                {
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                        @TempData["SuccessMessage"]
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <!-- Email Field -->
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.Email, new { @class = "form-label fw-semibold small" })
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text border-end-0 bg-transparent">
+                                            <i class="bi bi-envelope-fill text-muted"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.Email, new { 
+                                            @class = "form-control border-start-0 ps-0" + (Html.ViewData.ModelState["Email"] != null && Html.ViewData.ModelState["Email"].Errors.Count > 0 ? " is-invalid" : ""), 
+                                            type = "email",
+                                            placeholder = "Enter email address",
+                                            autocomplete = "email"
+                                        })
                                     </div>
-                                }
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "invalid-feedback d-block small" })
+                                </div>
 
-                                @if (TempData["ErrorMessage"] != null)
-                                {
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        @TempData["ErrorMessage"]
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <!-- Mobile Number Field -->
+                                <div class="col-12">
+                                    @Html.LabelFor(m => m.MobileNo, new { @class = "form-label fw-semibold small" })
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text border-end-0 bg-transparent">
+                                            <i class="bi bi-telephone-fill text-muted"></i>
+                                        </span>
+                                        @Html.TextBoxFor(m => m.MobileNo, new { 
+                                            @class = "form-control border-start-0 ps-0" + (Html.ViewData.ModelState["MobileNo"] != null && Html.ViewData.ModelState["MobileNo"].Errors.Count > 0 ? " is-invalid" : ""), 
+                                            type = "tel",
+                                            placeholder = "Enter your mobile number",
+                                            autocomplete = "tel"
+                                        })
                                     </div>
-                                }
+                                    @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class = "invalid-feedback d-block small" })
+                                </div>
 
-                                <!-- Registration Form -->
-                                @using (Html.BeginForm("Registration", "User", FormMethod.Post, new { @class = "row g-3" }))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
-                                    {
-                                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
-                                    }
-
-                                    <!-- Username Field -->
-                                    <div class="col-12">
-                                        @Html.LabelFor(m => m.UserName, new { @class = "form-label" })
-                                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" + (Html.ViewData.ModelState["UserName"] != null && Html.ViewData.ModelState["UserName"].Errors.Count > 0 ? " is-invalid" : "") })
-                                        @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "invalid-feedback" })
+                                <!-- Password Field -->
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.Password, new { @class = "form-label fw-semibold small" })
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text border-end-0 bg-transparent">
+                                            <i class="bi bi-lock-fill text-muted"></i>
+                                        </span>
+                                        @Html.PasswordFor(m => m.Password, new { 
+                                            @class = "form-control border-start-0 border-end-0 ps-0" + (Html.ViewData.ModelState["Password"] != null && Html.ViewData.ModelState["Password"].Errors.Count > 0 ? " is-invalid" : ""), 
+                                            placeholder = "Create password",
+                                            autocomplete = "new-password",
+                                            id = "password"
+                                        })
+                                        <button class="btn btn-outline-secondary btn-sm border-start-0 password-toggle" type="button" data-target="password">
+                                            <i class="bi bi-eye small"></i>
+                                        </button>
                                     </div>
-
-                                    <!-- Email Field -->
-                                    <div class="col-12">
-                                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
-                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" + (Html.ViewData.ModelState["Email"] != null && Html.ViewData.ModelState["Email"].Errors.Count > 0 ? " is-invalid" : ""), type = "email" })
-                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "invalid-feedback" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "invalid-feedback d-block small" })
+                                    
+                                    <!-- Password Strength Indicator -->
+                                    <div class="password-strength mt-1">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="passwordStrength"></div>
+                                        </div>
+                                        <small class="strength-text" id="passwordStrengthText">Password strength</small>
                                     </div>
+                                </div>
 
-                                    <!-- Mobile Number Field -->
-                                    <div class="col-12">
-                                        @Html.LabelFor(m => m.MobileNo, new { @class = "form-label" })
-                                        @Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control" + (Html.ViewData.ModelState["MobileNo"] != null && Html.ViewData.ModelState["MobileNo"].Errors.Count > 0 ? " is-invalid" : ""), type = "tel", placeholder = "Enter your mobile number" })
-                                        @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class = "invalid-feedback" })
+                                <!-- Confirm Password Field -->
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label fw-semibold small" })
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text border-end-0 bg-transparent">
+                                            <i class="bi bi-lock-fill text-muted"></i>
+                                        </span>
+                                        @Html.PasswordFor(m => m.ConfirmPassword, new { 
+                                            @class = "form-control border-start-0 border-end-0 ps-0" + (Html.ViewData.ModelState["ConfirmPassword"] != null && Html.ViewData.ModelState["ConfirmPassword"].Errors.Count > 0 ? " is-invalid" : ""), 
+                                            placeholder = "Confirm password",
+                                            autocomplete = "new-password",
+                                            id = "confirmPassword"
+                                        })
+                                        <button class="btn btn-outline-secondary btn-sm border-start-0 password-toggle" type="button" data-target="confirmPassword">
+                                            <i class="bi bi-eye small"></i>
+                                        </button>
                                     </div>
+                                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "invalid-feedback d-block small" })
+                                    
+                                    <!-- Password Match Indicator -->
+                                    <div class="password-match mt-1">
+                                        <small class="match-text" id="passwordMatchText"></small>
+                                    </div>
+                                </div>
 
-                                    <!-- Password Field -->
-                                    <div class="col-12">
-                                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
-                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" + (Html.ViewData.ModelState["Password"] != null && Html.ViewData.ModelState["Password"].Errors.Count > 0 ? " is-invalid" : "") })
-                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "invalid-feedback" })
+                                <!-- Terms & Conditions -->
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="agreeTerms">
+                                        <label class="form-check-label small" for="agreeTerms">
+                                            I agree to the <a href="#" class="text-primary text-decoration-none">Terms of Service</a> 
+                                            and <a href="#" class="text-primary text-decoration-none">Privacy Policy</a>
+                                        </label>
                                     </div>
+                                </div>
 
-                                    <!-- Confirm Password Field -->
-                                    <div class="col-12">
-                                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
-                                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" + (Html.ViewData.ModelState["ConfirmPassword"] != null && Html.ViewData.ModelState["ConfirmPassword"].Errors.Count > 0 ? " is-invalid" : "") })
-                                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "invalid-feedback" })
-                                    </div>
+                                <!-- Submit Button -->
+                                <div class="col-12">
+                                    <button class="btn btn-primary w-100 register-btn" type="submit">
+                                        <span class="register-text">Create Account</span>
+                                        <div class="spinner-border spinner-border-sm d-none register-spinner" role="status" aria-hidden="true"></div>
+                                    </button>
+                                </div>
 
-                                    <!-- Submit Button -->
-                                    <div class="col-12">
-                                        <button class="btn btn-primary w-100" type="submit">Create Account</button>
-                                    </div>
+                              
 
-                                    <!-- Login Link -->
-                                    <div class="col-12">
-                                        <p class="small mb-0">Already have an account? 
-                                            <a href="@Url.Action("Login", "User")">Log in</a>
-                                        </p>
-                                    </div>
-                                }
-                            </div>
+                               
+
+                                <!-- Login Link -->
+                                <div class="col-12 text-center">
+                                    <p class="mb-0 small text-muted">
+                                        Already have an account? 
+                                        <a href="@Url.Action("Login", "User")" class="text-primary text-decoration-none fw-semibold">
+                                            Sign In
+                                        </a>
+                                    </p>
+                                </div>
+
+                                  <!-- Footer -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">
+                            © 2024 MediSoft. All rights reserved. |
+                            <a href="#" class="text-decoration-none">Privacy Policy</a> |
+                            <a href="#" class="text-decoration-none">Terms of Service</a>
+                        </p>
+                    </div>
+
+                            }
                         </div>
-
-                        
                     </div>
                 </div>
             </div>
-        </section>
+
+            <!-- Right Side - Branding/Image -->
+            <div class="col-lg-5 d-none d-lg-flex registration-brand-section">
+                <div class="brand-content d-flex flex-column justify-content-center align-items-center text-white">
+                    <div class="brand-logo mb-3">
+                        @* <img src="~/image/Logo.png" alt="MediSoft Logo" class="brand-logo-img"> *@
+                        <h2 class="brand-title mt-3">MediSoft</h2>
+                    </div>
+                    <div class="brand-description text-center">
+                        <h4 class="mb-3">Join Our Platform!</h4>
+                        <p class="lead">Start your journey with secure healthcare management</p>
+                        <div class="features-list mt-4">
+                            <div class="feature-item mb-2">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <span>Secure Data Management</span>
+                            </div>
+                            <div class="feature-item mb-2">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <span>24/7 Support</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <span>Easy Integration</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</main><!-- End #main -->
+</main>
+
+<!-- Custom Styles -->
+<style>
+    .registration-container {
+        background: #f8f9fa;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .registration-form-section {
+        background: #f8f9fa;
+        padding: 1.5rem 1rem;
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+
+    .registration-form-container {
+        width: 100%;
+        max-width: 550px;
+    }
+
+    .mobile-logo {
+        max-width: 60px;
+        height: auto;
+    }
+
+    .brand-title-mobile {
+        color: #667eea;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .registration-card {
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        max-height: calc(100vh - 3rem);
+        overflow-y: auto;
+    }
+
+    .card-body {
+        padding: 1.5rem 2rem !important;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    .custom-alert {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem 1rem;
+    }
+
+    .success-alert {
+        box-shadow: 0 2px 8px rgba(25, 135, 84, 0.15);
+    }
+
+    .form-label {
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .input-group .form-control {
+        border: 1.5px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .input-group .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .input-group .input-group-text {
+        border: 1.5px solid #e9ecef;
+        border-radius: 8px;
+        background: transparent;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #667eea;
+    }
+
+    .input-group .password-toggle {
+        border: 1.5px solid #e9ecef;
+        border-radius: 8px;
+        background: transparent;
+        transition: all 0.3s ease;
+        padding: 0.75rem 1rem;
+    }
+
+    .input-group:focus-within .password-toggle {
+        border-color: #667eea;
+    }
+
+    .password-strength {
+        margin-top: 0.25rem;
+    }
+
+    .strength-bar {
+        height: 3px;
+        background: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+        width: 0%;
+    }
+
+    .strength-fill.weak {
+        background: #dc3545;
+        width: 25%;
+    }
+
+    .strength-fill.fair {
+        background: #ffc107;
+        width: 50%;
+    }
+
+    .strength-fill.good {
+        background: #17a2b8;
+        width: 75%;
+    }
+
+    .strength-fill.strong {
+        background: #28a745;
+        width: 100%;
+    }
+
+    .strength-text {
+        font-size: 0.7rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .password-match .match-text {
+        font-size: 0.7rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .match-text.match {
+        color: #28a745;
+    }
+
+    .match-text.no-match {
+        color: #dc3545;
+    }
+
+    .register-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .register-btn:active {
+        transform: translateY(0);
+    }
+
+    .register-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    .btn-outline-secondary {
+        border: 1.5px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        transform: translateY(-1px);
+    }
+
+    .invalid-feedback {
+        display: block !important;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Right Side Branding */
+    .registration-brand-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .registration-brand-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 2;
+        padding: 2rem;
+    }
+
+    .brand-logo-img {
+        max-width: 100px;
+        height: auto;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    .brand-title {
+        font-weight: 700;
+        font-size: 2rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .features-list {
+        max-width: 300px;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    /* Slide-out animation */
+    .registration-form-container {
+        transition: all 0.5s ease;
+    }
+
+    .registration-form-container.slide-out {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .registration-form-section {
+            padding: 1rem;
+        }
+        
+        .card-body {
+            padding: 1rem 1.5rem !important;
+        }
+        
+        .registration-card {
+            max-height: calc(100vh - 2rem);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .registration-form-container {
+            max-width: 100%;
+        }
+        
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+        }
+    }
+
+    /* Ensure everything fits on screen */
+    @@media (max-height: 700px) {
+        .card-body {
+            padding: 1rem 1.5rem !important;
+        }
+        
+        .mb-3 {
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .g-3 > * {
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .brand-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Password toggle functionality
+            $('.password-toggle').click(function() {
+                var target = $(this).data('target');
+                var passwordField = $('#' + target);
+                var icon = $(this).find('i');
+                
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                }
+            });
+
+            // Password strength checker
+            function checkPasswordStrength(password) {
+                var score = 0;
+                if (password.length >= 8) score++;
+                if (/[a-z]/.test(password)) score++;
+                if (/[A-Z]/.test(password)) score++;
+                if (/[0-9]/.test(password)) score++;
+                if (/[^A-Za-z0-9]/.test(password)) score++;
+                
+                return score;
+            }
+
+            // Password strength indicator
+            $('#password').on('input', function() {
+                var password = $(this).val();
+                var strength = checkPasswordStrength(password);
+                var strengthFill = $('#passwordStrength');
+                var strengthText = $('#passwordStrengthText');
+                
+                strengthFill.removeClass('weak fair good strong');
+                
+                if (password.length === 0) {
+                    strengthFill.css('width', '0%');
+                    strengthText.text('Password strength');
+                } else if (strength <= 2) {
+                    strengthFill.addClass('weak').css('width', '25%');
+                    strengthText.text('Weak').css('color', '#dc3545');
+                } else if (strength === 3) {
+                    strengthFill.addClass('fair').css('width', '50%');
+                    strengthText.text('Fair').css('color', '#ffc107');
+                } else if (strength === 4) {
+                    strengthFill.addClass('good').css('width', '75%');
+                    strengthText.text('Good').css('color', '#17a2b8');
+                } else {
+                    strengthFill.addClass('strong').css('width', '100%');
+                    strengthText.text('Strong').css('color', '#28a745');
+                }
+            });
+
+            // Password match checker
+            function checkPasswordMatch() {
+                var password = $('#password').val();
+                var confirmPassword = $('#confirmPassword').val();
+                var matchText = $('#passwordMatchText');
+                
+                if (confirmPassword.length === 0) {
+                    matchText.text('').removeClass('match no-match');
+                } else if (password === confirmPassword) {
+                    matchText.text('Passwords match').removeClass('no-match').addClass('match');
+                } else {
+                    matchText.text('Passwords do not match').removeClass('match').addClass('no-match');
+                }
+            }
+
+            $('#password, #confirmPassword').on('input', checkPasswordMatch);
+
+            // Form submission with loading state
+            $('.registration-form').submit(function(e) {
+                var registerBtn = $('.register-btn');
+                var registerText = $('.register-text');
+                var registerSpinner = $('.register-spinner');
+                
+                // Show loading state
+                registerBtn.prop('disabled', true);
+                registerText.addClass('d-none');
+                registerSpinner.removeClass('d-none');
+            });
+
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // Input focus animations
+            $('.form-control').focus(function() {
+                $(this).parent().addClass('focused');
+            }).blur(function() {
+                $(this).parent().removeClass('focused');
+            });
+        });
+    </script>
+}

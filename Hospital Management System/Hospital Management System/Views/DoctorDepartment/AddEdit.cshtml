@@ -62,17 +62,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="UserID" class="form-label fw-bold">
-                                <i class="bi bi-person-check me-1"></i>Managed By (User)
-                                <span class="text-danger">*</span>
-                            </label>
-                            <select asp-for="UserID" class="form-select" asp-items="ViewBag.UserList" required>
-                                <option value="">-- Select User --</option>
-                            </select>
-                            <span asp-validation-for="UserID" class="text-danger"></span>
-                            <div class="form-text">Select the user who will manage this association</div>
-                        </div>
+                        <input asp-for="UserID" type="hidden" />
 
                         @* Display audit information for existing records *@
                         @if (Model?.DoctorDepartmentID != null && Model.DoctorDepartmentID > 0)

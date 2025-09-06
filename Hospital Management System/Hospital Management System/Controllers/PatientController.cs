@@ -93,7 +93,7 @@ namespace Hospital_Management_System.Controllers
                             command.Parameters.Add("@City", SqlDbType.VarChar).Value = patientModel.City;
                             command.Parameters.Add("@State", SqlDbType.VarChar).Value = patientModel.State;
                             command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = patientModel.IsActive;
-                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = patientModel.UserID;
+                            command.Parameters.Add("@UserID", SqlDbType.Int).Value = CommonVariable.UserID();
                             command.ExecuteNonQuery();
                         }
                     }
