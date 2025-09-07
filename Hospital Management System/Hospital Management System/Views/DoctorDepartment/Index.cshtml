@@ -164,10 +164,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group" role="group">
-                                                    <a href="@Url.Action("Details", "DoctorDepartment", new { id = dataRow["DoctorDepartmentID"] })"
+                                                    @* <a href="@Url.Action("Details", "DoctorDepartment", new { id = dataRow["DoctorDepartmentID"] })"
                                                        class="btn btn-outline-info btn-sm" title="View Details">
                                                         <i class="bi bi-info-circle"></i>
-                                                    </a>
+                                                    </a> *@
                                                     <a class="btn btn-outline-primary btn-sm" title="Edit" asp-controller="DoctorDepartment" asp-action="DoctorDepartmentEdit" asp-route-DoctorDepartmentID="@dataRow["DoctorDepartmentID"]">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>

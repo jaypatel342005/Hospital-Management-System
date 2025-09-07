@@ -185,69 +185,82 @@
             </div>
         </div> *@
 
-        <!-- Filters Section -->
-        <div class="filters-section">
-            <div class="row align-items-center">
-                <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
-                    <div class="search-box">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="form-control" id="searchInput" placeholder="Search appointments...">
-                    </div>
+<!-- Filters Section -->
+<div class="filters-section">
+    <form method="post" asp-action="Index">
+        <div class="row align-items-center">
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-2">
+                <div class="search-box">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" name="Name" class="form-control" id="searchInput" placeholder="Search by doctor or patient..." value="@ViewBag.Name">
                 </div>
-                <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
-                    <select class="form-select" id="statusFilter">
-                        <option value="">All Status</option>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
+                <select class="form-select" id="statusFilter" name="AppointmentStatus">
+                    <option value="">All Status</option>
+                    @if (ViewBag.AppointmentStatus != null && ViewBag.AppointmentStatus.ToString() == "Scheduled")
+                    {
+                        <option value="Scheduled" selected>Scheduled</option>
+                    }
+                    else
+                    {
                         <option value="Scheduled">Scheduled</option>
+                    }
+                    @if (ViewBag.AppointmentStatus != null && ViewBag.AppointmentStatus.ToString() == "Completed")
+                    {
+                        <option value="Completed" selected>Completed</option>
+                    }
+                    else
+                    {
                         <option value="Completed">Completed</option>
+                    }
+                    @if (ViewBag.AppointmentStatus != null && ViewBag.AppointmentStatus.ToString() == "Cancelled")
+                    {
+                        <option value="Cancelled" selected>Cancelled</option>
+                    }
+                    else
+                    {
                         <option value="Cancelled">Cancelled</option>
+                    }
+                    @if (ViewBag.AppointmentStatus != null && ViewBag.AppointmentStatus.ToString() == "Pending")
+                    {
+                        <option value="Pending" selected>Pending</option>
+                    }
+                    else
+                    {
                         <option value="Pending">Pending</option>
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
-                    <select class="form-select" id="doctorFilter">
-                        <option value="">All Doctors</option>
-                        @if (Model != null)
-                        {
-                            var doctors = Model.AsEnumerable()
-                            .Select(row => new
-                            {
-                                DoctorID = row["DoctorID"]?.ToString(),
-                                DoctorName = row["DoctorName"]?.ToString()
-                            })
-                            .Where(d => !string.IsNullOrEmpty(d.DoctorName))
-                            .GroupBy(d => d.DoctorID)
-                            .Select(g => g.First())
-                            .Take(50); // Limit to improve performance
-
-                            foreach (var doctor in doctors)
-                            {
-                                <option value="@doctor.DoctorID">@doctor.DoctorName</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
-                    <input type="date" class="form-control" id="dateFilter">
-                </div>
-                <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
-                    <div class="d-flex gap-2">
-                        <a href="@Url.Action("AddEdit", "Appointment")" class="btn btn-primary">
-                            <i class="bi bi-plus"></i> <span class="d-none d-sm-inline">New Appointment</span>
-                        </a>
-                       <a class="btn btn-outline-secondary"
-                              asp-controller="Appointment"
-                              asp-action="ExportAppointmentsToExcel"
-                              
-                       >
-
-                              <i class="bi bi-download"></i>
-                              <span class="d-none d-sm-inline">Export</span>
-                       </a>
-
-                    </div>
+                    }
+                </select>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
+                <input type="date" name="AppointmentDate" class="form-control" id="dateFilter" value="@(ViewBag.AppointmentDate?.ToString("yyyy-MM-dd"))">
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-12 mb-2">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-search me-1"></i>Search
+                </button>
+            </div>
+            <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
+                <div class="d-flex gap-2">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i>Clear
+                    </a>
+                    <a href="@Url.Action("AddEdit", "Appointment")" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> <span class="d-none d-sm-inline">New Appointment</span>
+                    </a>
+                   <a class="btn btn-outline-secondary"
+                          asp-controller="Appointment"
+                          asp-action="ExportAppointmentsToExcel"
+                          
+                   >
+                          <i class="bi bi-download"></i>
+                          <span class="d-none d-sm-inline">Export</span>
+                   </a>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
         <!-- Main Content Card -->
         <div class="card">

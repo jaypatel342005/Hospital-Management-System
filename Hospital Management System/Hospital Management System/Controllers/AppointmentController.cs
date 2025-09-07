@@ -18,20 +18,54 @@ namespace Hospital_Management_System.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index()
-        {
-            string connectionString = this._configuration.GetConnectionString("ConnectionString");
-            using var connection = new SqlConnection(connectionString);
-            using var command = connection.CreateCommand();
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "PR_Appointments_SelectAll";
+        //public IActionResult Index()
+        //{
+        //    string connectionString = this._configuration.GetConnectionString("ConnectionString");
+        //    using var connection = new SqlConnection(connectionString);
+        //    using var command = connection.CreateCommand();
+        //    command.CommandType = CommandType.StoredProcedure;
+        //    command.CommandText = "PR_Appointments_SelectAll";
 
-            connection.Open();
-            using var reader = command.ExecuteReader();
-            var table = new DataTable();
-            table.Load(reader);
-            return View(table);
-            connection.Close();
+        //    connection.Open();
+        //    using var reader = command.ExecuteReader();
+        //    var table = new DataTable();
+        //    table.Load(reader);
+        //    return View(table);
+        //    connection.Close();
+        //}
+
+        public IActionResult Index(string Name = "", string AppointmentStatus = "", DateTime? AppointmentDate = null)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                SqlConnection objConn = new SqlConnection(this._configuration.GetConnectionString("ConnectionString"));
+                objConn.Open();
+
+                SqlCommand objCmd = objConn.CreateCommand();
+                objCmd.CommandType = CommandType.StoredProcedure;
+                objCmd.CommandText = "PR_Appointments_SelectAll";
+
+                objCmd.Parameters.Add("@Name", SqlDbType.VarChar).Value = Name ?? "";
+                objCmd.Parameters.Add("@AppointmentStatus", SqlDbType.VarChar).Value = AppointmentStatus ?? "";
+                objCmd.Parameters.Add("@AppointmentDate", SqlDbType.Date).Value = (object)AppointmentDate ?? DBNull.Value;
+
+                SqlDataAdapter objAdapter = new SqlDataAdapter(objCmd);
+                objAdapter.Fill(dt);
+
+                objConn.Close();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            ViewBag.Name = Name;
+            ViewBag.AppointmentStatus = AppointmentStatus;
+            ViewBag.AppointmentDate = AppointmentDate;
+
+            return View(dt);
         }
 
 

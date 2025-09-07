@@ -110,7 +110,7 @@
                                             var totalOutstanding = Model.Sum(b => b.BillAmount - b.PaidAmount);
                                         }
                                         <h6 class="@(totalOutstanding > 0 ? "text-danger" : "text-success")">
-                                            $@totalOutstanding.ToString("N2")
+                                            ₹@totalOutstanding.ToString("N2")
                                         </h6>
                                         <span class="@(totalOutstanding > 0 ? "text-danger" : "text-success") small pt-1">
                                             @(totalOutstanding > 0 ? "Pending" : "Fully Paid")
