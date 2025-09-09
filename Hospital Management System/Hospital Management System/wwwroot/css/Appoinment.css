@@ -77,14 +77,14 @@
     align-items: center;
     padding: 15px;
     gap: 5px;
-    margin-bottom: 30px;
+   
 }
 
     /* Bootstrap column spacing */
     .stats-cards [class*="col-"] {
         padding-left: 12px;
         padding-right: 12px;
-        margin-bottom: 24px;
+       
     }
 
 .stats-card > .d-flex {
@@ -532,7 +532,7 @@
     .stats-cards [class*="col-"] {
         padding-left: 8px;
         padding-right: 8px;
-        margin-bottom: 16px;
+        
     }
 
     .main-content {

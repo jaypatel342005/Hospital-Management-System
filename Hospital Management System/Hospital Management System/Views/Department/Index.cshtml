@@ -165,7 +165,7 @@
                             <table class="table table-striped table-hover datatable" id="departmentsTable">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
+                                        
                                         <th>Department Name</th>
                                         <th>Description</th>
                                         <th>Status</th>
@@ -178,7 +178,7 @@
                                     @foreach (DataRow dataRow in Model.Rows)
                                     {
                                         <tr>
-                                            <td><strong>@dataRow["DepartmentID"]</strong></td>
+                                            @* <td><strong>@dataRow["DepartmentID"]</strong></td> *@
                                             <td>
                                                 <div class="fw-semibold">@dataRow["DepartmentName"]</div>
                                             </td>

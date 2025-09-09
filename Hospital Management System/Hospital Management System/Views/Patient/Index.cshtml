@@ -1,4 +1,4 @@
-﻿@model System.Data.DataTable
+@model System.Data.DataTable
 @using System.Data
 
 @{
@@ -184,7 +184,6 @@
                                                 </span>
                                             </div>
                                             <p class="card-text text-muted small mb-2">
-                                                <strong>ID:</strong> @dataRow["PatientID"] |
                                                 <strong>Age:</strong> @age |
                                                 <span class="badge bg-primary">@dataRow["Gender"]</span>
                                             </p>
@@ -243,7 +242,6 @@
                             <table class="table table-striped table-hover datatable" id="patientsTable">
                                 <thead>
                                     <tr>
-                                        <th class="">ID</th>
                                         <th class="">Actions</th>
                                         <th class="">Patient Name</th>
                                         <th class="">Gender</th>
@@ -264,7 +262,6 @@
                                         var age = DateTime.Today.Year - DateTime.Parse(dataRow["DateOfBirth"].ToString()).Year;
                                         if (DateTime.Parse(dataRow["DateOfBirth"].ToString()).Date > DateTime.Today.AddYears(-age)) age--;
                                         <tr>
-                                            <td><strong>@dataRow["PatientID"]</strong></td>
                                             <td class="text-center">
                                                 <div class="dropdown">
                                                     <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">

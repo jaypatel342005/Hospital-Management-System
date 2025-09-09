@@ -32,6 +32,7 @@
                     <form class="row g-3" asp-controller="Patient" asp-action="PatientSave" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                        @Html.AntiForgeryToken()
                         <input asp-for="PatientID" type="hidden" />
 
                         <div class="col-md-12">
@@ -54,9 +55,18 @@
 
                         <div class="col-md-6">
                             <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
-                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            <input asp-for="DateOfBirth"
+                                   type="date"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   min="1900-01-01"
+                                   value="@(Model.DateOfBirth == DateTime.MinValue ? "" : Model.DateOfBirth.ToString("yyyy-MM-dd"))" />
                             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                         </div>
+
+
+
+
 
                         <div class="col-md-6">
                             <label asp-for="Gender" class="form-label">Gender</label>

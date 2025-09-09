@@ -126,6 +126,7 @@ namespace Hospital_Management_System.Controllers
             return RedirectToAction("Index");
         }
 
+        [EncryptedActionParameter]
         public IActionResult DoctorDepartmentSave(DoctorDepartmentsModel doctorDepartmentsModel)
         {
             try
@@ -171,6 +172,7 @@ namespace Hospital_Management_System.Controllers
             return View("AddEdit", doctorDepartmentsModel);
         }
 
+        [EncryptedActionParameter]
         public IActionResult DoctorDepartmentEdit(int DoctorDepartmentID)
         {
             string connectionString = this._configuration.GetConnectionString("ConnectionString");
@@ -205,6 +207,7 @@ namespace Hospital_Management_System.Controllers
             return View();
         }
 
+        [EncryptedActionParameter]
         public IActionResult AddEdit()
         {
             ViewBag.UserList = GetUserList();

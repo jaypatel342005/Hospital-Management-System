@@ -60,6 +60,7 @@ namespace Hospital_Management_System.Controllers
         }
 
         [EncryptedActionParameter]
+        [ValidateAntiForgeryToken]
         public IActionResult PatientSave(PatientModel patientModel)
         {
             try

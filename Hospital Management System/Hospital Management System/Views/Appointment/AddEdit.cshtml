@@ -52,9 +52,17 @@
 
                         <div class="col-md-6">
                             <label asp-for="AppointmentDate" class="form-label">Appointment Date & Time</label>
-                            <input asp-for="AppointmentDate" type="datetime-local" class="form-control" />
+                            <input asp-for="AppointmentDate"
+                                   type="datetime-local"
+                                   class="form-control"
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                   max="@DateTime.Now.AddMonths(6).ToString("yyyy-MM-ddTHH:mm")"
+                                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                             <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                         </div>
+
+
+
 
                         <div class="col-md-6">
                             <label asp-for="AppointmentStatus" class="form-label">Status</label>

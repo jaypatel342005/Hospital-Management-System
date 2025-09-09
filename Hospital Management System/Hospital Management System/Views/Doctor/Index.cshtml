@@ -331,15 +331,21 @@
     <section class="section" id="doctors" data-aos="fade-up">
         @* Page Title & Breadcrumb *@
 
-        <div class="pagetitle">
-            <h1>Doctor Management</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
-                    <li class="breadcrumb-item active">Doctors</li>
-                </ol>
-            </nav>
+        <div class="pagetitle d-flex justify-content-between align-items-start">
+            <div>
+                <h1>Doctor Management</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "dashboard")">Home</a></li>
+                        <li class="breadcrumb-item active">Doctors</li>
+                    </ol>
+                </nav>
+            </div>
+            <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
+                <i class="bi bi-person-plus me-2"></i>Add New Doctor
+            </a>
         </div>
+       
 
 
 
@@ -480,11 +486,11 @@
                                 <i class="bi bi-search me-1"></i>Search
                             </button>
                             <a href="@Url.Action("Index")" class="btn btn-outline-secondary" id="clearFilters">
-                                <i class="bi bi-arrow-clockwise me-1"></i>Clear Filters
+                                <i class="bi bi-arrow-clockwise me-1"></i>Clear
                             </a>
-                            <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
+                            @* <a href="@Url.Action("AddEdit", "Doctor")" class="btn btn-primary">
                                 <i class="bi bi-person-plus me-2"></i>Add New Doctor
-                            </a>
+                            </a> *@
                         </div>
                     </div>
                 </div>

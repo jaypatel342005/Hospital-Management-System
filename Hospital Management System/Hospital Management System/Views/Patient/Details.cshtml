@@ -1,4 +1,4 @@
-﻿@using System.Data
+@using System.Data
 @model DataTable
 @{
     ViewData["Title"] = "Patient Details";
@@ -378,7 +378,7 @@
 
                                 <tr>
                                     <td>
-                                        <span class="badge bg-light text-dark border">#@bill["BillID"]</span>
+                                        <span class="badge bg-light text-dark border">Bill</span>
                                     </td>
                                     <td>
                                         <div class="fw-bold">@Convert.ToDateTime(bill["CreatedDate"]).ToString("MMM dd, yyyy")</div>
